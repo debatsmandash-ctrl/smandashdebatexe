@@ -1,13 +1,20 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import type { FontPreset } from "@/lib/fonts";
 
 export type QualityPreset = "low" | "medium" | "high" | "ultra";
 export type FpsCap = 0 | 30 | 60 | 120;
 
 export type MobileLayout = "sheet" | "pills";
-export type ViewMode = "3d" | "2d";
-export type Theme2D = "aurora" | "genshin";
 export type PlayMode = "shuffle" | "sequential";
+
+/**
+ * Link visibility modes:
+ * - normal : hover/klik = tampilkan tautan node itu; lain redup (default)
+ * - tree   : klik domain/hub = highlight seluruh rantai turunan sampai leaf
+ * - all    : semua garis dan label ditampilkan (perf-heavy)
+ */
+export type LinkMode = "normal" | "tree" | "all";
 
 
 export interface Settings {
@@ -26,25 +33,36 @@ export interface Settings {
   reducedMotion: boolean;
   highContrastLabels: boolean;
   mobileLayout: MobileLayout;
-  viewMode: ViewMode;
-  theme2D: Theme2D;
   enabledTracks: Record<string, boolean>;
   playMode: PlayMode;
+
+  // NEW: link/hover visibility modes
+  linkMode: LinkMode;
+  treeHoverEnabled: boolean;          // aktifkan hover-on-tree juga
+  edgeThickness: number;              // 1..4 solid line width
+
+  // NEW: font preset
+  fontPreset: FontPreset;
+
+  // NEW: lobby / intro gate
+  lobbySeen: boolean;
 
   // Offset draggable panel (desktop). { x, y } pixel relatif posisi default.
   sidebarOffset: { x: number; y: number };
   sidePanelOffset: { x: number; y: number };
 }
 
+const isMobileEnv = typeof window !== "undefined" && (window.matchMedia?.("(pointer: coarse)").matches || window.innerWidth < 900);
+
 export const DEFAULT_SETTINGS: Settings = {
-  quality: typeof window !== "undefined" && (window.matchMedia?.("(pointer: coarse)").matches || window.innerWidth < 900) ? "low" : "ultra",
+  quality: isMobileEnv ? "low" : "ultra",
   fpsCap: 60,
   showFps: false,
-  bloomIntensity: 0.7,
-  nebulaOpacity: 0.95,
+  bloomIntensity: isMobileEnv ? 0.4 : 0.7,
+  nebulaOpacity: isMobileEnv ? 0.55 : 0.95,
   starSize: 1.0,
   showHoverEdges: true,
-  autoRotate: true,
+  autoRotate: !isMobileEnv,
   autoRotateSpeed: 0.25,
   damping: 0.1,
   audioMuted: true,
@@ -52,11 +70,13 @@ export const DEFAULT_SETTINGS: Settings = {
   reducedMotion: false,
   highContrastLabels: false,
   mobileLayout: "sheet",
-  viewMode: "3d",
-  theme2D: "genshin",
-
   enabledTracks: {},
   playMode: "shuffle",
+  linkMode: "normal",
+  treeHoverEnabled: true,
+  edgeThickness: 1.8,
+  fontPreset: "default",
+  lobbySeen: false,
   sidebarOffset: { x: 0, y: 0 },
   sidePanelOffset: { x: 0, y: 0 },
 };
@@ -115,6 +135,10 @@ export const useSettings = create<SettingsState>()(
       update: (patch) => set(patch as Settings),
       reset: () => set(DEFAULT_SETTINGS),
     }),
-    { name: "smandash-settings-v2" }
+    {
+      name: "smandash-settings-v3",
+      // merge persisted state onto defaults so new fields exist for old clients
+      merge: (persisted, current) => ({ ...current, ...(persisted as object) }),
+    }
   )
 );
