@@ -7,6 +7,12 @@
       "dependencies": {
         "@ai-sdk/openai-compatible": "^2.0.51",
         "@ai-sdk/react": "^3.0.210",
+        "@fontsource/cinzel": "^5.2.8",
+        "@fontsource/cormorant-unicase": "^5.2.8",
+        "@fontsource/michroma": "^5.2.8",
+        "@fontsource/orbitron": "^5.2.8",
+        "@fontsource/press-start-2p": "^5.2.7",
+        "@fontsource/vt323": "^5.2.7",
         "@hookform/resolvers": "^5.2.2",
         "@radix-ui/react-accordion": "^1.2.12",
         "@radix-ui/react-alert-dialog": "^1.1.15",
@@ -232,6 +238,18 @@
     "@floating-ui/react-dom": ["@floating-ui/react-dom@2.1.8", "", { "dependencies": { "@floating-ui/dom": "^1.7.6" }, "peerDependencies": { "react": ">=16.8.0", "react-dom": ">=16.8.0" } }, "sha512-cC52bHwM/n/CxS87FH0yWdngEZrjdtLW/qVruo68qg+prK7ZQ4YGdut2GyDVpoGeAYe/h899rVeOVm6Oi40k2A=="],
 
     "@floating-ui/utils": ["@floating-ui/utils@0.2.11", "", {}, "sha512-RiB/yIh78pcIxl6lLMG0CgBXAZ2Y0eVHqMPYugu+9U0AeT6YBeiJpf7lbdJNIugFP5SIjwNRgo4DhR1Qxi26Gg=="],
+
+    "@fontsource/cinzel": ["@fontsource/cinzel@5.2.8", "https://europe-west4-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@fontsource/cinzel/-/cinzel-5.2.8.tgz", {}, "sha512-B9WeF/jPlOJOrcXfX96cy4KfM+s1QcU2C9W2hE3azBOBzPvzFkNpBovT5JmhAeicE/s4HZWKF9LF5hmEcqlbsw=="],
+
+    "@fontsource/cormorant-unicase": ["@fontsource/cormorant-unicase@5.2.8", "https://europe-west4-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@fontsource/cormorant-unicase/-/cormorant-unicase-5.2.8.tgz", {}, "sha512-hmIXajfVJUpxJfFoZfvoWtZLRirQeGv+5eE6u6LtkvgF2Zx2kkot419wJ+/8PA1ClReEhxg3V4eo++SJLF+l6Q=="],
+
+    "@fontsource/michroma": ["@fontsource/michroma@5.2.8", "https://europe-west4-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@fontsource/michroma/-/michroma-5.2.8.tgz", {}, "sha512-52Ml9TU/yC5YluqHxXqLK/AVUWbIeI3lCTZcTRnIkvfKHPZ0GSvSFi49ti872oCdo+YAMUk8RIfxVxXa6Cjigw=="],
+
+    "@fontsource/orbitron": ["@fontsource/orbitron@5.2.8", "https://europe-west4-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@fontsource/orbitron/-/orbitron-5.2.8.tgz", {}, "sha512-ruzrDl5vnqNykk5DZWY0Ezj4aeFZSbCnwJTc/98ojNJHSsHhlhT2r7rwQrA5sptmF8JtB8TQTAvlfRvcV28RPw=="],
+
+    "@fontsource/press-start-2p": ["@fontsource/press-start-2p@5.2.7", "https://europe-west4-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@fontsource/press-start-2p/-/press-start-2p-5.2.7.tgz", {}, "sha512-ezSxYRchANoteja170ZHh2Tt4oejmVEvX42VFPOVVvERSZ68pcuZFjbhHfrK/sNjYmaGg656y7B3431ojO9PCQ=="],
+
+    "@fontsource/vt323": ["@fontsource/vt323@5.2.7", "https://europe-west4-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@fontsource/vt323/-/vt323-5.2.7.tgz", {}, "sha512-8JTMM23vMhQxin9Cn/ijty8cNwXW4INrln0VAJ2227Rz0CVfkzM3qr3l/CqudZJ6BXCnbCGUTdf2ym3cTNex8A=="],
 
     "@hookform/resolvers": ["@hookform/resolvers@5.2.2", "", { "dependencies": { "@standard-schema/utils": "^0.3.0" }, "peerDependencies": { "react-hook-form": "^7.55.0" } }, "sha512-A/IxlMLShx3KjV/HeTcTfaMxdwy690+L/ZADoeaTltLx+CVuzkeVIPuybK3jrRfw7YZnmdKsVVHAlEPIAEUNlA=="],
 
