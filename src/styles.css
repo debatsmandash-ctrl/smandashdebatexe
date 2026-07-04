@@ -1,6 +1,15 @@
 @import "tailwindcss" source(none);
 @source "../src";
 @import "tw-animate-css";
+@import "@fontsource/press-start-2p";
+@import "@fontsource/vt323";
+@import "@fontsource/cinzel/400.css";
+@import "@fontsource/cinzel/700.css";
+@import "@fontsource/cormorant-unicase/400.css";
+@import "@fontsource/cormorant-unicase/700.css";
+@import "@fontsource/orbitron/400.css";
+@import "@fontsource/orbitron/700.css";
+@import "@fontsource/michroma";
 
 @custom-variant dark (&:is(.dark *));
 

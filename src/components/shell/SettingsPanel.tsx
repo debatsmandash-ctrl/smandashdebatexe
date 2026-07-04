@@ -1,7 +1,8 @@
 import { useMemo, useState } from "react";
-import { useUniverse, useSettings, type QualityPreset, type FpsCap, type Theme2D } from "@/lib/store";
+import { useUniverse, useSettings, type QualityPreset, type FpsCap, type LinkMode } from "@/lib/store";
 import { TRACKS, DEFAULT_ENABLED_TRACKS } from "@/lib/playlist";
 import { buildGraph } from "@/lib/graph/build";
+import { FONT_PRESETS, applyFontPreset, type FontPreset } from "@/lib/fonts";
 
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
@@ -67,11 +68,10 @@ export function SettingsPanel() {
   const s = useSettings();
   const update = useSettings((st) => st.update);
   const reset = useSettings((st) => st.reset);
-  const [tab, setTab] = useState<"display" | "performance" | "audio" | "explore" | "access">("display");
+  const [tab, setTab] = useState<"display" | "links" | "performance" | "audio" | "font" | "explore" | "access">("display");
   const graph = useMemo(() => buildGraph(), []);
   const select = useUniverse((st) => st.select);
   const rovers = useMemo(() => {
-    // Anggap "rover" = role + speaker + active_member nodes (kontestan / anggota).
     return graph.nodes.filter((n) =>
       n.kind === "role" || n.kind === "speaker" ||
       (n.cluster === "active_member" && (n.kind === "domain" || n.kind === "subbab" || n.kind === "bab"))
@@ -89,7 +89,7 @@ export function SettingsPanel() {
         style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.55)", zIndex: 50 }} />
       <aside
         style={{
-          position: "fixed", top: 0, right: 0, bottom: 0, width: "min(380px, 94vw)", zIndex: 51,
+          position: "fixed", top: 0, right: 0, bottom: 0, width: "min(400px, 94vw)", zIndex: 51,
           background: "linear-gradient(180deg, rgba(8,13,24,0.98), rgba(5,8,15,0.96))",
           borderLeft: "1px solid rgba(168,85,247,0.25)",
           backdropFilter: "blur(16px)",
@@ -99,16 +99,18 @@ export function SettingsPanel() {
         <div style={{ padding: "16px 18px", borderBottom: "1px solid rgba(168,85,247,0.18)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <div>
             <div style={{ fontFamily: "Bebas Neue", fontSize: 20, letterSpacing: "0.18em", color: "#e8f4ff" }}>SETTINGS</div>
-            <div style={{ fontFamily: "Space Mono", fontSize: 8, letterSpacing: "0.3em", color: "#5a6f8a", marginTop: 2 }}>DISPLAY · PERF · AUDIO · A11Y</div>
+            <div style={{ fontFamily: "Space Mono", fontSize: 8, letterSpacing: "0.3em", color: "#5a6f8a", marginTop: 2 }}>DISPLAY · LINKS · FONT · PERF · AUDIO · A11Y</div>
           </div>
           <button onClick={() => setOpen(false)}
             style={{ width: 30, height: 30, background: "transparent", border: "1px solid rgba(168,85,247,0.3)", color: "#a855f7", cursor: "pointer", borderRadius: 4 }}>✕</button>
         </div>
 
         {/* Tabs */}
-        <div style={{ display: "flex", padding: "0 18px", borderBottom: "1px solid rgba(168,85,247,0.12)", gap: 2 }}>
+        <div style={{ display: "flex", padding: "0 12px", borderBottom: "1px solid rgba(168,85,247,0.12)", gap: 2, overflowX: "auto" }}>
           {([
             ["display", "TAMPILAN"],
+            ["links", "TAUTAN"],
+            ["font", "FONT"],
             ["performance", "PERF"],
             ["audio", "AUDIO"],
             ["explore", "JELAJAH"],
@@ -117,34 +119,16 @@ export function SettingsPanel() {
 
             <button key={k} onClick={() => setTab(k)}
               style={{
-                flex: 1, padding: "10px 4px", background: "transparent",
+                flex: "0 0 auto", padding: "10px 10px", background: "transparent",
                 border: "none", borderBottom: `2px solid ${tab === k ? "#a855f7" : "transparent"}`,
                 color: tab === k ? "#e8f4ff" : "#5a6f8a", cursor: "pointer",
-                fontFamily: "Space Mono", fontSize: 10, letterSpacing: "0.2em",
+                fontFamily: "Space Mono", fontSize: 10, letterSpacing: "0.2em", whiteSpace: "nowrap",
               }}>{label}</button>
           ))}
         </div>
 
         <div className="panel-scroll" style={{ flex: 1, overflowY: "auto", padding: "16px 18px" }}>
           {tab === "display" && (<>
-          <Section title="Mode Tampilan">
-            <Row label="Mode" hint="2D lebih ringan; 3D adalah pengalaman utama">
-              <div style={{ display: "flex", gap: 4 }}>
-                <Pill active={s.viewMode === "3d"} onClick={() => update({ viewMode: "3d" })}>3D</Pill>
-                <Pill active={s.viewMode === "2d"} onClick={() => update({ viewMode: "2d" })}>2D</Pill>
-              </div>
-            </Row>
-            <Row label="Tema 2D" hint="Aurora = langit malam tenang · Genshin = Wheel of Fate astrolabe (default)">
-              <div style={{ display: "flex", gap: 4 }}>
-                {(["genshin","aurora"] as Theme2D[]).map((t) => (
-                  <Pill key={t} active={s.theme2D === t} onClick={() => update({ theme2D: t })}>
-                    {t === "genshin" ? "GENSHIN" : "AURORA"}
-                  </Pill>
-                ))}
-              </div>
-            </Row>
-          </Section>
-
           <Section title="Visual">
             <Row label={`Bloom ${s.bloomIntensity.toFixed(2)}`}>
               <Slider value={s.bloomIntensity} min={0} max={1.5} step={0.05} onChange={(v) => update({ bloomIntensity: v })} />
@@ -155,7 +139,9 @@ export function SettingsPanel() {
             <Row label={`Star size ×${s.starSize.toFixed(2)}`}>
               <Slider value={s.starSize} min={0.5} max={1.6} step={0.05} onChange={(v) => update({ starSize: v })} />
             </Row>
-            <Row label="Hover edges"><Toggle value={s.showHoverEdges} onChange={(v) => update({ showHoverEdges: v })} /></Row>
+            <Row label={`Edge thickness ${s.edgeThickness.toFixed(1)}`} hint="Ketebalan garis hover (solid, tanpa dashed)">
+              <Slider value={s.edgeThickness} min={1} max={4} step={0.1} onChange={(v) => update({ edgeThickness: v })} />
+            </Row>
           </Section>
           <Section title="Camera">
             <Row label="Auto-rotate"><Toggle value={s.autoRotate} onChange={(v) => update({ autoRotate: v })} /></Row>
@@ -176,9 +162,62 @@ export function SettingsPanel() {
           </Section>
           </>)}
 
+          {tab === "links" && (<>
+          <Section title="Mode Tampilan Tautan">
+            <div style={{ fontFamily: "DM Sans", fontSize: 11, color: "#8ba3c0", lineHeight: 1.6, marginBottom: 6 }}>
+              Pilih bagaimana garis-garis penghubung ditampilkan saat menjelajah semesta.
+            </div>
+            {([
+              ["normal", "NORMAL", "Hover/klik satu bintang → tampil tautan-nya saja. Lain redup."],
+              ["tree",   "FULL TREE", "Klik domain/hub → highlight seluruh rantai turunan sampai leaf."],
+              ["all",    "SHOW ALL", "Semua garis tampil sekaligus. Berat — cocok untuk audit."],
+            ] as const).map(([k, label, hint]) => (
+              <Row key={k} label={label} hint={hint}>
+                <Pill active={s.linkMode === (k as LinkMode)} onClick={() => update({ linkMode: k as LinkMode })}>PILIH</Pill>
+              </Row>
+            ))}
+          </Section>
+          <Section title="Hover">
+            <Row label="Tampilkan hover edges" hint="Matikan bila tidak ingin garis muncul saat hover">
+              <Toggle value={s.showHoverEdges} onChange={(v) => update({ showHoverEdges: v })} />
+            </Row>
+            <Row label="Hover di mode FULL TREE" hint="Nyalakan agar hover tetap aktif pada mode tree">
+              <Toggle value={s.treeHoverEnabled} onChange={(v) => update({ treeHoverEnabled: v })} />
+            </Row>
+          </Section>
+          </>)}
+
+          {tab === "font" && (<>
+          <Section title="Font Preset">
+            <div style={{ fontFamily: "DM Sans", fontSize: 11, color: "#8ba3c0", marginBottom: 8, lineHeight: 1.6 }}>
+              Ganti keseluruhan tampilan teks. Efek langsung ke seluruh UI.
+            </div>
+            {FONT_PRESETS.map((p) => {
+              const active = s.fontPreset === p.id;
+              return (
+                <button
+                  key={p.id}
+                  onClick={() => { update({ fontPreset: p.id as FontPreset }); applyFontPreset(p.id as FontPreset); }}
+                  style={{
+                    textAlign: "left",
+                    padding: "10px 12px",
+                    background: active ? "rgba(168,85,247,0.14)" : "rgba(255,255,255,0.02)",
+                    border: `1px solid ${active ? "#a855f7" : "rgba(168,85,247,0.2)"}`,
+                    borderLeft: `3px solid ${active ? "#00ffc8" : "#a855f7"}`,
+                    color: "#e8f4ff", cursor: "pointer", borderRadius: 4,
+                  }}
+                >
+                  <div style={{ fontFamily: p.display, fontSize: 16, letterSpacing: "0.08em", color: "#e8f4ff" }}>{p.label}</div>
+                  <div style={{ fontFamily: p.body, fontSize: 12, color: "#8ba3c0", marginTop: 3 }}>{p.hint} — Aa Bb Cc 123</div>
+                </button>
+              );
+            })}
+          </Section>
+          </>)}
+
           {tab === "performance" && (<>
           <Section title="Performance">
-            <Row label="Quality preset" hint="Mengontrol nebula, bloom, dan kepadatan bintang">
+            <Row label="Quality preset" hint="LOW = ramah mobile; ULTRA = maksimal desktop">
               <div style={{ display: "flex", gap: 4 }}>
                 {(["low","medium","high","ultra"] as QualityPreset[]).map(q => (
                   <Pill key={q} active={s.quality === q} onClick={() => update({ quality: q })}>{q.toUpperCase()}</Pill>
@@ -284,6 +323,11 @@ export function SettingsPanel() {
               <Toggle value={s.reducedMotion} onChange={(v) => update({ reducedMotion: v, autoRotate: v ? false : s.autoRotate })} />
             </Row>
             <Row label="High-contrast labels"><Toggle value={s.highContrastLabels} onChange={(v) => update({ highContrastLabels: v })} /></Row>
+          </Section>
+          <Section title="Lobby">
+            <Row label="Tampilkan Mission Control lagi" hint="Reset gate agar lobby NASA muncul lagi di reload berikut">
+              <Pill active={false} onClick={() => { update({ lobbySeen: false }); location.reload(); }}>RESET</Pill>
+            </Row>
           </Section>
           </>)}
 

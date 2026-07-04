@@ -1,91 +1,173 @@
-Pekerjaan besar dibagi 6 area. Tiap area bisa dijalankan paralel oleh saya tapi tetap dalam satu eksekusi.
+# Debate Star Universe — Major Upgrade v0.9 → v1.0 "Mission Control"
 
-## 1. Universe 3D — Bola Volumetrik (bukan kulit tipis)
+Ringkas: buang mode 2D, redesign layout galaksi 3D jadi blobby cluster sphere yang ramah mobile, tambah lobby NASA Mission Control sebelum start, isi panel dengan infografis kaya + chart, dan tambah banyak opsi baru di Settings.
 
-Saat ini cluster ditaruh di permukaan Fibonacci sphere → terasa "kulit". Yang diminta: satu bola besar yang **menyebar dengan volume**, jadi setiap cluster ibarat lapisan/serpihan dari satu bola raksasa.
+---
 
-- `src/lib/graph/build.ts`:
-  - Cluster: tetap Fibonacci sphere tapi dengan **radial jitter** lebar (radius 22–34, bukan fixed 28) → cluster nggak duduk di satu kulit.
-  - `placeCloud`: ganti dari "sub-shell tipis" jadi **isi volume bola** (radius 0.25–1.0 dengan distribusi cube-root agar merata di volume), plus klaster anak tetap berorientasi menjauh dari pusat global → kesan bola besar berlapis.
-  - Spasi antar cluster diperbesar (min angular 0.6 rad) supaya tag tidak tumpang tindih.
-- Tag/label bintang: tambah `pointerEvents: none` + `z-index` di bawah panel UI, dan **clip area canvas** supaya label nggak nembus sidebar/info panel (bukan absolute over body, tapi di dalam container universe).
-- Lighting ultra: rim light + falloff agar bintang jauh tetap kelihatan tipis (sesuai permintaan sebelumnya, dirapikan).
+## 1 · Universe 3D — Reshape & Low-Graphic Mode
 
-## 2. Universe 2D — Theme Genshin Astrolabe (Wheel of Fate)
+**Hapus total 2D**
+- Delete: `Universe2D.tsx`, `WheelOfFate2D.tsx`, toggle `viewMode` & `theme2D` di store dan SettingsPanel
+- `index.tsx` selalu render `<Universe />` (3D)
 
-Rombak total `Universe2D.tsx` agar mirip referensi gambar Genshin:
+**Blobby cluster sphere layout** (`src/lib/graph/build.ts`)
+- Ganti algoritma posisi jadi: tiap domain = 1 gugusan padat (cluster centroid tersebar di permukaan bola non-simetris via 3D simplex-noise deform radius)
+- Node dalam domain di-distribusi Poisson-disc dalam radius gugus (kerapatan medium, tidak longgar)
+- Domain kecil (mis. Kamus) diperbolehkan menjorok ke ruang kosong antar-gugus lain, tapi jarak minimum antar-node dijaga (no-collision spacing check)
+- Bab/Subbab/Mosi/Vocab nested di sekitar centroid domain-nya
+- Bentuk keseluruhan: elipsoid ter-deform noise (bukan bola simetris)
 
-- Background: gradient ungu-deep `#0b0a24 → #1a1546 → #0a0820` + grid titik-titik kecil di pojok kiri (seperti referensi) + bintang halus.
-- Layout: **astrolabe melingkar** — cluster menjadi node di sepanjang **ring konsentris** (3 ring), bukan tersebar acak. Root di pusat dengan ornamen "wheel of fate" (SVG ring + chevron + 11 tick).
-- **Rotasi**: ring bisa berputar via drag (rotateZ pada grup), dengan inertia. Klik node = stop rotasi & buka panel.
-- Node = lingkaran ber-border tipis perak + ikon domain di tengah (re-use lucide / emoji domain). Garis lengkung tipis menghubungkan ring (bukan polyline lurus).
-- HUD kiri-atas: badge `✦ Wheel of Fate · 11 Domain ✦` mirip "Share this page".
-- Komet & aurora dihapus untuk 2D Genshin (terlalu noisy untuk theme ini); ganti dengan **partikel bintang halus + ornamen sigil SVG** di belakang.
-- File baru: `src/components/universe/WheelOfFate2D.tsx` (komponen astrolabe), `src/assets/genshin-sigil.svg`. `Universe2D.tsx` jadi wrapper yang panggil WheelOfFate2D.
+**Palet bintang variatif (semua opsi, semua terang)**
+- Tambah pool warna: Stellar Classification + Nebula Neon + NASA Hubble + Aurora Mix (~20 warna terang)
+- Setiap node dapat warna dari pool berdasar seeded-hash id (deterministic, kecuali override khusus domain color untuk clarity)
+- Guard: minimum luminance threshold (tidak boleh gelap)
 
-## 3. Settings Panel — Lebih Kaya
+**Low-Graphic 3D preset (auto mobile)**
+- `useDeviceProfile` → deteksi mobile → default quality `low`:
+  - Star instanced-mesh count -50%
+  - Nebula/bloom off, milkyway skybox low-res
+  - Auto-rotate mati, DPR clamp ≤ 1.5
+  - Skip HoverEdges animation heavy path
+- Setting `quality` tetap bisa override manual
 
-`src/components/shell/SettingsPanel.tsx`:
+**Hover edges: solid + animasi**
+- `HoverEdges.tsx`: hilangkan opsi dashed, semua garis solid (`dashed={false}` hardcoded, lineWidth naik)
+- Tambah animasi: shader flow (gradient stroke bergerak dari source→target) atau opacity pulse 0.5→1.0 loop, plus fade-in saat mount
+- Ujung garis dapat glow dot kecil
 
-- Tab baru: **Tampilan · Audio · Eksplorasi · Tentang**.
-- Tampilan: quality (low/med/ultra), theme 2D (Aurora/Genshin), toggle label, toggle parallax, slider star density.
-- **Eksplorasi → "Lihat Semua Rover"**: list semua node tipe `role`/`speaker` (anggota tim/rover) dengan avatar + jump-to. Implementasi sederhana: scan graph nodes, render grid kartu, klik = `select(id)` + close panel.
-- Audio: ada (sudah) — tambah toggle "auto-next" & mini visualizer.
-- Tentang: versi, credit, link.
+---
 
-## 4. Matter — Konversi Bahasa Indonesia + Ekspansi 1–3 halaman per bab
+## 2 · Link Visibility Modes (Settings baru)
 
-`src/data/raw/matter.json` (atau setara — saya cek struktur dulu, kalau hardcoded di TS pindah ke JSON).
+Tambah 3 mode di Settings > Tampilan:
+1. **NORMAL** — hover/klik node = tampilkan tautan node itu + redup selebihnya (current behavior)
+2. **FULL TREE** — klik domain = highlight seluruh rantai bab→subbab→mosi/kamus sampai leaf terakhir. Toggle hover on/off khusus mode ini
+3. **SHOW ALL** — semua link edges + label domain selalu tampil (perf warning ditampilkan)
 
-- Semua bab di-rewrite ke **bahasa Indonesia baku** (boleh keep istilah teknis seperti "moral hazard", "fiat", "burden of proof", "consequentialism").
-- Tiap subbab minimal 600–1800 kata (≈1–3 halaman Word) dengan sub-blok:
-  - `pengantar` (paragraf naratif)
-  - `konsep_inti` (definisi & framework)
-  - `argumen_pro` & `argumen_kon` (masing-masing 3–5 poin terurai)
-  - `studi_kasus` (1–2 contoh Indonesia/global)
-  - `aplikasi_debat` (cara pakai di PRO/OPP)
-  - `terms_kunci` (glosarium)
-- Konten dari `PART.docx` + 6 BATCH files diintegrasikan: saya parse docx lewat `document--parse_document`, lalu merge ke matter & motions.
-- Tipe data `MatterSubBab` di `src/data/types.ts` diperluas dengan field baru di atas (backward compatible — field lama tetap optional).
+Implementasi: state `linkMode: 'normal' | 'tree' | 'all'` di store, HoverEdges + Universe cek mode ini untuk decide render set.
 
-## 5. Information Panel — UI/UX Modern Interaktif
+---
 
-`src/components/shell/panels/PanelContent.tsx` + `SidePanel.tsx`:
+## 3 · Info Panels — Infografis Kaya
 
-- Layout artikel **majalah modern**: hero header (gradient + kategori chip + judul besar), sticky tab bar (Overview · Konsep · PRO · KON · Studi Kasus · Aplikasi · Glosarium).
-- Scroll-spy: tab aktif berubah saat scroll.
-- Komponen baru:
-  - `MatterArticle.tsx` — render konten panjang dengan typography drop-cap, pull-quote, accordion sub-section, callout box, mini-infographic.
-  - `TermsGlossary.tsx` — hover tooltip definisi.
-  - `CaseStudyCard.tsx` — kartu studi kasus dengan ikon + meta.
-- Hierarki sidebar (`Sidebar.tsx`) diperbaiki: Domain (huruf besar + ikon kotak) → Sub-domain (indent + ikon kecil) → Bab (indent lebih + dot) → Leaf (indent paling dalam + dot kecil + warna muted). Beda background per tier.
-- Z-index: panel info dipastikan **di atas tag bintang** (z-50, tag z-10).
+**Rombak `SidePanel.tsx` + `PanelContent.tsx`**
+- Layout kotak-kotak unik: bento grid dengan mixed sizes, border neon subtle, corner brackets ala HUD
+- Text `text-align: justify` (rata kanan kiri) sesuai request, hyphenation on
+- Setiap panel node punya sections:
+  - **Overview interaktif**: header dengan mini-stats (jumlah edge, cluster, weight), tag chips clickable → filter/jump
+  - **Extended matter**: expand semua konten mosi & matter (context, pro/kon lengkap, terms, ideal case, research links) dari data raw. Section dapat collapsible + progress read indicator
+  - **Related stars**: grid card node terkait (klik = navigate)
+  - **Chart mini**: per node relevan (mis. mosi → radar strength pro/kon; role → radar skills; domain → sunburst subtree)
+- Animasi: fade-in stagger children, hover lift halus, section transition smooth
 
-## 6. Easter Egg Simeone — Kotak Foto Besar & Jelas
+**Data extension**
+- Audit `src/data/raw/*.json`, tarik semua field yang saat ini tidak ditampilkan (terms, research, ctx-multi, ideal cases)
+- Jika ada batch mosi baru yang belum di-ingest (BATCH-04/05/06 dari upload), TIDAK di-scope di plan ini — kabari user terpisah bila mau
 
-`src/components/panels/SimeoneEgg.tsx`:
+---
 
-- Ganti dari sticker melayang → **frame kotak (180×220px)** dengan border tebal perak + caption "EL CHOLO · HARAMDEBATE ICON", foto Simeone di-cover full frame (object-fit cover), shadow dramatic, sedikit tilt -4°. Muncul hanya di section HaramDebate (sudah).
+## 4 · NASA Mission Control Lobby (baru)
 
-## 7. Compatibility — GitHub / Netlify / Vercel
+Flow: **Cinematic Intro (3-4s) → Mission Control Lobby → tombol INITIATE → fade ke Universe**
 
-Project ini TanStack Start (Cloudflare Worker default). Agar deploy di Netlify/Vercel/static juga jalan:
+**Cinematic Intro** (`components/lobby/Intro.tsx`)
+- Countdown "T-3 … T-2 … T-1 … IGNITION" dengan SFX, logo SMANDASH Debate sweep in
+- Skip-able (klik/tap)
 
-- Tidak ada perubahan runtime — pastikan tidak ada hard-import `process.env.*` di client bundle.
-- Audit `src/lib/*.server.ts` agar hanya diimport dari handler/server-only paths.
-- README tambah catatan deploy (Node 20+, build command `bun run build`, output `dist/`).
-- Tidak ada secret yang dibutuhkan untuk runtime client.
+**Mission Control Lobby** (`components/lobby/MissionControl.tsx`)
+- Full-page dark tech UI, grid modular ala NASA JPL dashboard
+- Panel-panel:
+  - **HUD Telemetry**: jam UTC live, "MISSION STATUS: NOMINAL", uptime session
+  - **Stats live**: total nodes / edges / domains / mosi / vocab (dari graph)
+  - **Sunburst chart** distribusi node per-domain (interactive, klik = pre-select saat masuk universe)
+  - **Bar chart** mosi per kategori
+  - **Heatmap** tautan antar-domain
+  - **Mission Cards** per domain (klik = deep-link masuk universe fokus ke domain itu)
+  - **Playlist widget** compact
+  - **Tombol besar**: `[ INITIATE UNIVERSE ]` + `[ SETTINGS ]` + `[ ABOUT ]`
+- Charts pakai Recharts (sudah ada di project), style custom dark neon
+- Route: `/` = Lobby, `/universe` = 3D scene (atau state-based di homepage; final call saat build)
 
-## Pertanyaan yang perlu dijawab user setelah plan ini
+**Kembali ke lobby**: tombol kecil "◄ MISSION CONTROL" di sidebar Universe
 
-Saya akan tetap eksekusi default, tapi ada 2 hal yang akan saya tanyakan setelah plan disetujui (lewat ask_questions):
-1. Foto Simeone — pakai foto upload sebelumnya, atau generate baru gaya potret hitam-putih dramatis?
-2. Theme 2D — Genshin Astrolabe jadi **default** atau opt-in (toggle di Settings)?
+---
 
-## File yang akan disentuh
+## 5 · Settings Panel — Expand
 
-Edit: `src/lib/graph/build.ts`, `src/components/universe/Universe.tsx`, `src/components/universe/Universe2D.tsx`, `src/components/universe/MilkyWaySky.tsx`, `src/components/shell/SettingsPanel.tsx`, `src/components/shell/Sidebar.tsx`, `src/components/shell/SidePanel.tsx`, `src/components/shell/panels/PanelContent.tsx`, `src/components/panels/SimeoneEgg.tsx`, `src/data/types.ts`, `src/data/raw/matter.*`, `src/data/raw/motions.json`, `src/lib/store.ts`.
+**Tab Tampilan** — tambah:
+- Link visibility mode (normal/tree/all) — lihat §2
+- Toggle hover-on-tree
+- Solid line thickness slider
 
-Baru: `src/components/universe/WheelOfFate2D.tsx`, `src/components/panels/MatterArticle.tsx`, `src/components/panels/TermsGlossary.tsx`, `src/components/panels/CaseStudyCard.tsx`, `src/components/panels/RoverGallery.tsx`, `scripts/import-batch-all.mjs`, `src/assets/genshin-sigil.svg`.
+**Tab Font** (baru)
+- Preset UI font: Default (Bebas+DM Sans), + 6 opsi baru:
+  - **Pixel Pack**: Press Start 2P (heading) / VT323 (body)
+  - **Genshin Pack**: Cinzel / Cormorant Unicase
+  - **NASA-Tech Pack**: Orbitron / Michroma
+- Install via `@fontsource/*` packages, tokenize di `styles.css` (`--font-heading`, `--font-body`), swap by preset
+- Live preview di setting
 
-Estimasi besar — eksekusi dalam 1 run penuh setelah disetujui.
+**Tab Audio / Playlist**
+- Auto-ingest 4 lagu upload baru sebagai asset (`lovable-assets create`):
+  - The Internationale (Sovietwave)
+  - In The Pool — The Dreamer Piano
+  - Solace — Txmy
+  - Solas — Jamie Duffy
+- Default: **aktif di shuffle** (user boleh matikan)
+
+**Tab Performance**
+- Preset `low` default untuk mobile terdeteksi
+- Tambah toggle "Disable nebula", "Disable bloom" individual
+
+---
+
+## Technical Notes
+
+**Files baru**
+- `src/components/lobby/Intro.tsx`
+- `src/components/lobby/MissionControl.tsx`
+- `src/components/lobby/charts/{Sunburst,BarMosi,Heatmap}.tsx`
+- `src/components/panels/infographic/{BentoSection,MiniRadar,RelatedGrid}.tsx`
+- `src/lib/graph/layout-blobby.ts` (algoritma posisi baru)
+- `src/lib/fonts.ts` (preset map)
+
+**Files diedit**
+- `src/lib/graph/build.ts` (layout call baru + palette)
+- `src/lib/store.ts` (state: `linkMode`, `fontPreset`, hapus `viewMode`/`theme2D`, `lobbyDone`)
+- `src/components/universe/Universe.tsx` (low-graphic branch)
+- `src/components/universe/HoverEdges.tsx` (solid + animasi)
+- `src/components/shell/SettingsPanel.tsx` (expand tabs)
+- `src/components/shell/{SidePanel,MobileShell}.tsx`, `panels/PanelContent.tsx` (bento redesign)
+- `src/routes/index.tsx` (lobby gate)
+
+**Files dihapus**
+- `src/components/universe/Universe2D.tsx`
+- `src/components/universe/WheelOfFate2D.tsx`
+
+**Packages ditambah**
+- `@fontsource/press-start-2p`, `@fontsource/vt323`, `@fontsource/cinzel`, `@fontsource/cormorant-unicase`, `@fontsource/orbitron`, `@fontsource/michroma`
+- `simplex-noise` (untuk layout deform) — kalau belum ada
+- Recharts sudah ada, no add
+
+**Assets ditambah** (lovable-assets)
+- 4 MP3 baru → `src/assets/audio/*.mp3.asset.json`
+
+---
+
+## Scope Guardrails
+
+- TIDAK ingest BATCH mosi baru dari file txt upload (perlu konfirmasi terpisah — bisa jadi task lanjutan)
+- TIDAK ubah auth/backend (belum ada)
+- TIDAK refactor data schema, hanya extend rendering
+- Kompatibilitas mobile: uji manual di viewport 375×667 setelah build
+
+---
+
+## Estimasi Urutan Build
+1. Hapus 2D + palette + blobby layout + HoverEdges solid-anim (foundation)
+2. Ingest lagu baru + font packs + Settings expansion
+3. Panel infografis + charts
+4. Lobby (intro + Mission Control) + gating flow
+5. QA mobile + perf pass
+
+Kalau plan ini oke, klik **Implement** dan aku mulai dari step 1.

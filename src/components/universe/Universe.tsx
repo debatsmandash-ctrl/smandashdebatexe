@@ -9,7 +9,6 @@ import { useUniverse, useSettings, type QualityPreset } from "@/lib/store";
 import type { StarNode, StarEdge, NodeKind } from "@/data/types";
 import { MilkyWaySky } from "./MilkyWaySky";
 import { HoverEdges } from "./HoverEdges";
-import { Universe2D } from "./Universe2D";
 import { useDeviceProfile, type DeviceProfile } from "@/hooks/useDeviceProfile";
 
 // ─── Halo texture (shared canvas radial gradient) ───
@@ -479,18 +478,52 @@ function Scene({ profile }: { profile: DeviceProfile }) {
   useEffect(() => { setLoaded(true); }, [setLoaded]);
   useEffect(() => () => { haloTex.dispose(); }, [haloTex]);
 
+  const linkMode = settings.linkMode;
+  const treeHoverEnabled = settings.treeHoverEnabled;
+
   const litSet = useMemo(() => {
     const s = new Set<string>();
-    const activeId = selectedId ?? hoveredId;
-    if (activeId) {
-      s.add(activeId);
-      const ns = graph.neighbors.get(activeId);
-      if (ns) for (const n of ns) s.add(n);
+    const activeId = selectedId ?? (linkMode !== "tree" || treeHoverEnabled ? hoveredId : null);
+    if (!activeId) return s;
+    if (linkMode === "all") {
+      // seluruh graph "lit" — tidak ada yang di-dim
+      for (const n of graph.nodes) s.add(n.id);
+      return s;
     }
+    if (linkMode === "tree") {
+      // BFS descendants sampai leaf terakhir
+      const rank = (k: string) => (
+        k === "root" ? 0 : k === "cluster" ? 1 : k === "subhub" ? 2 :
+        k === "domain" || k === "letter" ? 3 :
+        k === "bab" || k === "school" || k === "bracket" ? 4 :
+        k === "subbab" || k === "team" ? 5 : 6
+      );
+      s.add(activeId);
+      const queue = [activeId];
+      while (queue.length) {
+        const cur = queue.shift()!;
+        const ns = graph.neighbors.get(cur);
+        if (!ns) continue;
+        for (const n of ns) {
+          if (s.has(n)) continue;
+          const child = graph.byId.get(n);
+          const parent = graph.byId.get(cur);
+          if (!child || !parent) continue;
+          if (rank(child.kind) <= rank(parent.kind)) continue;
+          s.add(n);
+          queue.push(n);
+        }
+      }
+      return s;
+    }
+    // NORMAL
+    s.add(activeId);
+    const ns = graph.neighbors.get(activeId);
+    if (ns) for (const n of ns) s.add(n);
     return s;
-  }, [selectedId, hoveredId, graph]);
+  }, [selectedId, hoveredId, graph, linkMode, treeHoverEnabled]);
 
-  const anyActive = !!(selectedId ?? hoveredId);
+  const anyActive = linkMode === "all" ? true : !!(selectedId ?? (linkMode !== "tree" || treeHoverEnabled ? hoveredId : null));
 
   return (
     <>
@@ -508,19 +541,20 @@ function Scene({ profile }: { profile: DeviceProfile }) {
 
       <group>
         {graph.edges.map((e: StarEdge, i: number) => {
-          if (e.kind === "link") return null; // hover-only
+          // Mode ALL: tampilkan SEMUA (termasuk link edges). Lain: skip link edges (hover-only).
+          if (e.kind === "link" && linkMode !== "all") return null;
           const a = graph.byId.get(e.a);
           const b = graph.byId.get(e.b);
           if (!a || !b) return null;
-          const lit = anyActive && (litSet.has(a.id) && litSet.has(b.id));
-          const dim = anyActive && !lit;
+          const lit = linkMode === "all" ? true : anyActive && (litSet.has(a.id) && litSet.has(b.id));
+          const dim = linkMode === "all" ? false : anyActive && !lit;
           return (
             <Edge
               key={`e-${i}`}
               a={a}
               b={b}
               color={e.color || "#ffffff"}
-              dashed={e.strength === "weak"}
+              dashed={false}
               lit={lit}
               dim={dim}
             />
@@ -528,7 +562,9 @@ function Scene({ profile }: { profile: DeviceProfile }) {
         })}
       </group>
 
-      {settings.showHoverEdges && <HoverEdges graph={graph} activeId={selectedId ?? hoveredId} />}
+      {settings.showHoverEdges && linkMode !== "all" && (
+        <HoverEdges graph={graph} activeId={selectedId ?? (linkMode !== "tree" || treeHoverEnabled ? hoveredId : null)} />
+      )}
 
       <group>
         {graph.nodes.map((n) => (
@@ -618,15 +654,6 @@ export function Universe() {
   const profile = useDeviceProfile();
   const fpsCap = useSettings((s) => s.fpsCap);
   const showFps = useSettings((s) => s.showFps);
-  const viewMode = useSettings((s) => s.viewMode);
-  if (viewMode === "2d") {
-    return (
-      <>
-        <Universe2D />
-        {showFps && <FpsCounter />}
-      </>
-    );
-  }
   return (
     <>
     <Canvas

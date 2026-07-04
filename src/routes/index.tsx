@@ -10,14 +10,17 @@ import { EditorUnlockModal } from "@/components/shell/EditorUnlockModal";
 import { SettingsPanel } from "@/components/shell/SettingsPanel";
 import { AmbientAudio } from "@/components/shell/AmbientAudio";
 import { AssistantPanel } from "@/components/shell/AssistantPanel";
+import { FontPresetApplier } from "@/components/shell/FontPresetApplier";
+import { MissionControl } from "@/components/lobby/MissionControl";
+import { useSettings } from "@/lib/store";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Debate Coach Toolkit · Star Universe" },
-      { name: "description", content: "Navigate the entire debate curriculum as a 3D star map: matter, motion bank, roles, kamus — semua bintang yang saling terhubung." },
-      { property: "og:title", content: "Debate Coach Toolkit · Star Universe" },
-      { property: "og:description", content: "3D knowledge graph for SMANDASH Debate Club." },
+      { title: "Debate Coach Toolkit · Mission Control × Star Universe" },
+      { name: "description", content: "NASA-style mission control lobby + 3D star universe untuk seluruh kurikulum debat: matter, motion bank, roles, kamus — semua bintang saling terhubung." },
+      { property: "og:title", content: "Debate Coach Toolkit · Mission Control" },
+      { property: "og:description", content: "3D knowledge graph SMANDASH Debate Club — dengan Mission Control lobby ala NASA." },
     ],
   }),
   component: Index,
@@ -26,6 +29,9 @@ export const Route = createFileRoute("/")({
 function Index() {
   const [loading, setLoading] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
+  const lobbySeen = useSettings((s) => s.lobbySeen);
+  const [lobbyOpen, setLobbyOpen] = useState(!lobbySeen);
+
   useEffect(() => {
     const mq = window.matchMedia("(pointer: coarse), (max-width: 900px)");
     const apply = () => setIsMobile(mq.matches);
@@ -33,8 +39,10 @@ function Index() {
     mq.addEventListener?.("change", apply);
     return () => mq.removeEventListener?.("change", apply);
   }, []);
+
   return (
     <main style={{ position: "fixed", inset: 0, overflow: "hidden", background: "#05080f" }}>
+      <FontPresetApplier />
       <div className="aurora-bg" />
       <Universe />
       {isMobile ? (
@@ -51,6 +59,7 @@ function Index() {
       <AmbientAudio />
       <AssistantPanel />
       {loading && <Loader onDone={() => setLoading(false)} />}
+      {!loading && lobbyOpen && <MissionControl onInitiate={() => setLobbyOpen(false)} />}
       <div
         style={{
           position: "fixed", top: 18, right: 22, zIndex: 20,
@@ -58,7 +67,7 @@ function Index() {
           color: "rgba(168,85,247,0.55)", textTransform: "uppercase", pointerEvents: "none",
         }}
       >
-        v0.8 · STAR UNIVERSE
+        v1.0 · MISSION CONTROL
       </div>
     </main>
   );
