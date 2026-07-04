@@ -688,6 +688,24 @@ export function buildGraph(): Graph {
   const finalNodes = nodes.filter((n) => !deletedIds.has(n.id));
   const finalEdges = edges.filter((e) => !deletedIds.has(e.a) && !deletedIds.has(e.b));
 
+  // ─── Stellar color variety pool (semua terang, mix stellar+nebula+hubble+aurora) ───
+  // Diterapkan hanya ke bintang leaf kecil supaya hub/cluster tetap identik.
+  const STAR_POOL = [
+    "#a8c5ff", "#ffffff", "#fff4c2", "#ffb37a", "#ff8080",           // stellar classification
+    "#7dd3fc", "#c4b5fd", "#f0abfc", "#fda4af", "#fde68a",           // nebula neon
+    "#67e8f9", "#a5f3fc", "#fef3c7", "#fdba74", "#fca5a5",           // hubble
+    "#00ffc8", "#a855f7", "#38bdf8", "#fbbf24", "#f472b6",           // aurora mix
+  ];
+  const LEAF_KINDS = new Set(["motion", "vocab", "subbab", "roleskill", "speaker", "bab", "style", "section"]);
+  for (const n of finalNodes) {
+    // preserve crown/pulse specials
+    if (n.pulse || n.crown) continue;
+    if (!LEAF_KINDS.has(n.kind)) continue;
+    let h = 0;
+    for (let i = 0; i < n.id.length; i++) h = (h * 131 + n.id.charCodeAt(i)) >>> 0;
+    n.color = STAR_POOL[h % STAR_POOL.length];
+  }
+
   // Indexes
   const byId = new Map(finalNodes.map((n) => [n.id, n]));
   const byCluster = new Map<ClusterKey, StarNode[]>();
