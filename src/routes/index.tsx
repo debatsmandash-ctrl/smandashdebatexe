@@ -63,7 +63,12 @@ function Index() {
       <AmbientAudio />
       <AssistantPanel />
       {loading && <Loader onDone={() => setLoading(false)} />}
-      {!loading && lobbyOpen && <MissionControl onInitiate={() => setLobbyOpen(false)} />}
+      {!loading && introOpen && (
+        <Intro onDone={() => { update({ introSeen: true }); setIntroOpen(false); }} />
+      )}
+      {!loading && !introOpen && lobbyOpen && (
+        <MissionControl onInitiate={() => setLobbyOpen(false)} />
+      )}
       <div
         style={{
           position: "fixed", top: 18, right: 22, zIndex: 20,
@@ -71,7 +76,7 @@ function Index() {
           color: "rgba(168,85,247,0.55)", textTransform: "uppercase", pointerEvents: "none",
         }}
       >
-        v1.0 · MISSION CONTROL
+        v1.1 · CORPORATE
       </div>
     </main>
   );
