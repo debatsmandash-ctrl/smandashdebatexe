@@ -173,16 +173,30 @@ export function buildGraph(): Graph {
   const nodes: StarNode[] = [];
   const edges: StarEdge[] = [];
 
-  // ─── Cluster center auto-spread on fibonacci sphere ───
-  const clusterDirs = fibDirections(CLUSTERS.length, 0.08);
+  // ─── Cluster centers on noise-deformed ellipsoid (blobby, non-symmetric) ───
+  const clusterDirs = fibDirections(CLUSTERS.length, 0.22);
   const clusterCenter: Record<string, V3> = {};
   const colorOf: Record<string, string> = {};
+  // 3-axis ellipsoid scaling (a ≠ b ≠ c) + per-cluster radial noise
+  const ELL: V3 = [1.15, 0.85, 1.05];
+  // pseudo simplex: cheap deterministic noise from 3D coords
+  const noise3 = (x: number, y: number, z: number) => {
+    const s = Math.sin(x * 12.9898 + y * 78.233 + z * 37.719) * 43758.5453;
+    return (s - Math.floor(s)) * 2 - 1; // -1..1
+  };
 
   // Root
   nodes.push({ id: "root", label: "DEBATE UNIVERSE", kind: "root", cluster: "root", color: "#ffffff", size: 1.4, pos: [0, 0, 0] });
 
   CLUSTERS.forEach((c, i) => {
-    const center = scale(clusterDirs[i], c.dist);
+    const u = clusterDirs[i];
+    // apply ellipsoid warp + low-freq noise deform (±28%)
+    const ell: V3 = [u[0] * ELL[0], u[1] * ELL[1], u[2] * ELL[2]];
+    const un: V3 = normalize(ell);
+    const n1 = noise3(un[0] * 1.8, un[1] * 1.8, un[2] * 1.8);
+    const n2 = noise3(un[0] * 4.1 + 11, un[1] * 4.1 - 7, un[2] * 4.1 + 3) * 0.4;
+    const deform = 1 + (n1 * 0.28 + n2 * 0.12);
+    const center = scale(un, c.dist * deform);
     clusterCenter[c.key] = center;
     colorOf[c.key] = c.color;
     nodes.push({ id: `cluster:${c.key}`, label: c.label, kind: "cluster", cluster: c.key, color: c.color, size: 0.7, pos: center });
