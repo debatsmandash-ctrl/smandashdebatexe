@@ -12,8 +12,53 @@ import { SimeoneEgg } from "@/components/panels/SimeoneEgg";
 import { RiskBar } from "@/components/panels/RiskBar";
 
 const muted = { fontFamily: "Space Mono", fontSize: 10, letterSpacing: "0.25em", color: "var(--au-muted)", textTransform: "uppercase" as const };
-const para = { fontFamily: "DM Sans", fontSize: 13.5, lineHeight: 1.75, color: "var(--au-dim)" };
+const para = { fontFamily: "DM Sans", fontSize: 13.5, lineHeight: 1.75, color: "var(--au-dim)", textAlign: "justify" as const, hyphens: "auto" as const, textJustify: "inter-word" as const };
 const heading = { fontFamily: "Bebas Neue", fontSize: 18, letterSpacing: "0.1em", color: "var(--au-text)", marginTop: 18, marginBottom: 10 };
+
+/** Bento HUD card with corner brackets + accent header. */
+export function BentoCard({ accent = "#a855f7", title, children, span = 12 }: { accent?: string; title?: string; children: React.ReactNode; span?: number }) {
+  return (
+    <section style={{
+      gridColumn: `span ${span} / span ${span}`,
+      padding: "12px 14px",
+      background: "linear-gradient(180deg, rgba(255,255,255,0.02), transparent)",
+      border: `1px solid ${accent}33`,
+      borderRadius: 4,
+      position: "relative",
+    }}>
+      <span aria-hidden style={{ position: "absolute", top: -1, left: -1, width: 10, height: 10, borderTop: `2px solid ${accent}`, borderLeft: `2px solid ${accent}` }} />
+      <span aria-hidden style={{ position: "absolute", top: -1, right: -1, width: 10, height: 10, borderTop: `2px solid ${accent}`, borderRight: `2px solid ${accent}` }} />
+      <span aria-hidden style={{ position: "absolute", bottom: -1, left: -1, width: 10, height: 10, borderBottom: `2px solid ${accent}`, borderLeft: `2px solid ${accent}` }} />
+      <span aria-hidden style={{ position: "absolute", bottom: -1, right: -1, width: 10, height: 10, borderBottom: `2px solid ${accent}`, borderRight: `2px solid ${accent}` }} />
+      {title && (
+        <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 8 }}>
+          <span style={{ width: 5, height: 5, background: accent, borderRadius: 999, boxShadow: `0 0 6px ${accent}` }} />
+          <div style={{ fontSize: 9, letterSpacing: "0.28em", color: accent, textTransform: "uppercase" }}>{title}</div>
+        </div>
+      )}
+      {children}
+    </section>
+  );
+}
+
+/** Offensive / defensive stance badge for a motion. */
+export function StanceBadge({ comp }: { comp?: string }) {
+  if (!comp) return null;
+  const isOff = /ofensif|offensive/i.test(comp);
+  const color = isOff ? "#ef4444" : "#22d3ee";
+  const label = isOff ? "OFENSIF" : "DEFENSIF";
+  return (
+    <span style={{
+      display: "inline-flex", alignItems: "center", gap: 6,
+      padding: "3px 10px", borderRadius: 999,
+      background: `${color}18`, border: `1px solid ${color}55`,
+      color, fontSize: 9, letterSpacing: "0.2em", fontFamily: "Space Mono",
+    }}>
+      <span style={{ width: 6, height: 6, borderRadius: 999, background: color, boxShadow: `0 0 6px ${color}` }} />
+      {label}
+    </span>
+  );
+}
 
 function Chip({ color, children, onClick }: { color: string; children: React.ReactNode; onClick?: () => void }) {
   return (
@@ -370,10 +415,11 @@ function MotionPanel({ refId }: { refId: string }) {
   ] as const;
   return (
     <div>
-      <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+      <div style={{ display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center" }}>
         <Chip color="var(--au-cyan)">{m.cat}</Chip>
         <Chip color="var(--au-purple)">{m.type}</Chip>
-        {m.comp && <Chip color="var(--au-gold)">{m.comp}</Chip>}
+        <StanceBadge comp={m.comp} />
+        {(m as any).typeAll?.slice(1).map((t: string) => <Chip key={t} color="var(--au-gold)">+{t}</Chip>)}
       </div>
       {m.orig && <div style={{ ...muted, marginTop: 10, fontSize: 9 }}>{m.orig}</div>}
 

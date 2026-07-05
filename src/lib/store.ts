@@ -46,6 +46,7 @@ export interface Settings {
 
   // NEW: lobby / intro gate
   lobbySeen: boolean;
+  introSeen: boolean;
 
   // Offset draggable panel (desktop). { x, y } pixel relatif posisi default.
   sidebarOffset: { x: number; y: number };
@@ -77,6 +78,7 @@ export const DEFAULT_SETTINGS: Settings = {
   edgeThickness: 1.8,
   fontPreset: "default",
   lobbySeen: false,
+  introSeen: false,
   sidebarOffset: { x: 0, y: 0 },
   sidePanelOffset: { x: 0, y: 0 },
 };

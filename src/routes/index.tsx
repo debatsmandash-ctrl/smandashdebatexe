@@ -12,6 +12,7 @@ import { AmbientAudio } from "@/components/shell/AmbientAudio";
 import { AssistantPanel } from "@/components/shell/AssistantPanel";
 import { FontPresetApplier } from "@/components/shell/FontPresetApplier";
 import { MissionControl } from "@/components/lobby/MissionControl";
+import { Intro } from "@/components/lobby/Intro";
 import { useSettings } from "@/lib/store";
 
 export const Route = createFileRoute("/")({
@@ -30,7 +31,10 @@ function Index() {
   const [loading, setLoading] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
   const lobbySeen = useSettings((s) => s.lobbySeen);
+  const introSeen = useSettings((s) => s.introSeen);
+  const update = useSettings((s) => s.update);
   const [lobbyOpen, setLobbyOpen] = useState(!lobbySeen);
+  const [introOpen, setIntroOpen] = useState(!introSeen);
 
   useEffect(() => {
     const mq = window.matchMedia("(pointer: coarse), (max-width: 900px)");
@@ -59,7 +63,12 @@ function Index() {
       <AmbientAudio />
       <AssistantPanel />
       {loading && <Loader onDone={() => setLoading(false)} />}
-      {!loading && lobbyOpen && <MissionControl onInitiate={() => setLobbyOpen(false)} />}
+      {!loading && introOpen && (
+        <Intro onDone={() => { update({ introSeen: true }); setIntroOpen(false); }} />
+      )}
+      {!loading && !introOpen && lobbyOpen && (
+        <MissionControl onInitiate={() => setLobbyOpen(false)} />
+      )}
       <div
         style={{
           position: "fixed", top: 18, right: 22, zIndex: 20,
@@ -67,7 +76,7 @@ function Index() {
           color: "rgba(168,85,247,0.55)", textTransform: "uppercase", pointerEvents: "none",
         }}
       >
-        v1.0 · MISSION CONTROL
+        v1.1 · CORPORATE
       </div>
     </main>
   );

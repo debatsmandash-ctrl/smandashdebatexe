@@ -1,173 +1,160 @@
-# Debate Star Universe — Major Upgrade v0.9 → v1.0 "Mission Control"
+# v1.1 — Blobby Universe, Bento Panels, Corporate Lobby & Ultra Graphics
 
-Ringkas: buang mode 2D, redesign layout galaksi 3D jadi blobby cluster sphere yang ramah mobile, tambah lobby NASA Mission Control sebelum start, isi panel dengan infografis kaya + chart, dan tambah banyak opsi baru di Settings.
-
----
-
-## 1 · Universe 3D — Reshape & Low-Graphic Mode
-
-**Hapus total 2D**
-- Delete: `Universe2D.tsx`, `WheelOfFate2D.tsx`, toggle `viewMode` & `theme2D` di store dan SettingsPanel
-- `index.tsx` selalu render `<Universe />` (3D)
-
-**Blobby cluster sphere layout** (`src/lib/graph/build.ts`)
-- Ganti algoritma posisi jadi: tiap domain = 1 gugusan padat (cluster centroid tersebar di permukaan bola non-simetris via 3D simplex-noise deform radius)
-- Node dalam domain di-distribusi Poisson-disc dalam radius gugus (kerapatan medium, tidak longgar)
-- Domain kecil (mis. Kamus) diperbolehkan menjorok ke ruang kosong antar-gugus lain, tapi jarak minimum antar-node dijaga (no-collision spacing check)
-- Bab/Subbab/Mosi/Vocab nested di sekitar centroid domain-nya
-- Bentuk keseluruhan: elipsoid ter-deform noise (bukan bola simetris)
-
-**Palet bintang variatif (semua opsi, semua terang)**
-- Tambah pool warna: Stellar Classification + Nebula Neon + NASA Hubble + Aurora Mix (~20 warna terang)
-- Setiap node dapat warna dari pool berdasar seeded-hash id (deterministic, kecuali override khusus domain color untuk clarity)
-- Guard: minimum luminance threshold (tidak boleh gelap)
-
-**Low-Graphic 3D preset (auto mobile)**
-- `useDeviceProfile` → deteksi mobile → default quality `low`:
-  - Star instanced-mesh count -50%
-  - Nebula/bloom off, milkyway skybox low-res
-  - Auto-rotate mati, DPR clamp ≤ 1.5
-  - Skip HoverEdges animation heavy path
-- Setting `quality` tetap bisa override manual
-
-**Hover edges: solid + animasi**
-- `HoverEdges.tsx`: hilangkan opsi dashed, semua garis solid (`dashed={false}` hardcoded, lineWidth naik)
-- Tambah animasi: shader flow (gradient stroke bergerak dari source→target) atau opacity pulse 0.5→1.0 loop, plus fade-in saat mount
-- Ujung garis dapat glow dot kecil
+Lanjutan dari v1.0. Fokus: 6 tugas berturutan sesuai instruksi terakhir.
 
 ---
 
-## 2 · Link Visibility Modes (Settings baru)
+## 1 · Blobby Cluster Sphere (reshape penuh `build.ts`)
 
-Tambah 3 mode di Settings > Tampilan:
-1. **NORMAL** — hover/klik node = tampilkan tautan node itu + redup selebihnya (current behavior)
-2. **FULL TREE** — klik domain = highlight seluruh rantai bab→subbab→mosi/kamus sampai leaf terakhir. Toggle hover on/off khusus mode ini
-3. **SHOW ALL** — semua link edges + label domain selalu tampil (perf warning ditampilkan)
+Ganti algoritma layout dari fibonacci-sphere simetris ke **noise-deformed ellipsoid dengan gugusan padat per-domain**.
 
-Implementasi: state `linkMode: 'normal' | 'tree' | 'all'` di store, HoverEdges + Universe cek mode ini untuk decide render set.
-
----
-
-## 3 · Info Panels — Infografis Kaya
-
-**Rombak `SidePanel.tsx` + `PanelContent.tsx`**
-- Layout kotak-kotak unik: bento grid dengan mixed sizes, border neon subtle, corner brackets ala HUD
-- Text `text-align: justify` (rata kanan kiri) sesuai request, hyphenation on
-- Setiap panel node punya sections:
-  - **Overview interaktif**: header dengan mini-stats (jumlah edge, cluster, weight), tag chips clickable → filter/jump
-  - **Extended matter**: expand semua konten mosi & matter (context, pro/kon lengkap, terms, ideal case, research links) dari data raw. Section dapat collapsible + progress read indicator
-  - **Related stars**: grid card node terkait (klik = navigate)
-  - **Chart mini**: per node relevan (mis. mosi → radar strength pro/kon; role → radar skills; domain → sunburst subtree)
-- Animasi: fade-in stagger children, hover lift halus, section transition smooth
-
-**Data extension**
-- Audit `src/data/raw/*.json`, tarik semua field yang saat ini tidak ditampilkan (terms, research, ctx-multi, ideal cases)
-- Jika ada batch mosi baru yang belum di-ingest (BATCH-04/05/06 dari upload), TIDAK di-scope di plan ini — kabari user terpisah bila mau
+- File baru `src/lib/graph/layout-blobby.ts`:
+  - **Domain centroids** disebar di permukaan ellipsoid (a≠b≠c) via fibonacci-sphere, lalu radius tiap centroid di-deform pakai 3D simplex-noise (amplitudo ±25%). Hasil: bola bergelombang, tidak simetris.
+  - **Poisson-disc dalam cluster**: node domain didistribusi 3D Poisson-disc (min-distance seeded per-cluster) dalam bola cluster berjari-jari proporsional √(count). Domain kecil (Kamus) dapat radius lebih besar → boleh menjorok ke ruang kosong antar-gugus, tapi collision-check vs centroid tetangga tetap dijaga.
+  - **Nested placement**: Bab/Subbab/Motion/Vocab diposisikan sebagai halo di sekitar centroid domain-nya (bukan grid). Root & cluster-hub tetap di dalam volume, tidak di orbit.
+  - **No-collision pass** akhir: relax step 3× (Lloyd-like) untuk pastikan spacing minimum.
+- `build.ts` panggil layout baru; hapus fibonacci-symmetric path.
+- Deps: `simplex-noise` (add jika belum ada).
 
 ---
 
-## 4 · NASA Mission Control Lobby (baru)
+## 2 · Panel Infografis Bento Penuh
 
-Flow: **Cinematic Intro (3-4s) → Mission Control Lobby → tombol INITIATE → fade ke Universe**
+Rombak `src/components/shell/panels/PanelContent.tsx` + tambah subcomponent `src/components/panels/infographic/`:
 
-**Cinematic Intro** (`components/lobby/Intro.tsx`)
-- Countdown "T-3 … T-2 … T-1 … IGNITION" dengan SFX, logo SMANDASH Debate sweep in
-- Skip-able (klik/tap)
+- **BentoGrid**: layout CSS-grid dengan mixed row/col span, corner-bracket HUD, border neon warna domain, gradasi soft di background.
+- **Text `text-align: justify`** + `hyphens: auto` untuk paragraf panjang.
+- **Sections per node kind**:
+  - **Header stats**: mini KPI cards (jumlah edge, cluster size, weight, importance, category).
+  - **Extended matter**: expand SEMUA field dari `data/raw/*.json` yang saat ini tidak ditampilkan — `terms`, `research`, `ideal`, `ctx`, `pro`/`kon` lengkap, `contoh`, `comp`. Collapsible per section.
+  - **Related stars grid**: card-grid node terkait (klik = navigate).
+  - **Mini chart** kontekstual:
+    - Motion → **RadarPro/Kon** (strength count), badge meta **OFENSIF / DEFENSIF** dihitung dari rasio pro:kon + kata kunci (mis. "ban", "abolish" → ofensif; "protect", "preserve" → defensif).
+    - Role → radar skills.
+    - Domain → sunburst subtree + stacked bar per subbab.
+    - Vocab → chip cloud sinonim + usage frequency bar.
+  - **Fakta menarik / tips** box (statis dari data + template).
+- Animasi: stagger fade-in, hover-lift halus.
 
-**Mission Control Lobby** (`components/lobby/MissionControl.tsx`)
-- Full-page dark tech UI, grid modular ala NASA JPL dashboard
-- Panel-panel:
-  - **HUD Telemetry**: jam UTC live, "MISSION STATUS: NOMINAL", uptime session
-  - **Stats live**: total nodes / edges / domains / mosi / vocab (dari graph)
-  - **Sunburst chart** distribusi node per-domain (interactive, klik = pre-select saat masuk universe)
-  - **Bar chart** mosi per kategori
-  - **Heatmap** tautan antar-domain
-  - **Mission Cards** per domain (klik = deep-link masuk universe fokus ke domain itu)
-  - **Playlist widget** compact
-  - **Tombol besar**: `[ INITIATE UNIVERSE ]` + `[ SETTINGS ]` + `[ ABOUT ]`
-- Charts pakai Recharts (sudah ada di project), style custom dark neon
-- Route: `/` = Lobby, `/universe` = 3D scene (atau state-based di homepage; final call saat build)
-
-**Kembali ke lobby**: tombol kecil "◄ MISSION CONTROL" di sidebar Universe
+**Meta ofensif/defensif** (`src/lib/motion/stance.ts`): heuristik keyword + rasio; hasil disimpan di derived cache, ditampilkan sebagai badge di panel & di tooltip node.
 
 ---
 
-## 5 · Settings Panel — Expand
+## 3 · Ingest BATCH-04/05/06 ke `motions.json`
 
-**Tab Tampilan** — tambah:
-- Link visibility mode (normal/tree/all) — lihat §2
-- Toggle hover-on-tree
-- Solid line thickness slider
+- Baca 3 file batch txt dari upload (yang sebelumnya di-hold).
+- Extend `scripts/import-motions-batch1.mjs` → `import-motions-batches.mjs` yang menerima arg `--batch=04|05|06|all`.
+- Parse ke schema `Motion` existing (`id`, `title`, `cat`, `type`, `ctx`, `pro`, `kon`, `terms`, `ideal`, `research`, `comp`).
+- Auto-assign `cat` dari heading batch, `type` dari struktur (policy/value/fact), `comp` dari kata kunci ofensif/defensif.
+- Merge ke `src/data/raw/motions.json` (dedupe by title-normalized).
+- Regenerate graph nodes.
 
-**Tab Font** (baru)
-- Preset UI font: Default (Bebas+DM Sans), + 6 opsi baru:
-  - **Pixel Pack**: Press Start 2P (heading) / VT323 (body)
-  - **Genshin Pack**: Cinzel / Cormorant Unicase
-  - **NASA-Tech Pack**: Orbitron / Michroma
-- Install via `@fontsource/*` packages, tokenize di `styles.css` (`--font-heading`, `--font-body`), swap by preset
-- Live preview di setting
-
-**Tab Audio / Playlist**
-- Auto-ingest 4 lagu upload baru sebagai asset (`lovable-assets create`):
-  - The Internationale (Sovietwave)
-  - In The Pool — The Dreamer Piano
-  - Solace — Txmy
-  - Solas — Jamie Duffy
-- Default: **aktif di shuffle** (user boleh matikan)
-
-**Tab Performance**
-- Preset `low` default untuk mobile terdeteksi
-- Tambah toggle "Disable nebula", "Disable bloom" individual
+Kalau file batch belum tersedia di project (perlu re-upload), akan minta user upload ulang sebelum implement — plan tetap.
 
 ---
 
-## Technical Notes
+## 4 · Extend & Perpanjang Materi Existing
+
+Audit tiap raw JSON, isi field yang kosong / tipis:
+
+- **`matter.json`** (per subbab): tambah `keyPoints[]` (5-8 bullet), `commonMistakes[]`, `winningAngles[]`, `sampleAnalogy`, `dataPoint` (statistik/fakta) — generatif dari konten existing + template debate coaching.
+- **`motions.json`**: pastikan tiap motion punya minimum 4 pro + 4 kon, `terms` ≥3, `ideal` (ideal case scenario 2-3 kalimat), `research` (2-3 link/topic), `comp` (ofensif/defensif + reason).
+- **`roles.json`**: extend tiap role dengan `duties[]` (8-12), `commonPitfalls`, `advancedTactics`, `timeBudget`, `signaturePhrases`.
+- **`jenis-mosi.json`**: perbanyak `contoh` (≥5) + `strategyTips`.
+- **`vocab.json`**: tambah `usageExample`, `relatedTerms[]`, `misconception`.
+
+Semua extension ditulis sebagai **augmentation layer** di `src/data/enrich/*.ts` (tidak overwrite raw JSON, di-merge saat build graph) supaya reversible.
+
+---
+
+## 5 · Lobby: Corporate Modern Minimalis Dark Theme
+
+Rombak `MissionControl.tsx`:
+
+- Buang aesthetic NASA-tech neon → **korporat profesional**: dark navy/graphite (#0A0E1A base), aksen putih + accent tunggal (electric blue #3B82F6 atau amber #F59E0B), typography sans-serif clean (Inter/Söhne-alike), spacing generous.
+- Layout: hero brand block kiri, mission brief singkat, 3-4 KPI card monokrom, 1 CTA utama "Enter Universe", secondary "Settings / About".
+- Chart minimalis (line/bar tipis, no glow), microcopy singkat.
+- No countdown, no HUD brackets, no rotating telemetry. Elegan, tenang.
+- **Cinematic intro 3-4 detik** SEBELUM lobby: `src/components/lobby/Intro.tsx` — brand mark reveal, subtle particle/logo animation, skip-able (klik/tap/esc), fade ke lobby. Persist `introSeen` di store terpisah dari `lobbySeen`.
+
+Flow final: **Intro (3-4s) → Corporate Lobby → Enter → Universe**.
+
+---
+
+## 6 · Style Lama Jadi Page "Information"
+
+- Aesthetic NASA Mission Control (bento HUD, neon, telemetry, sunburst, heatmap, cards) di-**pindah** ke halaman baru `src/routes/information.tsx` (`/information`).
+- Isi page: dashboard lengkap dataset — total nodes/edges/domains, distribution charts, heatmap tautan antar-domain, mission cards per cluster, mini-explorer, playlist widget, "did you know" facts box.
+- Warna: **boleh gradasi + warna terang** (violet→cyan→amber gradient panels, glow accents) — kebalikan dari lobby yang tenang.
+- Link dari lobby ("View Information") dan dari sidebar Universe ("◄ Information").
+
+---
+
+## 7 · Ultra Graphics Preset (RTX 5090 tier)
+
+Update `useDeviceProfile` + `SettingsPanel` performance tab:
+
+- Quality preset `ultra` (existing) di-boost:
+  - DPR clamp naik ke [2, 3.5]
+  - Star segments 48, halo layers 3, crust shells 3 octaves 7
+  - Bloom intensity 2.4, radius 1.2, luminance smoothing 0.9
+  - Chromatic aberration + vignette + film grain halus
+  - Nebula steps 128, volumetric god-rays (`@react-three/postprocessing` GodRays) pada core cluster
+  - SSAO on, TAA on (via `postprocessing` EffectComposer)
+  - Auto-rotate speed reduced, damping halus
+  - Star twinkle shader (per-vertex noise), edge shader flow lebih kompleks
+- Preset baru `cinematic` (ultra + depth-of-field + motion blur) opsional.
+- Auto-detect: `navigator.gpu` + `deviceMemory ≥ 8` + non-mobile → suggest ultra; ada tombol "Boost to Ultra" di lobby untuk high-end.
+- Warning kalau <60fps: banner suggest turun preset.
+
+---
+
+## Technical Section
 
 **Files baru**
+- `src/lib/graph/layout-blobby.ts`
+- `src/lib/motion/stance.ts`
+- `src/lib/data/enrich/{matter,motions,roles,jenis,vocab}.ts`
 - `src/components/lobby/Intro.tsx`
-- `src/components/lobby/MissionControl.tsx`
-- `src/components/lobby/charts/{Sunburst,BarMosi,Heatmap}.tsx`
-- `src/components/panels/infographic/{BentoSection,MiniRadar,RelatedGrid}.tsx`
-- `src/lib/graph/layout-blobby.ts` (algoritma posisi baru)
-- `src/lib/fonts.ts` (preset map)
+- `src/components/lobby/CorporateLobby.tsx` (ganti isi MissionControl)
+- `src/components/panels/infographic/{BentoGrid,MiniRadar,RelatedGrid,StatKpi,StanceBadge,FactBox}.tsx`
+- `src/routes/information.tsx`
+- `scripts/import-motions-batches.mjs`
 
 **Files diedit**
-- `src/lib/graph/build.ts` (layout call baru + palette)
-- `src/lib/store.ts` (state: `linkMode`, `fontPreset`, hapus `viewMode`/`theme2D`, `lobbyDone`)
-- `src/components/universe/Universe.tsx` (low-graphic branch)
-- `src/components/universe/HoverEdges.tsx` (solid + animasi)
-- `src/components/shell/SettingsPanel.tsx` (expand tabs)
-- `src/components/shell/{SidePanel,MobileShell}.tsx`, `panels/PanelContent.tsx` (bento redesign)
-- `src/routes/index.tsx` (lobby gate)
-
-**Files dihapus**
-- `src/components/universe/Universe2D.tsx`
-- `src/components/universe/WheelOfFate2D.tsx`
+- `src/lib/graph/build.ts` (pakai layout-blobby + merge enrich layer)
+- `src/lib/store.ts` (add `introSeen`, `graphicsPreset` extend, information route state)
+- `src/components/lobby/MissionControl.tsx` (jadi CorporateLobby)
+- `src/components/shell/panels/PanelContent.tsx` (bento redesign)
+- `src/components/universe/Universe.tsx` (ultra pipeline: SSAO/TAA/GodRays/DOF)
+- `src/hooks/useDeviceProfile.ts` (ultra tier boost)
+- `src/components/shell/SettingsPanel.tsx` (preset cinematic, boost toggle)
+- `src/data/raw/motions.json` (append batches)
+- `src/routes/__root.tsx` (link ke /information)
 
 **Packages ditambah**
-- `@fontsource/press-start-2p`, `@fontsource/vt323`, `@fontsource/cinzel`, `@fontsource/cormorant-unicase`, `@fontsource/orbitron`, `@fontsource/michroma`
-- `simplex-noise` (untuk layout deform) — kalau belum ada
-- Recharts sudah ada, no add
+- `simplex-noise` (jika belum)
+- `@react-three/postprocessing` extras (GodRays, DepthOfField, SSAO, Noise, Vignette) — sudah ada base
+- `d3-hierarchy` (untuk sunburst di /information)
 
-**Assets ditambah** (lovable-assets)
-- 4 MP3 baru → `src/assets/audio/*.mp3.asset.json`
+**Assets**
+- (opsional) 1 background gradient hero untuk /information
+
+---
+
+## Urutan Build
+1. Blobby layout + no-collision (§1) — fondasi visual
+2. Ingest batches + enrich layers (§3, §4) — data siap
+3. Bento panel infographic + stance meta (§2)
+4. Corporate lobby + Intro + /information route (§5, §6)
+5. Ultra graphics pipeline (§7)
+6. QA: mobile low-graphic, desktop ultra, semua route
 
 ---
 
 ## Scope Guardrails
+- Raw JSON motions dimutasi (append batches); matter/roles/vocab tidak — pakai enrich layer.
+- Tidak ubah auth/backend.
+- Kalau file BATCH-04/05/06 belum ada di sandbox, minta user upload dulu sebelum §3.
 
-- TIDAK ingest BATCH mosi baru dari file txt upload (perlu konfirmasi terpisah — bisa jadi task lanjutan)
-- TIDAK ubah auth/backend (belum ada)
-- TIDAK refactor data schema, hanya extend rendering
-- Kompatibilitas mobile: uji manual di viewport 375×667 setelah build
-
----
-
-## Estimasi Urutan Build
-1. Hapus 2D + palette + blobby layout + HoverEdges solid-anim (foundation)
-2. Ingest lagu baru + font packs + Settings expansion
-3. Panel infografis + charts
-4. Lobby (intro + Mission Control) + gating flow
-5. QA mobile + perf pass
-
-Kalau plan ini oke, klik **Implement** dan aku mulai dari step 1.
+Approve untuk mulai step 1.
