@@ -31,7 +31,10 @@ function Index() {
   const [loading, setLoading] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
   const lobbySeen = useSettings((s) => s.lobbySeen);
+  const introSeen = useSettings((s) => s.introSeen);
+  const update = useSettings((s) => s.update);
   const [lobbyOpen, setLobbyOpen] = useState(!lobbySeen);
+  const [introOpen, setIntroOpen] = useState(!introSeen);
 
   useEffect(() => {
     const mq = window.matchMedia("(pointer: coarse), (max-width: 900px)");
