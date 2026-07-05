@@ -415,10 +415,11 @@ function MotionPanel({ refId }: { refId: string }) {
   ] as const;
   return (
     <div>
-      <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+      <div style={{ display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center" }}>
         <Chip color="var(--au-cyan)">{m.cat}</Chip>
         <Chip color="var(--au-purple)">{m.type}</Chip>
-        {m.comp && <Chip color="var(--au-gold)">{m.comp}</Chip>}
+        <StanceBadge comp={m.comp} />
+        {(m as any).typeAll?.slice(1).map((t: string) => <Chip key={t} color="var(--au-gold)">+{t}</Chip>)}
       </div>
       {m.orig && <div style={{ ...muted, marginTop: 10, fontSize: 9 }}>{m.orig}</div>}
 
