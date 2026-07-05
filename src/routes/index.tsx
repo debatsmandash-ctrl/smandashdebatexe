@@ -12,6 +12,7 @@ import { AmbientAudio } from "@/components/shell/AmbientAudio";
 import { AssistantPanel } from "@/components/shell/AssistantPanel";
 import { FontPresetApplier } from "@/components/shell/FontPresetApplier";
 import { MissionControl } from "@/components/lobby/MissionControl";
+import { Intro } from "@/components/lobby/Intro";
 import { useSettings } from "@/lib/store";
 
 export const Route = createFileRoute("/")({
