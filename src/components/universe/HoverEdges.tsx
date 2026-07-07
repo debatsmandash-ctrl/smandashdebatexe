@@ -1,36 +1,41 @@
 import { useMemo, useRef } from "react";
-import { QuadraticBezierLine } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import type { Graph } from "@/lib/graph/build";
 import { useSettings } from "@/lib/store";
 
 /**
- * Render link-edges untuk node yang sedang dipilih/hover.
- * - SEMUA garis SOLID (tidak ada dashed lagi).
- * - Ketebalan mengikuti setting edgeThickness.
- * - Animasi: opacity + width pulse halus untuk memberi rasa "hidup".
- * - Warna: warna node tujuan.
- *
- * Mode tautan:
- *   normal : hanya tetangga langsung dari activeId (behavior lama)
- *   tree   : full-tree BFS dari activeId — SEMUA rantai turunan sampai leaf
- *   all    : SEMUA link edges (dikelola di Universe.tsx, hook ini kembali null)
+ * Straight-line hover edges dengan animasi "transfer packet".
+ * - Main pass di Universe.tsx sudah render tree edges (kind !== "link").
+ *   Hover pass hanya menambah link-kind edges + neighbor edges yang belum
+ *   ada di main tree (skip untuk hindari duplikasi).
+ * - Garis lurus (BufferGeometry 2-vertex), tidak lengkung.
+ * - Warna gradient + moving highlight (uv-based shader) → efek data mengalir.
  */
 type LinkEdge = { a: string; b: string; color?: string; kind?: string };
+
+function edgeKey(a: string, b: string): string {
+  return a < b ? `${a}||${b}` : `${b}||${a}`;
+}
 
 export function HoverEdges({ graph, activeId }: { graph: Graph; activeId: string | null }) {
   const linkMode = useSettings((s) => s.linkMode);
   const edgeThickness = useSettings((s) => s.edgeThickness);
 
+  // Set of edges already drawn by main pass (tree edges, kind !== "link").
+  const mainEdgeKeys = useMemo(() => {
+    const s = new Set<string>();
+    for (const e of graph.edges) {
+      if (e.kind !== "link") s.add(edgeKey(e.a, e.b));
+    }
+    return s;
+  }, [graph]);
+
   const linkEdges = useMemo<LinkEdge[]>(() => {
     if (!activeId) return [];
-    if (linkMode === "all") {
-      // handled elsewhere as static; skip hover
-      return [];
-    }
+    if (linkMode === "all") return [];
+
     if (linkMode === "tree") {
-      // BFS descendant tree via all edges (both link & structural)
       const set = new Set<string>([activeId]);
       const queue = [activeId];
       const adj = graph.neighbors;
@@ -40,7 +45,6 @@ export function HoverEdges({ graph, activeId }: { graph: Graph; activeId: string
         if (!ns) continue;
         for (const n of ns) {
           if (set.has(n)) continue;
-          // "descendant" heuristic: node farther from root than current via cluster/kind hierarchy
           const child = graph.byId.get(n);
           const parent = graph.byId.get(cur);
           if (!child || !parent) continue;
@@ -55,58 +59,95 @@ export function HoverEdges({ graph, activeId }: { graph: Graph; activeId: string
       }
       const out: LinkEdge[] = [];
       for (const e of graph.edges) {
-        if (set.has(e.a) && set.has(e.b)) out.push(e);
+        if (!set.has(e.a) || !set.has(e.b)) continue;
+        // Skip if already drawn by main pass
+        if (mainEdgeKeys.has(edgeKey(e.a, e.b))) continue;
+        out.push(e);
       }
       return out;
     }
-    // NORMAL: direct neighbors + true "link"-kind edges
-    return graph.edges.filter((e) =>
-      (e.a === activeId || e.b === activeId)
-    );
-  }, [activeId, graph, linkMode]);
 
-  // Frame-driven pulse — mutate ref materials each frame
-  const matRefs = useRef<THREE.LineBasicMaterial[]>([]);
+    // NORMAL: neighbors + link edges — skip yang sudah ada di main tree.
+    return graph.edges
+      .filter((e) => e.a === activeId || e.b === activeId)
+      .filter((e) => !mainEdgeKeys.has(edgeKey(e.a, e.b)));
+  }, [activeId, graph, linkMode, mainEdgeKeys]);
+
+  // Geometry (positions + per-vertex progress attribute so shader can animate flow).
+  const geometry = useMemo(() => {
+    const geom = new THREE.BufferGeometry();
+    const pos = new Float32Array(linkEdges.length * 2 * 3);
+    const prog = new Float32Array(linkEdges.length * 2);
+    const cA = new Float32Array(linkEdges.length * 2 * 3);
+    const cB = new Float32Array(linkEdges.length * 2 * 3);
+    linkEdges.forEach((e, i) => {
+      const a = graph.byId.get(e.a);
+      const b = graph.byId.get(e.b);
+      if (!a || !b) return;
+      pos[i * 6 + 0] = a.pos[0]; pos[i * 6 + 1] = a.pos[1]; pos[i * 6 + 2] = a.pos[2];
+      pos[i * 6 + 3] = b.pos[0]; pos[i * 6 + 4] = b.pos[1]; pos[i * 6 + 5] = b.pos[2];
+      prog[i * 2 + 0] = 0;
+      prog[i * 2 + 1] = 1;
+      const colA = new THREE.Color(a.color || "#ffffff");
+      const colB = new THREE.Color(b.color || "#ffffff");
+      cA[i * 6 + 0] = colA.r; cA[i * 6 + 1] = colA.g; cA[i * 6 + 2] = colA.b;
+      cA[i * 6 + 3] = colA.r; cA[i * 6 + 4] = colA.g; cA[i * 6 + 5] = colA.b;
+      cB[i * 6 + 0] = colB.r; cB[i * 6 + 1] = colB.g; cB[i * 6 + 2] = colB.b;
+      cB[i * 6 + 3] = colB.r; cB[i * 6 + 4] = colB.g; cB[i * 6 + 5] = colB.b;
+    });
+    geom.setAttribute("position", new THREE.BufferAttribute(pos, 3));
+    geom.setAttribute("progress", new THREE.BufferAttribute(prog, 1));
+    geom.setAttribute("colorA", new THREE.BufferAttribute(cA, 3));
+    geom.setAttribute("colorB", new THREE.BufferAttribute(cB, 3));
+    return geom;
+  }, [linkEdges, graph]);
+
+  const material = useMemo(() => {
+    const mat = new THREE.ShaderMaterial({
+      uniforms: { uTime: { value: 0 } },
+      vertexShader: /* glsl */ `
+        attribute float progress;
+        attribute vec3 colorA;
+        attribute vec3 colorB;
+        varying float vProgress;
+        varying vec3 vColA;
+        varying vec3 vColB;
+        void main() {
+          vProgress = progress;
+          vColA = colorA;
+          vColB = colorB;
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+      `,
+      fragmentShader: /* glsl */ `
+        uniform float uTime;
+        varying float vProgress;
+        varying vec3 vColA;
+        varying vec3 vColB;
+        void main() {
+          vec3 base = mix(vColA, vColB, vProgress);
+          // moving packet along uv.x (progress) 
+          float t = fract(uTime * 0.6);
+          float d = abs(vProgress - t);
+          float packet = smoothstep(0.18, 0.0, d);
+          vec3 col = base + packet * vec3(1.0);
+          float alpha = 0.55 + 0.45 * packet;
+          gl_FragColor = vec4(col, alpha);
+        }
+      `,
+      transparent: true,
+      depthWrite: false,
+    });
+    return mat;
+  }, []);
+
+  const matRef = useRef(material);
   useFrame((state) => {
-    const t = state.clock.elapsedTime;
-    const pulse = 0.7 + 0.3 * (0.5 + 0.5 * Math.sin(t * 3.2));
-    for (const m of matRefs.current) {
-      if (m) m.opacity = 0.55 + 0.4 * pulse;
-    }
+    matRef.current.uniforms.uTime.value = state.clock.elapsedTime;
   });
 
-  if (!activeId || linkMode === "all") return null;
+  if (!activeId || linkMode === "all" || linkEdges.length === 0) return null;
+  void edgeThickness;
 
-  return (
-    <group>
-      {linkEdges.map((e, i) => {
-        const a = graph.byId.get(e.a);
-        const b = graph.byId.get(e.b);
-        if (!a || !b) return null;
-        const A = new THREE.Vector3(...a.pos);
-        const B = new THREE.Vector3(...b.pos);
-        const mid = A.clone().add(B).multiplyScalar(0.5);
-        const out = mid.clone().normalize().multiplyScalar(mid.length() * 0.18);
-        const ctrl = mid.add(out);
-        const target = e.a === activeId ? b : a;
-        const color = target.color || e.color || "#ffffff";
-        return (
-          <QuadraticBezierLine
-            key={`link-${i}`}
-            start={[A.x, A.y, A.z]}
-            end={[B.x, B.y, B.z]}
-            mid={[ctrl.x, ctrl.y, ctrl.z]}
-            color={color}
-            lineWidth={edgeThickness}
-            transparent
-            opacity={0.85}
-            dashed={false}
-            ref={(el: any) => {
-              if (el && el.material) matRefs.current[i] = el.material;
-            }}
-          />
-        );
-      })}
-    </group>
-  );
+  return <lineSegments geometry={geometry} material={material} />;
 }
