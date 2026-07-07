@@ -147,11 +147,7 @@ export function HoverEdges({ graph, activeId }: { graph: Graph; activeId: string
   });
 
   if (!activeId || linkMode === "all" || linkEdges.length === 0) return null;
+  void edgeThickness;
 
-  return (
-    <lineSegments geometry={geometry} material={material}>
-      {/* linewidth support terbatas di WebGL; edgeThickness dipakai visual proxy via alpha packet */}
-      <primitive attach="raw" object={{ edgeThickness }} />
-    </lineSegments>
-  );
+  return <lineSegments geometry={geometry} material={material} />;
 }
