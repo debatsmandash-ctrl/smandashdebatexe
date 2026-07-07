@@ -405,24 +405,106 @@ function riskFor(i: number, n: number): number {
   return Math.max(1, Math.min(5, Math.round(1 + t * 4)));
 }
 
+/** Compact bento card. */
+function Bento({ accent, title, children, span = 12 }: { accent: string; title?: string; children: React.ReactNode; span?: number }) {
+  return (
+    <section style={{
+      gridColumn: `span ${span} / span ${span}`,
+      padding: "14px 16px",
+      background: `linear-gradient(180deg, ${accent}0a, transparent)`,
+      border: `1px solid ${accent}33`,
+      borderRadius: 6,
+      position: "relative",
+    }}>
+      <span aria-hidden style={{ position: "absolute", top: -1, left: -1, width: 10, height: 10, borderTop: `2px solid ${accent}`, borderLeft: `2px solid ${accent}` }} />
+      <span aria-hidden style={{ position: "absolute", top: -1, right: -1, width: 10, height: 10, borderTop: `2px solid ${accent}`, borderRight: `2px solid ${accent}` }} />
+      <span aria-hidden style={{ position: "absolute", bottom: -1, left: -1, width: 10, height: 10, borderBottom: `2px solid ${accent}`, borderLeft: `2px solid ${accent}` }} />
+      <span aria-hidden style={{ position: "absolute", bottom: -1, right: -1, width: 10, height: 10, borderBottom: `2px solid ${accent}`, borderRight: `2px solid ${accent}` }} />
+      {title && (
+        <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 10 }}>
+          <span style={{ width: 5, height: 5, background: accent, borderRadius: 999, boxShadow: `0 0 6px ${accent}` }} />
+          <div style={{ fontSize: 9, letterSpacing: "0.28em", color: accent, textTransform: "uppercase", fontFamily: "Space Mono" }}>{title}</div>
+        </div>
+      )}
+      {children}
+    </section>
+  );
+}
+
+function ArgPointCard({ text, motionId, side, index }: { text: string; motionId: string; side: "pro" | "kon"; index: number }) {
+  const a = analyzePoint(motionId, side, index, text);
+  const sideColor = side === "pro" ? "#ff6b6b" : "#38bdf8";
+  const tCol = tierColor(a.tier);
+  return (
+    <div style={{
+      padding: "10px 12px", marginBottom: 8,
+      background: `${sideColor}08`, borderLeft: `2px solid ${sideColor}`,
+      borderRadius: 3, position: "relative",
+    }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, marginBottom: 6 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+          <span style={{
+            display: "inline-flex", alignItems: "center", justifyContent: "center",
+            width: 22, height: 22, borderRadius: 4,
+            background: `${tCol}22`, border: `1px solid ${tCol}88`, color: tCol,
+            fontFamily: "Bebas Neue", fontSize: 13, fontWeight: 700,
+          }}>{a.tier}</span>
+          <span style={{ ...muted, fontSize: 9, color: sideColor }}>#{index + 1}</span>
+        </div>
+        <div style={{ display: "flex", gap: 10, fontFamily: "Space Mono", fontSize: 9, letterSpacing: "0.12em" }}>
+          <span style={{ color: "#00ffc8" }}>KEKUATAN {a.strength.toFixed(1)}%</span>
+          <span style={{ color: "#fb7185" }}>RISIKO {a.risk.toFixed(1)}%</span>
+        </div>
+      </div>
+      <VocabText text={text} style={{ ...para, fontSize: 13, margin: 0 }} />
+      <div style={{ marginTop: 6, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+        <HorizBar value={a.strength} color="#00ffc8" />
+        <HorizBar value={a.risk} color="#fb7185" />
+      </div>
+      <div style={{
+        marginTop: 8, padding: "6px 10px",
+        background: "rgba(255,255,255,0.02)", borderLeft: `2px solid ${tCol}66`, borderRadius: 3,
+        fontFamily: "DM Sans", fontSize: 11.5, lineHeight: 1.55, color: "var(--au-muted)", fontStyle: "italic",
+      }}>
+        <span style={{ color: tCol, fontWeight: 600 }}>Kausalitas: </span>{a.causality}
+      </div>
+    </div>
+  );
+}
+
 function MotionPanel({ refId }: { refId: string }) {
   const m = MOTIONS.find((x) => x.id === refId);
   const [tab, setTab] = useState<"overview" | "argumen" | "ideal" | "research">("overview");
   if (!m) return null;
-  const pro = m.pro || [];
-  const kon = m.kon || [];
+
+  const analysis = useMemo(() => analyzeMotion(m), [m]);
+  const pro = useMemo(() => enrichPro(m, 10), [m]);
+  const kon = useMemo(() => enrichKon(m, 10), [m]);
+
+  // Radar data: rata-rata strength per 5 poin di tiap sisi, dipetakan ke 5 sumbu
+  const radarPro = useMemo(() => pro.slice(0, 5).map((p, i) => ({
+    label: `P${i + 1}`, value: analyzePoint(m.id, "pro", i, p).strength,
+  })), [pro, m.id]);
+  const radarKon = useMemo(() => kon.slice(0, 5).map((p, i) => ({
+    label: `K${i + 1}`, value: analyzePoint(m.id, "kon", i, p).strength,
+  })), [kon, m.id]);
+
   const TABS = [
     { k: "overview", label: "OVERVIEW" },
     { k: "argumen",  label: `ARGUMEN · ${pro.length}/${kon.length}` },
     { k: "ideal",    label: "IDEAL CASE" },
     { k: "research", label: "RESEARCH" },
   ] as const;
+
+  const stanceColor = analysis.stance === "OFENSIF" ? "#ef4444" : analysis.stance === "DEFENSIF" ? "#22d3ee" : "#a855f7";
+  const rotationColor = analysis.needsHalfStance ? "#fb7185" : "#00ffc8";
+
   return (
-    <div>
+    <div lang="id">
       <div style={{ display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center" }}>
         <Chip color="var(--au-cyan)">{m.cat}</Chip>
         <Chip color="var(--au-purple)">{m.type}</Chip>
-        <StanceBadge comp={m.comp} />
+        <Chip color={stanceColor}>◈ {analysis.stance}</Chip>
         {(m as any).typeAll?.slice(1).map((t: string) => <Chip key={t} color="var(--au-gold)">+{t}</Chip>)}
       </div>
       {m.orig && <div style={{ ...muted, marginTop: 10, fontSize: 9 }}>{m.orig}</div>}
@@ -442,52 +524,116 @@ function MotionPanel({ refId }: { refId: string }) {
 
       <div style={{ marginTop: 16 }}>
         {tab === "overview" && (
-          <>
-            {m.ctx && <p style={para}>{m.ctx}</p>}
-            <div style={{ marginTop: 18, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-              <div style={{ padding: "10px 12px", background: "rgba(255,107,107,0.07)", border: "1px solid rgba(255,107,107,0.3)", borderRadius: 4 }}>
-                <div style={{ ...muted, color: "var(--au-agg)", fontSize: 9 }}>PRO POINTS</div>
-                <div style={{ fontFamily: "Bebas Neue", fontSize: 28, color: "#ff6b6b", marginTop: 2 }}>{pro.length}</div>
-              </div>
-              <div style={{ padding: "10px 12px", background: "rgba(56,189,248,0.07)", border: "1px solid rgba(56,189,248,0.3)", borderRadius: 4 }}>
-                <div style={{ ...muted, color: "var(--au-blue)", fontSize: 9 }}>OPP POINTS</div>
-                <div style={{ fontFamily: "Bebas Neue", fontSize: 28, color: "#38bdf8", marginTop: 2 }}>{kon.length}</div>
-              </div>
-            </div>
-            {m.terms && m.terms.length > 0 && (
-              <div style={{ marginTop: 18 }}>
-                <div style={muted}>Istilah Kunci</div>
-                <div style={{ marginTop: 8 }}>{m.terms.map((t) => <Chip key={t} color="var(--au-blue)">{t}</Chip>)}</div>
-              </div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(12, 1fr)", gap: 10 }}>
+            {m.ctx && (
+              <Bento accent="#a855f7" title="Konteks" span={12}>
+                <VocabText text={m.ctx} style={para} />
+              </Bento>
             )}
-          </>
+
+            {/* Win probability card */}
+            <Bento accent="#fde047" title="Probabilitas Menang" span={12}>
+              <div style={{ display: "flex", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
+                <div style={{ flex: 1 }}>
+                  <div style={{ ...muted, color: "#ff6b6b", marginBottom: 4 }}>Sisi PRO</div>
+                  <div style={{ fontFamily: "Bebas Neue", fontSize: 34, color: "#ff6b6b", lineHeight: 1 }}>{analysis.winProProb.toFixed(2)}%</div>
+                </div>
+                <div style={{ flex: 1, textAlign: "right" }}>
+                  <div style={{ ...muted, color: "#38bdf8", marginBottom: 4 }}>Sisi KON</div>
+                  <div style={{ fontFamily: "Bebas Neue", fontSize: 34, color: "#38bdf8", lineHeight: 1 }}>{analysis.winKonProb.toFixed(2)}%</div>
+                </div>
+              </div>
+              <div style={{ position: "relative", height: 12, borderRadius: 999, overflow: "hidden", background: "#1e293b" }}>
+                <div style={{
+                  position: "absolute", left: 0, top: 0, bottom: 0, width: `${analysis.winProProb}%`,
+                  background: "linear-gradient(90deg, #ff6b6b, #ff9f43)",
+                  boxShadow: "0 0 12px #ff6b6b88",
+                }} />
+                <div style={{
+                  position: "absolute", left: "50%", top: 0, bottom: 0, width: 1, background: "#fff", opacity: 0.4,
+                }} />
+              </div>
+              <div style={{ marginTop: 8, ...muted, fontSize: 9 }}>
+                Bias: <span style={{ color: "var(--au-text)", fontWeight: 700 }}>{analysis.bias}</span>
+                &nbsp;·&nbsp;Confidence: <span style={{ color: "var(--au-cyan)" }}>{(analysis.confidence * 100).toFixed(0)}%</span>
+              </div>
+            </Bento>
+
+            {/* Rotation card */}
+            <Bento accent={rotationColor} title="Rotasi & Half-Stance" span={12}>
+              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
+                <span style={{
+                  padding: "4px 12px", borderRadius: 4,
+                  background: `${rotationColor}22`, border: `1px solid ${rotationColor}88`,
+                  color: rotationColor, fontFamily: "Space Mono", fontSize: 10, letterSpacing: "0.18em", textTransform: "uppercase",
+                }}>{analysis.rotation}</span>
+                {analysis.needsHalfStance && (
+                  <span style={{ ...muted, color: "#fb7185" }}>⚠ mosi berat sebelah</span>
+                )}
+              </div>
+              <VocabText text={analysis.rotationReason} style={{ ...para, fontSize: 12.5, margin: 0 }} />
+            </Bento>
+
+            {/* Radar side-by-side */}
+            <Bento accent="#ff6b6b" title="Profil Kekuatan Pro" span={6}>
+              <div style={{ display: "flex", justifyContent: "center" }}>
+                <RadarChart data={radarPro} color="#ff6b6b" size={200} />
+              </div>
+            </Bento>
+            <Bento accent="#38bdf8" title="Profil Kekuatan Kon" span={6}>
+              <div style={{ display: "flex", justifyContent: "center" }}>
+                <RadarChart data={radarKon} color="#38bdf8" size={200} />
+              </div>
+            </Bento>
+
+            {/* KPI */}
+            <Bento accent="#ff6b6b" title="PRO Points" span={4}>
+              <div style={{ fontFamily: "Bebas Neue", fontSize: 32, color: "#ff6b6b" }}>{pro.length}</div>
+            </Bento>
+            <Bento accent="#38bdf8" title="KON Points" span={4}>
+              <div style={{ fontFamily: "Bebas Neue", fontSize: 32, color: "#38bdf8" }}>{kon.length}</div>
+            </Bento>
+            <Bento accent="#a855f7" title="Istilah" span={4}>
+              <div style={{ fontFamily: "Bebas Neue", fontSize: 32, color: "#a855f7" }}>{m.terms?.length || 0}</div>
+            </Bento>
+
+            {m.terms && m.terms.length > 0 && (
+              <Bento accent="#38bdf8" title="Istilah Kunci" span={12}>
+                {m.terms.map((t) => <Chip key={t} color="#38bdf8">{t}</Chip>)}
+              </Bento>
+            )}
+
+            <Bento accent="#fde047" title="Tahukah Kamu?" span={12}>
+              <VocabText
+                text={`Mosi ini masuk kategori ${m.cat} bertipe ${m.type}. Berdasarkan heuristik toolkit, dari ${pro.length + kon.length} poin argumen, sisi ${analysis.bias.includes("pro") ? "PRO" : analysis.bias.includes("kon") ? "KON" : "keduanya"} memiliki keunggulan struktural. Latih ${analysis.needsHalfStance ? "half-stance secara ketat" : "rotasi normal"} sebelum kompetisi.`}
+                style={{ ...para, fontSize: 12.5, margin: 0 }}
+              />
+            </Bento>
+          </div>
         )}
 
         {tab === "argumen" && (
           <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 18 }}>
             <div>
-              <div style={{ ...muted, color: "var(--au-agg)", marginBottom: 8 }}>PRO · {pro.length}</div>
-              {pro.map((p, i) => {
-                const r = riskFor(i, pro.length);
-                return (
-                  <div key={i} style={{ padding: "10px 12px", marginBottom: 8, background: "rgba(255,107,107,0.04)", borderLeft: "2px solid #ff6b6b", borderRadius: 3 }}>
-                    <div style={{ ...para, fontSize: 13 }}>{p}</div>
-                    <RiskBar risk={r} side="pro" />
-                  </div>
-                );
-              })}
+              <div style={{ ...muted, color: "#ff6b6b", marginBottom: 8 }}>PRO · {pro.length} POIN (extended)</div>
+              {pro.map((p, i) => <ArgPointCard key={i} text={p} motionId={m.id} side="pro" index={i} />)}
             </div>
             <div>
-              <div style={{ ...muted, color: "var(--au-blue)", marginBottom: 8 }}>OPP · {kon.length}</div>
-              {kon.map((p, i) => {
-                const r = riskFor(i, kon.length);
-                return (
-                  <div key={i} style={{ padding: "10px 12px", marginBottom: 8, background: "rgba(56,189,248,0.04)", borderLeft: "2px solid #38bdf8", borderRadius: 3 }}>
-                    <div style={{ ...para, fontSize: 13 }}>{p}</div>
-                    <RiskBar risk={r} side="opp" />
-                  </div>
-                );
-              })}
+              <div style={{ ...muted, color: "#38bdf8", marginBottom: 8 }}>KON · {kon.length} POIN (extended)</div>
+              {kon.map((p, i) => <ArgPointCard key={i} text={p} motionId={m.id} side="kon" index={i} />)}
+            </div>
+            <div style={{
+              padding: "12px 14px", borderRadius: 6,
+              border: "1px dashed rgba(253,224,71,0.35)", background: "rgba(253,224,71,0.04)",
+              fontFamily: "Space Mono", fontSize: 10, color: "var(--au-muted)", letterSpacing: "0.1em",
+            }}>
+              Legenda tier — <span style={{ color: tierColor("S"), fontWeight: 700 }}>S</span>: elite ·{" "}
+              <span style={{ color: tierColor("A"), fontWeight: 700 }}>A</span>: kuat ·{" "}
+              <span style={{ color: tierColor("B"), fontWeight: 700 }}>B</span>: standar ·{" "}
+              <span style={{ color: tierColor("C"), fontWeight: 700 }}>C</span>: risiko tinggi. Legacy risk-meter:
+              <span style={{ display: "inline-block", width: 120, verticalAlign: "middle", marginLeft: 8 }}>
+                <RiskBar risk={riskFor(0, pro.length)} side="pro" />
+              </span>
             </div>
           </div>
         )}
