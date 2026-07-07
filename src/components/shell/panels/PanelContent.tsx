@@ -10,6 +10,10 @@ import { buildGraph } from "@/lib/graph/build";
 import { useMemo, useState } from "react";
 import { SimeoneEgg } from "@/components/panels/SimeoneEgg";
 import { RiskBar } from "@/components/panels/RiskBar";
+import { analyzeMotion, analyzePoint, tierColor } from "@/lib/motion/win-probability";
+import { enrichPro, enrichKon } from "@/lib/motion/enrich";
+import { RadarChart, HorizBar } from "@/components/panels/infographic/RadarChart";
+import { VocabText } from "@/components/panels/VocabText";
 
 const muted = { fontFamily: "Space Mono", fontSize: 10, letterSpacing: "0.25em", color: "var(--au-muted)", textTransform: "uppercase" as const };
 const para = { fontFamily: "DM Sans", fontSize: 13.5, lineHeight: 1.75, color: "var(--au-dim)", textAlign: "justify" as const, hyphens: "auto" as const, textJustify: "inter-word" as const };
