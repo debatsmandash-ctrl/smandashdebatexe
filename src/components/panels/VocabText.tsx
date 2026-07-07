@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { createElement, useMemo, useState, type ElementType } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { scanText } from "@/lib/vocab/scan";
 import { VOCAB } from "@/data";
@@ -11,23 +11,20 @@ import { useUniverse } from "@/lib/store";
 export function VocabText({
   text,
   style,
-  as: Tag = "p",
+  as = "p",
 }: {
   text: string;
   style?: React.CSSProperties;
-  as?: keyof React.JSX.IntrinsicElements;
+  as?: ElementType;
 }) {
   const segments = useMemo(() => scanText(text), [text]);
   const select = useUniverse((s) => s.select);
-  return (
-    <Tag lang="id" style={style}>
-      {segments.map((s, i) => {
-        if (!s.vocab) return <span key={i}>{s.text}</span>;
-        const v = VOCAB[s.vocab.idx];
-        return <TermPopover key={i} label={s.text} def={v?.def || ""} onOpen={() => select(`vocab:${s.vocab!.idx}`)} />;
-      })}
-    </Tag>
-  );
+  const children = segments.map((s, i) => {
+    if (!s.vocab) return <span key={i}>{s.text}</span>;
+    const v = VOCAB[s.vocab.idx];
+    return <TermPopover key={i} label={s.text} def={v?.def || ""} onOpen={() => select(`vocab:${s.vocab!.idx}`)} />;
+  });
+  return createElement(as, { lang: "id", style }, children);
 }
 
 function TermPopover({ label, def, onOpen }: { label: string; def: string; onOpen: () => void }) {
