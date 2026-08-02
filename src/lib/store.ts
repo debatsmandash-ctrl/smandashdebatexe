@@ -91,10 +91,16 @@ interface UniverseState {
   settingsOpen: boolean;
   assistantOpen: boolean;
   loaded: boolean;
+  history: string[];
+  histIndex: number;
   editorMode: boolean;
   editorUnlockOpen: boolean;
   select: (id: string | null) => void;
+  goBack: () => void;
+  goForward: () => void;
+  jumpTo: (id: string) => void;
   hover: (id: string | null) => void;
+
   focusCluster: (k: string | null) => void;
   setSearchOpen: (v: boolean) => void;
   setSettingsOpen: (v: boolean) => void;
@@ -104,7 +110,7 @@ interface UniverseState {
   setEditorUnlockOpen: (v: boolean) => void;
 }
 
-export const useUniverse = create<UniverseState>((set) => ({
+export const useUniverse = create<UniverseState>((set, get) => ({
   selectedId: null,
   hoveredId: null,
   focusClusterKey: null,
@@ -112,9 +118,39 @@ export const useUniverse = create<UniverseState>((set) => ({
   settingsOpen: false,
   assistantOpen: false,
   loaded: false,
+  history: [],
+  histIndex: -1,
   editorMode: typeof window !== "undefined" && sessionStorage.getItem("editor_unlocked") === "1",
   editorUnlockOpen: false,
-  select: (id) => set({ selectedId: id }),
+  select: (id) => {
+    const { history, histIndex, selectedId } = get();
+    if (id === selectedId) return;
+    if (!id) { set({ selectedId: null }); return; }
+    const trimmed = history.slice(0, histIndex + 1);
+    trimmed.push(id);
+    const capped = trimmed.slice(-60);
+    set({ selectedId: id, history: capped, histIndex: capped.length - 1 });
+  },
+  goBack: () => {
+    const { history, histIndex } = get();
+    if (histIndex <= 0) { set({ selectedId: null, histIndex: -1 }); return; }
+    const i = histIndex - 1;
+    set({ histIndex: i, selectedId: history[i] });
+  },
+  goForward: () => {
+    const { history, histIndex } = get();
+    if (histIndex >= history.length - 1) return;
+    const i = histIndex + 1;
+    set({ histIndex: i, selectedId: history[i] });
+  },
+  jumpTo: (id) => {
+    const { history, histIndex } = get();
+    const trimmed = history.slice(0, histIndex + 1);
+    trimmed.push(id);
+    const capped = trimmed.slice(-60);
+    set({ selectedId: id, history: capped, histIndex: capped.length - 1 });
+  },
+
   hover: (id) => set({ hoveredId: id }),
   focusCluster: (k) => set({ focusClusterKey: k, selectedId: k ? `cluster:${k}` : null }),
   setSearchOpen: (v) => set({ searchOpen: v }),

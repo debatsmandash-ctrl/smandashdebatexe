@@ -64,27 +64,87 @@ function fibDirections(n: number, jitter = 0.0): V3[] {
   return out;
 }
 
-// Place N points inside a VOLUME ball (bukan shell tipis) — distribusi cube-root
-// agar tersebar merata di seluruh isi bola, bukan menumpuk di kulit. Hasil:
-// kesan bola besar berlapis dengan kedalaman, bukan pelat tipis.
+// ─── GALAXY DISC PLACEMENT ───────────────────────────────────────────────
+// Tiap cluster ditata sebagai piringan spiral (2 lengan logaritmik), bukan bola.
+// Kerapatan menurun ke tepi, ketebalan vertikal mengikuti profil sech² sehingga
+// siluetnya pipih di tepi dan tebal di inti — mirip galaksi sungguhan.
+
+/** Basis ortonormal deterministik untuk piringan pada `center`. */
+function discBasis(center: V3, seed: number): { u: V3; v: V3; w: V3 } {
+  const r = mulberry32(Math.abs(Math.round(seed * 1e5)) + 7919);
+  // normal dasar = arah radial dari pusat semesta, dimiringkan acak (±42°)
+  const base = normalize(center[0] || center[1] || center[2] ? center : [0, 1, 0]);
+  const tiltAxis = normalize([r() - 0.5, r() - 0.5, r() - 0.5]);
+  const ang = (r() - 0.5) * 1.5; // ±~43°
+  // Rodrigues rotation
+  const c = Math.cos(ang), s = Math.sin(ang);
+  const dotv = base[0]*tiltAxis[0] + base[1]*tiltAxis[1] + base[2]*tiltAxis[2];
+  const cross: V3 = [
+    tiltAxis[1]*base[2] - tiltAxis[2]*base[1],
+    tiltAxis[2]*base[0] - tiltAxis[0]*base[2],
+    tiltAxis[0]*base[1] - tiltAxis[1]*base[0],
+  ];
+  const w = normalize([
+    base[0]*c + cross[0]*s + tiltAxis[0]*dotv*(1-c),
+    base[1]*c + cross[1]*s + tiltAxis[1]*dotv*(1-c),
+    base[2]*c + cross[2]*s + tiltAxis[2]*dotv*(1-c),
+  ]);
+  const helper: V3 = Math.abs(w[1]) < 0.9 ? [0, 1, 0] : [1, 0, 0];
+  const u = normalize([
+    helper[1]*w[2] - helper[2]*w[1],
+    helper[2]*w[0] - helper[0]*w[2],
+    helper[0]*w[1] - helper[1]*w[0],
+  ]);
+  const v: V3 = [
+    w[1]*u[2] - w[2]*u[1],
+    w[2]*u[0] - w[0]*u[2],
+    w[0]*u[1] - w[1]*u[0],
+  ];
+  return { u, v, w };
+}
+
+const sech2 = (x: number) => { const e = 1 / Math.cosh(x); return e * e; };
+
+/**
+ * Sebar `count` titik pada piringan spiral berpusat di `center`.
+ * `radius` = radius efektif piringan (lengan mencapai ~1.15×radius).
+ */
 function placeCloud(center: V3, radius: number, count: number, minSep?: number): V3[] {
   if (count === 0) return [];
-  const dirs = fibDirections(count, 1.2);
-  const pts: V3[] = dirs.map((u, i) => {
-    // cube-root distribution → uniform inside ball, dengan inner-bias 0.3..1.0
-    // jadi ada cluster dekat pusat & dekat kulit sekaligus → terasa volumetrik
-    const tNorm = (i + rand()) / Math.max(1, count);
-    const radial = 0.30 + Math.pow(tNorm, 1 / 3) * 0.70; // 0.30..1.00
-    const r = radius * radial;
-    return add(center, [
-      u[0] * r + (rand() - 0.5) * radius * 0.10,
-      u[1] * r + (rand() - 0.5) * radius * 0.10,
-      u[2] * r + (rand() - 0.5) * radius * 0.10,
+  const seed = center[0] * 0.731 + center[1] * 1.319 + center[2] * 0.517;
+  const { u, v, w } = discBasis(center, seed);
+  const r0 = mulberry32(Math.abs(Math.round(seed * 1e4)) + 104729);
+
+  const ARMS = count > 26 ? 3 : 2;
+  const PITCH = 0.42 + r0() * 0.22;      // kerapatan lilitan lengan
+  const SWEEP = Math.PI * (1.5 + r0());   // total putaran lengan
+  const R_MIN = 0.16, R_MAX = 1.15;
+  const THICK = radius * 0.16;            // ketebalan inti piringan
+
+  const pts: V3[] = [];
+  for (let i = 0; i < count; i++) {
+    const arm = i % ARMS;
+    const t = (Math.floor(i / ARMS) + r0() * 0.85) / Math.max(1, Math.ceil(count / ARMS));
+    // radial: sqrt agar tidak menumpuk di inti, tetap renggang ke tepi
+    const rr = (R_MIN + Math.sqrt(Math.min(1, t)) * (R_MAX - R_MIN)) * radius;
+    // sudut lengan logaritmik + hamburan yang melebar ke luar
+    const armAng = (arm / ARMS) * Math.PI * 2;
+    const spiral = armAng + Math.log(1 + (rr / radius) / PITCH) * SWEEP;
+    const scatter = (r0() - 0.5) * (0.34 + (rr / radius) * 0.55);
+    const ang = spiral + scatter;
+    // ketebalan mengecil ke tepi (sech²)
+    const zJ = (r0() * 2 - 1) * THICK * sech2((rr / radius) * 1.7);
+    const rj = rr * (1 + (r0() - 0.5) * 0.14);
+    pts.push([
+      center[0] + u[0] * Math.cos(ang) * rj + v[0] * Math.sin(ang) * rj + w[0] * zJ,
+      center[1] + u[1] * Math.cos(ang) * rj + v[1] * Math.sin(ang) * rj + w[1] * zJ,
+      center[2] + u[2] * Math.cos(ang) * rj + v[2] * Math.sin(ang) * rj + w[2] * zJ,
     ]);
-  });
-  // Relax pairs that are too close
-  const sep = minSep ?? radius * 0.32;
-  for (let iter = 0; iter < 6; iter++) {
+  }
+
+  // Relaksasi tabrakan ringan
+  const sep = minSep ?? radius * 0.26;
+  for (let iter = 0; iter < 5; iter++) {
     for (let i = 0; i < pts.length; i++) {
       for (let j = i + 1; j < pts.length; j++) {
         const d = dist(pts[i], pts[j]);
@@ -99,6 +159,7 @@ function placeCloud(center: V3, radius: number, count: number, minSep?: number):
   }
   return pts;
 }
+
 
 
 // Place children of a leaf as "ranting" — directions chosen with wide angular
