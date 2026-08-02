@@ -491,7 +491,7 @@ function Scene({ profile }: { profile: DeviceProfile }) {
       return s;
     }
     if (linkMode === "tree") {
-      // BFS descendants sampai leaf terakhir
+      // BFS dua arah: turunan sampai leaf + rantai leluhur balik ke pusat.
       const rank = (k: string) => (
         k === "root" ? 0 : k === "cluster" ? 1 : k === "subhub" ? 2 :
         k === "domain" || k === "letter" ? 3 :
@@ -514,6 +514,25 @@ function Scene({ profile }: { profile: DeviceProfile }) {
           queue.push(n);
         }
       }
+      // Naik ke atas: leaf → induk → hub → pusat (jalur balik ikut menyala)
+      let cur: string | null = activeId;
+      const guard = new Set<string>();
+      while (cur && !guard.has(cur)) {
+        guard.add(cur);
+        const node = graph.byId.get(cur);
+        if (!node) break;
+        const ns = graph.neighbors.get(cur);
+        let best: string | null = null;
+        let bestRank = rank(node.kind);
+        if (ns) for (const n of ns) {
+          const cand = graph.byId.get(n);
+          if (!cand) continue;
+          if (rank(cand.kind) < bestRank) { bestRank = rank(cand.kind); best = n; }
+        }
+        if (!best) break;
+        s.add(best);
+        cur = best;
+      }
       return s;
     }
     // NORMAL
@@ -527,40 +546,25 @@ function Scene({ profile }: { profile: DeviceProfile }) {
 
   return (
     <>
-      {/* Lighting global — boosted di ULTRA agar node sisi jauh bola tetap terlihat */}
-      <ambientLight intensity={quality === "ultra" ? 0.22 : quality === "high" ? 0.18 : 0.14} />
-      <pointLight position={[0, 0, 0]} intensity={quality === "ultra" ? 0.85 : 0.5} color="#d8b27a" distance={quality === "ultra" ? 520 : 260} />
-      <pointLight position={[140, 80, -80]} intensity={quality === "ultra" ? 0.45 : 0.28} color="#00ffc8" distance={quality === "ultra" ? 560 : 360} />
-      <pointLight position={[-140, -60, 100]} intensity={quality === "ultra" ? 0.38 : 0.22} color="#8aa6d8" distance={quality === "ultra" ? 520 : 320} />
-      <pointLight position={[60, -120, 60]} intensity={quality === "ultra" ? 0.28 : 0.16} color="#38bdf8" distance={quality === "ultra" ? 500 : 300} />
+      {/* Pencahayaan minimal — ruang angkasa asli: hampir gelap total,
+          bintang jadi sumber cahayanya sendiri (emissive). */}
+      <ambientLight intensity={quality === "ultra" ? 0.05 : quality === "high" ? 0.045 : 0.04} />
+      <pointLight position={[0, 0, 0]} intensity={quality === "ultra" ? 0.30 : 0.18} color="#d8b27a" distance={quality === "ultra" ? 520 : 260} />
+      <pointLight position={[140, 80, -80]} intensity={quality === "ultra" ? 0.14 : 0.09} color="#00ffc8" distance={quality === "ultra" ? 560 : 360} />
+      <pointLight position={[-140, -60, 100]} intensity={quality === "ultra" ? 0.12 : 0.07} color="#8aa6d8" distance={quality === "ultra" ? 520 : 320} />
 
       <StarField />
       {profile.tier === "desktop" && <Galaxies />}
       <StarClusters />
-      <MilkyWaySky opacity={settings.nebulaOpacity} />
+      <MilkyWaySky opacity={settings.nebulaOpacity * 0.7} />
 
-      <group>
-        {graph.edges.map((e: StarEdge, i: number) => {
-          // Mode ALL: tampilkan SEMUA (termasuk link edges). Lain: skip link edges (hover-only).
-          if (e.kind === "link" && linkMode !== "all") return null;
-          const a = graph.byId.get(e.a);
-          const b = graph.byId.get(e.b);
-          if (!a || !b) return null;
-          const lit = linkMode === "all" ? true : anyActive && (litSet.has(a.id) && litSet.has(b.id));
-          const dim = linkMode === "all" ? false : anyActive && !lit;
-          return (
-            <Edge
-              key={`e-${i}`}
-              a={a}
-              b={b}
-              color={e.color || "#ffffff"}
-              dashed={false}
-              lit={lit}
-              dim={dim}
-            />
-          );
-        })}
-      </group>
+      <FlowEdges
+        graph={graph}
+        litSet={litSet}
+        anyActive={anyActive}
+        showAll={linkMode === "all"}
+      />
+
 
       {settings.showHoverEdges && linkMode !== "all" && (
         <HoverEdges graph={graph} activeId={selectedId ?? (linkMode !== "tree" || treeHoverEnabled ? hoveredId : null)} />
