@@ -9,6 +9,7 @@ import { useUniverse, useSettings, type QualityPreset } from "@/lib/store";
 import type { StarNode, StarEdge, NodeKind } from "@/data/types";
 import { MilkyWaySky } from "./MilkyWaySky";
 import { HoverEdges } from "./HoverEdges";
+import { FlowEdges } from "./FlowEdges";
 import { useDeviceProfile, type DeviceProfile } from "@/hooks/useDeviceProfile";
 
 // ─── Halo texture (shared canvas radial gradient) ───
@@ -602,7 +603,7 @@ function Scene({ profile }: { profile: DeviceProfile }) {
 
       {bloomEnabled && (
         <EffectComposer multisampling={quality === "ultra" ? 4 : 0}>
-          <Bloom intensity={profile.bloomIntensity * settings.bloomIntensity * qScale} luminanceThreshold={0.32} luminanceSmoothing={0.7} mipmapBlur radius={profile.bloomRadius} />
+          <Bloom intensity={profile.bloomIntensity * settings.bloomIntensity * qScale} luminanceThreshold={0.5} luminanceSmoothing={0.7} mipmapBlur radius={profile.bloomRadius} />
           {profile.chromaticAberration && quality === "ultra" ? (
             <ChromaticAberration offset={[0.0008, 0.0008]} radialModulation={false} modulationOffset={0} blendFunction={BlendFunction.NORMAL} />
           ) : <></>}
@@ -669,13 +670,13 @@ export function Universe() {
         alpha: true,
         powerPreference: "high-performance",
         toneMapping: THREE.ACESFilmicToneMapping,
-        toneMappingExposure: 0.85,
+        toneMappingExposure: 0.55,
         outputColorSpace: THREE.SRGBColorSpace,
       }}
       style={{ position: "absolute", inset: 0, background: "transparent" }}
     >
-      <color attach="background" args={["#05080f"]} />
-      <fog attach="fog" args={["#05080f", 380, 1100]} />
+      <color attach="background" args={["#01020a"]} />
+      <fog attach="fog" args={["#01020a", 420, 1250]} />
       <Suspense fallback={null}>
         <Scene profile={profile} />
       </Suspense>
