@@ -5,9 +5,7 @@ export type FontPreset =
   | "default"      // Bebas Neue + DM Sans (existing)
   | "pixel"        // Press Start 2P + VT323
   | "genshin"      // Cinzel + Cormorant Unicase
-  | "nasa"         // Orbitron + Michroma
-  | "pixel-nasa"   // Press Start 2P + Orbitron
-  | "genshin-mono";// Cinzel + Space Mono
+  | "nasa";        // Orbitron + Michroma
 
 export interface FontPresetDef {
   id: FontPreset;
@@ -23,8 +21,6 @@ export const FONT_PRESETS: FontPresetDef[] = [
   { id: "pixel",        label: "PIXEL",         hint: "Press Start 2P + VT323",  display: '"Press Start 2P", monospace',        body: '"VT323", monospace' },
   { id: "genshin",      label: "GENSHIN",       hint: "Cinzel + Cormorant",      display: '"Cinzel", serif',                    body: '"Cormorant Unicase", serif' },
   { id: "nasa",         label: "NASA TECH",     hint: "Orbitron + Michroma",     display: '"Orbitron", sans-serif',             body: '"Michroma", sans-serif' },
-  { id: "pixel-nasa",   label: "PIXEL/NASA",    hint: "Press Start 2P + Orbitron", display: '"Press Start 2P", monospace',      body: '"Orbitron", sans-serif' },
-  { id: "genshin-mono", label: "GENSHIN/MONO",  hint: "Cinzel + Space Mono",     display: '"Cinzel", serif',                    body: '"Space Mono", monospace' },
 ];
 
 export function applyFontPreset(id: FontPreset) {

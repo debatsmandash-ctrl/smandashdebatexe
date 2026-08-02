@@ -6,7 +6,6 @@ import { useUniverse, useSettings } from "@/lib/store";
 import { analyzeMotion } from "@/lib/motion/win-probability";
 import logo from "@/assets/smandash-logo.png";
 import milkyway from "@/assets/milkyway_pano_hd.jpg.asset.json";
-import heroImg from "@/assets/lobby/planet-hero.jpg";
 import nebulaImg from "@/assets/lobby/nebula-gold.jpg";
 import constellationImg from "@/assets/lobby/constellation.jpg";
 import stageImg from "@/assets/lobby/debate-stage.jpg";
