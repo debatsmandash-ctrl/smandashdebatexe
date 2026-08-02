@@ -12,6 +12,8 @@ import constellationImg from "@/assets/lobby/constellation.jpg";
 import stageImg from "@/assets/lobby/debate-stage.jpg";
 import controlImg from "@/assets/lobby/mission-control.jpg";
 import lexiconImg from "@/assets/lobby/lexicon.jpg";
+import { HeroSlider, buildSlides } from "./HeroSlider";
+
 
 /* ────────────────────────────────────────────────────────────
    NASA-style Mission Control lobby — dark elegant, image-led.
