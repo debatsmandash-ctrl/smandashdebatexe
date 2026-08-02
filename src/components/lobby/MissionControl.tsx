@@ -202,7 +202,7 @@ export function MissionControl({ onInitiate }: { onInitiate: () => void }) {
       </nav>
 
       {/* ── HERO SLIDER ── */}
-      <HeroSlider slides={buildSlides({ stats, enter: () => go(), goCluster: (k) => go(() => select(`cluster:${k}`)) })} />
+      <HeroSlider slides={buildSlides({ stats, enter: () => go(), goCluster: (k: string) => go(() => select(`cluster:${k}`)) })} />
 
 
       {/* ── WELCOME TO THE UNIVERSE (image cards) ── */}
