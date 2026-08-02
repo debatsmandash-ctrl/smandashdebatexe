@@ -199,60 +199,9 @@ export function MissionControl({ onInitiate }: { onInitiate: () => void }) {
         </div>
       </nav>
 
-      {/* ── HERO ── */}
-      <section style={{ position: "relative", minHeight: "92vh", overflow: "hidden", display: "flex", alignItems: "center", padding: `0 ${PAD}` }}>
-        <img
-          src={heroImg} alt="Planet dengan cahaya matahari terbit di ruang angkasa" width={1600} height={800}
-          style={{
-            position: "absolute", inset: 0, width: "100%", height: "110%", objectFit: "cover",
-            transform: `translateY(${Math.min(scrollY * 0.22, 160)}px) scale(1.05)`, opacity: 0.92,
-          }}
-        />
-        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(90deg, rgba(6,8,13,0.92) 0%, rgba(6,8,13,0.6) 46%, rgba(6,8,13,0.86) 100%), linear-gradient(180deg, transparent 40%, #06080D 100%)" }} />
-        <div style={{ position: "relative", zIndex: 2, maxWidth: 760, paddingTop: 40 }}>
-          <Eyebrow>Debate coach toolkit · Mission control v1.3</Eyebrow>
-          <h1 style={{ margin: "22px 0 0", fontWeight: 200, fontSize: "clamp(44px,7.6vw,100px)", lineHeight: 0.96, letterSpacing: "-0.045em" }}>
-            Jelajahi<br /><span style={{ fontWeight: 500, color: C.accent }}>Semesta Debat</span>
-          </h1>
-          <p style={{ marginTop: 26, maxWidth: 580, fontSize: 16, lineHeight: 1.8, color: C.dim, textAlign: "justify", hyphens: "auto" }}>
-            Satu peta tiga dimensi yang memuat {stats.motions} mosi teranalisis, {stats.vocab.toLocaleString()} entri
-            kamus, {stats.domains} domain matter dengan {stats.subbabs.toLocaleString()} subbab, serta {stats.nodes.toLocaleString()} bintang
-            yang saling tertaut lewat {stats.edges.toLocaleString()} garis relasi — dirancang untuk seluruh kurikulum LDBI.
-          </p>
-          <div style={{ marginTop: 38, display: "flex", gap: 14, flexWrap: "wrap", alignItems: "center" }}>
-            <button onClick={() => go()} style={{
-              padding: "16px 32px", background: C.accent, color: "#12100A", border: "none", borderRadius: 2,
-              fontSize: 11.5, fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase", fontFamily: MONO,
-              cursor: "pointer", boxShadow: "0 16px 46px rgba(216,178,106,0.26)", transition: "transform 200ms ease",
-            }}
-              onMouseOver={(e) => (e.currentTarget.style.transform = "translateY(-2px)")}
-              onMouseOut={(e) => (e.currentTarget.style.transform = "none")}
-            >Masuk Universe</button>
-            <a href="#universe" style={{ color: C.dim, fontSize: 11, fontFamily: MONO, letterSpacing: "0.2em", textTransform: "uppercase", textDecoration: "none", borderBottom: `1px solid ${C.line}`, paddingBottom: 4 }}>
-              Lihat isinya ↓
-            </a>
-          </div>
-        </div>
-        {/* HUD strip */}
-        <div style={{
-          position: "absolute", bottom: 0, left: 0, right: 0, zIndex: 3,
-          display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px,1fr))",
-          borderTop: `1px solid ${C.lineSoft}`, background: "rgba(6,8,13,0.7)", backdropFilter: "blur(8px)",
-        }}>
-          {[
-            ["Bintang", stats.nodes.toLocaleString()],
-            ["Tautan", stats.edges.toLocaleString()],
-            ["Mosi", String(stats.motions)],
-            ["Domain", String(stats.domains)],
-            ["Kamus", stats.vocab.toLocaleString()],
-          ].map(([k, v]) => (
-            <div key={k} style={{ padding: "14px 20px", borderLeft: `1px solid ${C.lineSoft}` }}>
-              <div style={{ fontFamily: MONO, fontSize: 9.5, letterSpacing: "0.24em", color: C.faint, textTransform: "uppercase" }}>{k}</div>
-              <div style={{ marginTop: 4, fontSize: 18, fontWeight: 300 }}>{v}</div>
-            </div>
-          ))}
-        </div>
-      </section>
+      {/* ── HERO SLIDER ── */}
+      <HeroSlider slides={buildSlides({ stats, enter: () => go(), goCluster: (k) => go(() => select(`cluster:${k}`)) })} />
+
 
       {/* ── WELCOME TO THE UNIVERSE (image cards) ── */}
       <section id="universe" style={{ padding: `78px ${PAD}`, background: C.bg }}>
