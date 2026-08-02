@@ -91,10 +91,16 @@ interface UniverseState {
   settingsOpen: boolean;
   assistantOpen: boolean;
   loaded: boolean;
+  history: string[];
+  histIndex: number;
   editorMode: boolean;
   editorUnlockOpen: boolean;
   select: (id: string | null) => void;
+  goBack: () => void;
+  goForward: () => void;
+  jumpTo: (id: string) => void;
   hover: (id: string | null) => void;
+
   focusCluster: (k: string | null) => void;
   setSearchOpen: (v: boolean) => void;
   setSettingsOpen: (v: boolean) => void;
