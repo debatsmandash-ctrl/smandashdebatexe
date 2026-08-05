@@ -152,6 +152,43 @@ export function MissionControl({ onInitiate }: { onInitiate: () => void }) {
     return { off, def, hyb: MOTIONS.length - off - def };
   }, []);
 
+  /** Komposisi jenis mosi + rata-rata peluang PRO per jenis. */
+  const jenisMix = useMemo(() => {
+    const PALETTE = ["#D8B26A", "#4FD1C5", "#7AA2F7", "#F7768E", "#BB9AF7", "#9ECE6A", "#E0AF68", "#89DDFF"];
+    const buckets = new Map<string, { n: number; pro: number; berat: number }>();
+    MOTIONS.forEach((m: any) => {
+      const key = String(m.type || m.cat || "lainnya").toLowerCase();
+      const a = analyzeMotion(m);
+      const b = buckets.get(key) ?? { n: 0, pro: 0, berat: 0 };
+      b.n += 1;
+      b.pro += a.winProProb;
+      if (Math.abs(a.balance) >= 0.35) b.berat += 1;
+      buckets.set(key, b);
+    });
+    const rows = Array.from(buckets.entries())
+      .map(([label, b], i) => ({
+        label,
+        value: b.n,
+        color: PALETTE[i % PALETTE.length],
+        avgPro: b.pro / b.n,
+        berat: b.berat,
+      }))
+      .sort((a, b) => b.value - a.value);
+    const top = rows.slice(0, 7);
+    const rest = rows.slice(7);
+    if (rest.length) {
+      top.push({
+        label: "lainnya",
+        value: rest.reduce((a, r) => a + r.value, 0),
+        color: "#606776",
+        avgPro: rest.reduce((a, r) => a + r.avgPro * r.value, 0) / Math.max(1, rest.reduce((a, r) => a + r.value, 0)),
+        berat: rest.reduce((a, r) => a + r.berat, 0),
+      });
+    }
+    const beratTotal = rows.reduce((a, r) => a + r.berat, 0);
+    return { rows: top, total: MOTIONS.length, beratTotal };
+  }, []);
+
   const cats = useMemo(() => {
     const s = new Set<string>();
     MOTIONS.forEach((m: any) => m.cat && s.add(String(m.cat)));
