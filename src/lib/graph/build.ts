@@ -103,48 +103,51 @@ function discBasis(center: V3, seed: number): { u: V3; v: V3; w: V3 } {
   return { u, v, w };
 }
 
-const sech2 = (x: number) => { const e = 1 / Math.cosh(x); return e * e; };
-
 /**
- * Sebar `count` titik pada piringan spiral berpusat di `center`.
- * `radius` = radius efektif piringan (lengan mencapai ~1.15×radius).
+ * Sebar `count` titik pada KULIT BOLA tidak sempurna berpusat di `center`.
+ * Titik didistribusi merata (fibonacci sphere) lalu radiusnya dimodulasi noise
+ * sehingga permukaannya bergelombang — menyebar, berjarak, tetap terasa 3D.
+ * Sebagian kecil titik ditarik lebih dalam agar tidak terlihat seperti cangkang kosong.
  */
 function placeCloud(center: V3, radius: number, count: number, minSep?: number): V3[] {
   if (count === 0) return [];
   const seed = center[0] * 0.731 + center[1] * 1.319 + center[2] * 0.517;
   const { u, v, w } = discBasis(center, seed);
   const r0 = mulberry32(Math.abs(Math.round(seed * 1e4)) + 104729);
-
-  const ARMS = count > 26 ? 3 : 2;
-  const PITCH = 0.42 + r0() * 0.22;      // kerapatan lilitan lengan
-  const SWEEP = Math.PI * (1.5 + r0());   // total putaran lengan
-  const R_MIN = 0.16, R_MAX = 1.15;
-  const THICK = radius * 0.16;            // ketebalan inti piringan
+  const GA = Math.PI * (3 - Math.sqrt(5));
+  const phase = r0() * Math.PI * 2;
 
   const pts: V3[] = [];
   for (let i = 0; i < count; i++) {
-    const arm = i % ARMS;
-    const t = (Math.floor(i / ARMS) + r0() * 0.85) / Math.max(1, Math.ceil(count / ARMS));
-    // radial: sqrt agar tidak menumpuk di inti, tetap renggang ke tepi
-    const rr = (R_MIN + Math.sqrt(Math.min(1, t)) * (R_MAX - R_MIN)) * radius;
-    // sudut lengan logaritmik + hamburan yang melebar ke luar
-    const armAng = (arm / ARMS) * Math.PI * 2;
-    const spiral = armAng + Math.log(1 + (rr / radius) / PITCH) * SWEEP;
-    const scatter = (r0() - 0.5) * (0.34 + (rr / radius) * 0.55);
-    const ang = spiral + scatter;
-    // ketebalan mengecil ke tepi (sech²)
-    const zJ = (r0() * 2 - 1) * THICK * sech2((rr / radius) * 1.7);
-    const rj = rr * (1 + (r0() - 0.5) * 0.14);
+    // fibonacci sphere → distribusi merata pada permukaan
+    const y = count === 1 ? 0 : 1 - (2 * (i + 0.5)) / count;
+    const rxy = Math.sqrt(Math.max(0, 1 - y * y));
+    const th = GA * i + phase;
+    const dirLocal: V3 = [Math.cos(th) * rxy, y, Math.sin(th) * rxy];
+    // ke basis dunia (u,w,v) supaya orientasi tiap cluster berbeda
+    const dir: V3 = [
+      u[0] * dirLocal[0] + w[0] * dirLocal[1] + v[0] * dirLocal[2],
+      u[1] * dirLocal[0] + w[1] * dirLocal[1] + v[1] * dirLocal[2],
+      u[2] * dirLocal[0] + w[2] * dirLocal[1] + v[2] * dirLocal[2],
+    ];
+    // kulit bergelombang: radius dimodulasi gelombang halus + jitter
+    const bump =
+      0.12 * Math.sin(dirLocal[0] * 2.7 + phase) +
+      0.10 * Math.sin(dirLocal[1] * 3.3 - phase * 0.7) +
+      0.08 * Math.sin(dirLocal[2] * 2.1 + phase * 1.3);
+    let rr = radius * (0.92 + bump + (r0() - 0.5) * 0.10);
+    // ~14% node ditarik ke dalam agar volume terisi
+    if (r0() < 0.14) rr *= 0.52 + r0() * 0.22;
     pts.push([
-      center[0] + u[0] * Math.cos(ang) * rj + v[0] * Math.sin(ang) * rj + w[0] * zJ,
-      center[1] + u[1] * Math.cos(ang) * rj + v[1] * Math.sin(ang) * rj + w[1] * zJ,
-      center[2] + u[2] * Math.cos(ang) * rj + v[2] * Math.sin(ang) * rj + w[2] * zJ,
+      center[0] + dir[0] * rr,
+      center[1] + dir[1] * rr,
+      center[2] + dir[2] * rr,
     ]);
   }
 
   // Relaksasi tabrakan ringan
   const sep = minSep ?? radius * 0.26;
-  for (let iter = 0; iter < 5; iter++) {
+  for (let iter = 0; iter < 6; iter++) {
     for (let i = 0; i < pts.length; i++) {
       for (let j = i + 1; j < pts.length; j++) {
         const d = dist(pts[i], pts[j]);
