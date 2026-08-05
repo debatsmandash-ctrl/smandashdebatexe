@@ -1,83 +1,59 @@
-## v1.3 — Prioritas: UI/UX Lobby + Universe (baru setelah itu isi mosi)
+## v1.4 — Pencahayaan realistis, formasi kulit bola, lobby profesional, mosi bullet
 
-### 1. Lobby: slider sinematik dark-neon (bukan carousel generik)
+### 1. Pencahayaan: terang wajar, tetap realistis
 
-Hero diganti **stage slider 5 slide** dengan gambar NASA/ESA public domain 4K asli (Hubble/JWST/APOD, diunduh dari NASA Images API — bukan AI).
+Sekarang terlalu gelap (exposure 0.55, ambient 0.05, fog `#01020a`).
 
-```text
-┌──────────────────────────────────────────────────────────────┐
-│  ◉ LIVE   SMANDASH DEBATE UNIVERSE           20:14:03 WIB    │
-├──────────────────────────────────────────────────────────────┤
-│                                                              │
-│   [ Ken Burns pan, 12s ]      ◤ neon scanline overlay ◢      │
-│                                                              │
-│   01 / 05  ── MATTER ──────────────────────────              │
-│   PETA PENGETAHUAN                                           │
-│   15 domain · 240+ subbab                    [ MASUK → ]     │
-│                                                              │
-│   ▌▌▌▌▌▌▌▌▌▌░░░░░░░░  progress bar neon (auto 7s)            │
-│   ●━━━━  ○  ○  ○  ○   thumbnail rail (hover = preview kecil) │
-└──────────────────────────────────────────────────────────────┘
-```
+- Exposure naik ke ~0.95, ambient ke ~0.18 dengan sedikit fill light dingin/hangat agar ada kedalaman.
+- Bloom: threshold turun ke ~0.28 supaya bintang benar-benar bersinar, radius sedikit lebih lembut (bukan silau putih).
+- Fog dimundurkan (mulai lebih jauh) agar node jauh tidak lenyap total; latar tetap hitam-biru pekat.
+- Bintang: emissive dinaikkan, halo lebih halus, node redup tidak turun sampai hilang (dim floor dinaikkan).
+- Nebula/Milky Way: opacity dikurangi ~25–30% agar tidak menutupi bintang.
 
-- Transisi crossfade + wipe diagonal (clip-path), teks masuk per-baris stagger 60 ms blur→sharp.
-- Ken Burns 1.0→1.08, parallax kursor tiga lapis (gambar / teks / grid HUD).
-- Neon: garis aksen glow, grid HUD tipis, grain halus, bracket sudut beranimasi tiap ganti slide.
-- Autoplay 7 s + progress, pause on hover, drag/swipe, keyboard ←/→, hormati `prefers-reduced-motion`.
-- Tiap slide CTA mendarat langsung ke cluster terkait.
-- Kartu-kartu lain di lobby dinaikkan: border gradien neon, glow hover, angka telemetri monospace.
-
-### 2. Universe 3D: formasi galaksi per cluster + pencahayaan realistis
+### 2. Formasi: kulit bola tak sempurna (bukan piringan spiral)
 
 ```text
-   TAMPAK ATAS (per cluster)          TAMPAK SAMPING
-        .  ·   ·                       ·  ····•····  ·
-     ·  ·:•:·..  ·                    ····•••◉•••····
-   · .:•:◉ hub  ·:·  ·      →          ·  ····•····  ·
-     · ·:·..·:•· ·                    tebal di inti, tipis di tepi
-        ·   ·  ·                      (piringan, bukan bola)
+   SEKARANG (piringan)          TARGET (shell bergelombang)
+      ·:•:◉:•:·                    ·   ·  ·   ·   ·
+    pipih, terlihat 2D           ·  ·  ◉   ·  ·   ·
+                                  ·   ·   ·  ·   ·
+                                 titik menempel di kulit
+                                 bola, radius di-noise
 ```
 
-- Cakram spiral logaritmik 2 lengan per cluster, kerapatan menurun ke tepi, ketebalan profil sech².
-- Tiap cakram miring berbeda; keseluruhan tetap bola besar tak simetris. Cluster tipis (kamus) diberi radius lebih besar untuk mengisi volume, dengan cek tabrakan antar-cluster. Deterministik.
-- **Reduce lighting**: ambient/fill diturunkan drastis, bloom lebih selektif (threshold naik), latar benar-benar hitam pekat, bintang jadi sumber cahaya sendiri (emissive + halo kecil), kontras tinggi seperti foto luar angkasa asli. Nebula dibuat lebih redup dan tipis.
+- `placeCloud` diganti `placeShell()`: titik disebar merata (fibonacci/blue-noise) pada permukaan bola cluster, lalu radius dimodulasi noise (±18%) sehingga permukaannya bergelombang — tidak sempurna, tetap terasa 3D.
+- Jarak antar-titik dijaga (relaksasi minimum separation) agar menyebar dan tidak menumpuk.
+- Sedikit isian di dalam (10–15% node ditarik ke radius lebih dalam) supaya tidak terlihat seperti cangkang kosong.
+- Cek tabrakan antar-cluster tetap dipertahankan; deterministik.
 
-### 3. Garis penghubung & mode Full Tree
+### 3. Animasi tautan: transfer data
 
-- Semua garis utama (bukan hanya hover) mendapat animasi aliran: paket cahaya berjalan sepanjang garis lurus, kecepatan mengikuti kedalaman hierarki, opasitas berdenyut halus.
-- **Full Tree dua arah**: menekan node leaf menyalakan jalur balik leaf → induk → hub → pusat dengan animasi rambat, persis seperti arah pusat → leaf. Node di jalur ikut menyala; sisanya redup.
-- Garis yang sudah tampil di pass utama tidak digambar ulang saat hover (tetap seperti sekarang).
+- `FlowEdges` disempurnakan: paket cahaya terlihat jelas berjalan induk → anak dengan kepala terang + ekor memudar, kecepatan mengikuti kedalaman, dan garis dasar sedikit lebih tegas (tidak nyaris tak terlihat).
+- Saat node dipilih: paket di jalur aktif dipercepat dan lebih terang; garis lain redup tapi masih terbaca.
 
-### 4. Navigasi: tombol Next & Undo
+### 4. Lobby: gambar realistis + diagram profesional
 
-Kontrol melayang di universe:
+- Ganti semua gambar AI (`nebula-gold`, `constellation`, `debate-stage`, `mission-control`, `lexicon`, `planet-hero`) dengan foto NASA/ESA asli 4K (arsip NASA Images, sama seperti slider hero). File AI lama dihapus.
+- **Ganti bagian "distribusi stance"** dengan **komposisi jenis mosi**: persentase tiap jenis (kebijakan, nilai, aktor, kausalitas, kompetitif, hibrid…) dalam bentuk:
+  - donut chart persentase + legenda angka,
+  - bar horizontal terurut dengan label persen,
+  - garis tren kesulitan/keseimbangan pro-kon per jenis.
+- Di bawah tiap diagram ditambahkan paragraf penjelas ringkas (apa artinya, cara membaca, implikasi latihan) supaya lobby terasa seperti laporan profesional, bukan hiasan.
+- Rapikan UI: spasi konsisten, tipografi berjenjang, kartu dengan border tipis + hover halus, semua teks rata kanan-kiri di blok panjang.
 
-```text
-   [ ↩ UNDO ]  [ ● node saat ini ]  [ NEXT ↪ ]     [ ⌂ pusat ]
-```
+### 5. Mosi: konten lebih mudah dicerna (bullet)
 
-- **Undo** kembali ke node sebelumnya (riwayat kunjungan, juga bisa `Alt+←` / tombol back browser).
-- **Next** melompat ke node berikutnya secara berurutan dalam cluster/level yang sama (sibling → anak pertama), jadi tidak perlu balik ke pusat.
-- Riwayat disimpan di store; tombol nonaktif saat tidak tersedia.
+Sisa kapasitas dipakai untuk memperluas isi mosi:
 
-### 5. UI di dalam universe (dua panel kanan-kiri, saat ini terlalu datar)
-
-- Sidebar kiri: indikator garis neon aktif, label meluncur saat hover, section collapsible, mini-sparkline jumlah node.
-- Panel kanan: header sticky dengan breadcrumb + progress baca, layer kaca (blur + border gradien + inner glow), tab bergaris neon, kartu bento bersudut bracket, konten masuk bertahap.
-- Buka/tutup panel: slide + scale halus.
-
-### 6. Font: dipangkas jadi 4 dan diverifikasi
-
-DEFAULT (Bebas + DM Sans) · PIXEL (Press Start 2P + VT323) · GENSHIN (Cinzel + Cormorant Unicase) · NASA (Orbitron + Michroma). Dua preset campuran dihapus; ukuran/leading disetel per preset agar panel panjang tetap terbaca, dan tiap preset dicek langsung di preview.
-
-### 7. Mesin analisis mosi (setelah UI beres)
-
-Semua 142 mosi otomatis mendapat: header tipe/konteks + **PRO __% / KON __%**, chip istilah kunci yang membuka kamus, tabel 10 poin PRO dan 10 poin KON (Tier S/A/B/C · Kekuatan% · Risiko% · Kausalitas), empat case (Ideal/Mayor/Minor/Niche + catatan risiko), rotasi Ofensif & Defensif (P1/P2/P3 + risiko) yang dipilih otomatis dari probabilitas, serta tabel riset & literasi. Selanjutnya kamu tunjuk batch mosi yang dinaikkan jadi tulisan tangan; data manual menimpa keluaran mesin.
+- Setiap poin PRO/KON ditulis sebagai bullet pendek berjenjang: klaim → mekanisme → dampak → contoh, bukan paragraf panjang.
+- Ringkasan atas tiap mosi: 4–6 bullet "inti yang harus diingat".
+- Case (Ideal/Mayor/Minor/Niche) dan rotasi ofensif/defensif juga dipecah jadi bullet dengan label tebal.
+- Istilah asing tetap tertaut ke kamus.
 
 ### Teknis
-- `src/lib/graph/build.ts`: `placeDisc()` / `placeSpiralArm()` menggantikan `placeCloud` untuk cluster besar.
-- Pencahayaan & bloom diatur di `Universe.tsx` + `useDeviceProfile.ts` (preset ultra tetap, tapi eksposur turun).
-- `HoverEdges.tsx` diperluas jadi renderer garis beranimasi untuk pass utama; jalur balik leaf→pusat lewat BFS di store.
-- Store: `history[]`, `historyIndex`, aksi `goBack()` / `goNext()`.
-- Komponen baru: `lobby/HeroSlider.tsx`, `universe/NavControls.tsx`, `panels/motion/DossierTable.tsx`, `CaseStack.tsx`, `RotationTimeline.tsx`, `src/lib/motion/analysis.ts`.
-- Gambar NASA diunduh ke `src/assets/lobby/`, diekternalisasi via `lovable-assets`; aset AI lama dihapus.
+- `src/lib/graph/build.ts`: `placeShell()` menggantikan `placeCloud()` (API sama), plus relaksasi separasi.
+- `src/components/universe/Universe.tsx`: exposure, ambient/fill, bloom threshold, fog, dim floor, opacity nebula.
+- `src/components/universe/FlowEdges.tsx`: shader paket (head+tail), kecepatan per-depth.
+- `src/components/lobby/MissionControl.tsx`: bagian diagram jenis mosi + teks penjelas; aset foto baru di `src/assets/lobby/` via `lovable-assets`.
+- Komponen chart kecil baru: `src/components/panels/infographic/Donut.tsx`, `TrendLine.tsx`.
+- `src/lib/motion/enrich.ts` + `PanelContent.tsx`: keluaran berbentuk bullet.
