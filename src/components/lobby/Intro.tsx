@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import logo from "@/assets/smandash-logo.png";
 
 /**
@@ -8,24 +8,35 @@ import logo from "@/assets/smandash-logo.png";
 export function Intro({ onDone }: { onDone: () => void }) {
   const [visible, setVisible] = useState(true);
   const [phase, setPhase] = useState<"in" | "hold" | "out">("in");
+  const doneRef = useRef(onDone);
+  doneRef.current = onDone;
 
+  // Mount-only: timer tidak boleh direset setiap kali fase berubah.
   useEffect(() => {
+    let finished = false;
+    const finish = () => {
+      if (finished) return;
+      finished = true;
+      setVisible(false);
+      doneRef.current();
+    };
     const t1 = window.setTimeout(() => setPhase("hold"), 900);
     const t2 = window.setTimeout(() => setPhase("out"), 2700);
-    const t3 = window.setTimeout(() => { setVisible(false); onDone(); }, 3400);
+    let t4 = 0;
+    const t3 = window.setTimeout(finish, 3400);
     const skip = (e: KeyboardEvent | MouseEvent) => {
       if (e instanceof KeyboardEvent && !["Escape", "Enter", " "].includes(e.key)) return;
       setPhase("out");
-      window.setTimeout(() => { setVisible(false); onDone(); }, 350);
+      t4 = window.setTimeout(finish, 350);
     };
     window.addEventListener("keydown", skip as any);
     window.addEventListener("click", skip as any);
     return () => {
-      window.clearTimeout(t1); window.clearTimeout(t2); window.clearTimeout(t3);
+      window.clearTimeout(t1); window.clearTimeout(t2); window.clearTimeout(t3); window.clearTimeout(t4);
       window.removeEventListener("keydown", skip as any);
       window.removeEventListener("click", skip as any);
     };
-  }, [onDone]);
+  }, []);
 
   if (!visible) return null;
 
