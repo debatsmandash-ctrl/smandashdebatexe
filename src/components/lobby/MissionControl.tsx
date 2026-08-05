@@ -328,19 +328,45 @@ export function MissionControl({ onInitiate }: { onInitiate: () => void }) {
           <Stat label="Event" value={stats.events} accent={C.danger} />
         </div>
 
-        {/* stance distribution */}
+        {/* komposisi jenis mosi */}
         <div style={{ marginTop: 26, border: `1px solid ${C.lineSoft}`, padding: 24, background: "rgba(255,255,255,0.02)" }}>
-          <Eyebrow color={C.accent2}>Distribusi stance mosi</Eyebrow>
-          <div style={{ display: "flex", height: 10, marginTop: 16, overflow: "hidden", borderRadius: 2 }}>
-            <Seg w={mix.off / stats.motions} c={C.danger} />
-            <Seg w={mix.def / stats.motions} c={C.accent2} />
-            <Seg w={mix.hyb / stats.motions} c={C.accent} />
+          <Eyebrow color={C.accent2}>Komposisi jenis mosi</Eyebrow>
+          <div style={{ display: "grid", gridTemplateColumns: "minmax(190px, 220px) 1fr", gap: 30, marginTop: 18, alignItems: "center" }}>
+            <div style={{ display: "flex", justifyContent: "center" }}>
+              <Donut data={jenisMix.rows} centerTop={String(jenisMix.total)} centerSub="MOSI" />
+            </div>
+            <BarList data={jenisMix.rows} total={jenisMix.total} />
           </div>
-          <div style={{ display: "flex", gap: 22, flexWrap: "wrap", marginTop: 14, fontFamily: MONO, fontSize: 10.5, letterSpacing: "0.14em", color: C.dim }}>
-            <Legend c={C.danger} t={`OFENSIF ${mix.off}`} />
-            <Legend c={C.accent2} t={`DEFENSIF ${mix.def}`} />
-            <Legend c={C.accent} t={`HIBRID ${mix.hyb}`} />
+
+          {/* rata-rata peluang PRO per jenis */}
+          <div style={{ marginTop: 26, borderTop: `1px solid ${C.lineSoft}`, paddingTop: 20 }}>
+            <div style={{ fontFamily: MONO, fontSize: 9.5, letterSpacing: "0.22em", color: C.faint, textTransform: "uppercase", marginBottom: 12 }}>
+              Rata-rata peluang sisi PRO per jenis
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(168px,1fr))", gap: 12 }}>
+              {jenisMix.rows.map((r) => (
+                <div key={r.label} style={{ border: `1px solid ${C.lineSoft}`, padding: "12px 14px" }}>
+                  <div style={{ fontFamily: MONO, fontSize: 9.5, letterSpacing: "0.16em", color: C.dim, textTransform: "uppercase" }}>{r.label}</div>
+                  <div style={{ fontFamily: MONO, fontSize: 22, color: r.color, marginTop: 6 }}>{r.avgPro.toFixed(1)}%</div>
+                  <div style={{ height: 4, background: "rgba(255,255,255,0.05)", marginTop: 8 }}>
+                    <div style={{ width: `${r.avgPro}%`, height: "100%", background: r.color }} />
+                  </div>
+                  <div style={{ fontFamily: MONO, fontSize: 9, color: C.faint, marginTop: 8, letterSpacing: "0.12em" }}>
+                    {r.berat} MOSI BERAT SEBELAH
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
+
+          <p style={{ marginTop: 20, color: C.dim, fontSize: 13.5, lineHeight: 1.85, textAlign: "justify", hyphens: "auto", maxWidth: 900 }}>
+            Cara membaca: donat menunjukkan porsi tiap jenis mosi di dalam bank; batang di sebelahnya
+            memberi angka persis beserta jumlah mosinya. Kartu di bawah menampilkan rata-rata peluang
+            sisi PRO menurut analisis heuristik — semakin jauh dari 50%, semakin timpang jenis mosi itu
+            dan semakin besar kebutuhan latihan half-stance. Saat ini {jenisMix.beratTotal} dari {jenisMix.total} mosi
+            tergolong berat sebelah (selisih ≥ 17,5% dari titik seimbang), sehingga latihan sebaiknya diarahkan ke sisi yang
+            secara statistik lebih sulit dipertahankan, bukan sekadar diundi.
+          </p>
         </div>
       </section>
 
