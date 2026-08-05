@@ -301,7 +301,7 @@ function StarNodeMesh({ node, isSelected, isHovered, isLit, isDim, haloTex, prof
   });
 
   const emissive = node.color;
-  const opacity = isDim ? 0.22 : 1;
+  const opacity = isDim ? 0.38 : 1;
   const isHub = node.kind === "root" || node.kind === "cluster" || node.kind === "subhub";
   const haloBoost = 1 + imp * 0.6;
 
@@ -336,12 +336,12 @@ function StarNodeMesh({ node, isSelected, isHovered, isLit, isDim, haloTex, prof
       )}
       {/* inner sharp halo */}
       <sprite scale={[baseSize * 6 * haloBoost, baseSize * 6 * haloBoost, 1]}>
-        <spriteMaterial map={haloTex} color={emissive} transparent opacity={isDim ? 0.05 : 0.55 + imp * 0.25} blending={THREE.AdditiveBlending} depthWrite={false} />
+        <spriteMaterial map={haloTex} color={emissive} transparent opacity={isDim ? 0.12 : 0.5 + imp * 0.22} blending={THREE.AdditiveBlending} depthWrite={false} />
       </sprite>
       {/* outer soft glow (desktop only) */}
       {profile.haloLayers > 1 && (
         <sprite scale={[baseSize * 16 * haloBoost, baseSize * 16 * haloBoost, 1]}>
-          <spriteMaterial map={haloTex} color={emissive} transparent opacity={isDim ? 0.02 : 0.22 + imp * 0.15} blending={THREE.AdditiveBlending} depthWrite={false} />
+          <spriteMaterial map={haloTex} color={emissive} transparent opacity={isDim ? 0.06 : 0.18 + imp * 0.12} blending={THREE.AdditiveBlending} depthWrite={false} />
         </sprite>
       )}
       {labelVisible && (
@@ -559,7 +559,7 @@ function Scene({ profile }: { profile: DeviceProfile }) {
       <StarField />
       {profile.tier === "desktop" && <Galaxies />}
       <StarClusters />
-      <MilkyWaySky opacity={settings.nebulaOpacity * 0.7} />
+      <MilkyWaySky opacity={settings.nebulaOpacity * 0.5} />
 
       <FlowEdges
         graph={graph}
@@ -605,7 +605,7 @@ function Scene({ profile }: { profile: DeviceProfile }) {
 
       {bloomEnabled && (
         <EffectComposer multisampling={quality === "ultra" ? 4 : 0}>
-          <Bloom intensity={profile.bloomIntensity * settings.bloomIntensity * qScale} luminanceThreshold={0.5} luminanceSmoothing={0.7} mipmapBlur radius={profile.bloomRadius} />
+          <Bloom intensity={profile.bloomIntensity * settings.bloomIntensity * qScale} luminanceThreshold={0.28} luminanceSmoothing={0.85} mipmapBlur radius={profile.bloomRadius} />
           {profile.chromaticAberration && quality === "ultra" ? (
             <ChromaticAberration offset={[0.0008, 0.0008]} radialModulation={false} modulationOffset={0} blendFunction={BlendFunction.NORMAL} />
           ) : <></>}
@@ -672,13 +672,13 @@ export function Universe() {
         alpha: true,
         powerPreference: "high-performance",
         toneMapping: THREE.ACESFilmicToneMapping,
-        toneMappingExposure: 0.55,
+        toneMappingExposure: 0.95,
         outputColorSpace: THREE.SRGBColorSpace,
       }}
       style={{ position: "absolute", inset: 0, background: "transparent" }}
     >
-      <color attach="background" args={["#01020a"]} />
-      <fog attach="fog" args={["#01020a", 420, 1250]} />
+      <color attach="background" args={["#03060f"]} />
+      <fog attach="fog" args={["#03060f", 700, 1900]} />
       <Suspense fallback={null}>
         <Scene profile={profile} />
       </Suspense>
