@@ -11,7 +11,7 @@ import { useMemo, useState } from "react";
 import { SimeoneEgg } from "@/components/panels/SimeoneEgg";
 import { RiskBar } from "@/components/panels/RiskBar";
 import { analyzeMotion, analyzePoint, tierColor } from "@/lib/motion/win-probability";
-import { enrichPro, enrichKon } from "@/lib/motion/enrich";
+import { enrichPro, enrichKon, bulletize } from "@/lib/motion/enrich";
 import { RadarChart, HorizBar } from "@/components/panels/infographic/RadarChart";
 import { VocabText } from "@/components/panels/VocabText";
 
