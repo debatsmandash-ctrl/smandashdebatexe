@@ -6,11 +6,17 @@ import { useUniverse, useSettings } from "@/lib/store";
 import { analyzeMotion } from "@/lib/motion/win-probability";
 import logo from "@/assets/smandash-logo.png";
 import milkyway from "@/assets/milkyway_pano_hd.jpg.asset.json";
-import nebulaImg from "@/assets/lobby/nebula-gold.jpg";
-import constellationImg from "@/assets/lobby/constellation.jpg";
-import stageImg from "@/assets/lobby/debate-stage.jpg";
-import controlImg from "@/assets/lobby/mission-control.jpg";
-import lexiconImg from "@/assets/lobby/lexicon.jpg";
+import orionAsset from "@/assets/lobby/nasa-orion.jpg.asset.json";
+import whirlpoolAsset from "@/assets/lobby/nasa-whirlpool.jpg.asset.json";
+import sombreroAsset from "@/assets/lobby/nasa-sombrero.jpg.asset.json";
+import mocrAsset from "@/assets/lobby/nasa-mocr.jpg.asset.json";
+import hubbleAsset from "@/assets/lobby/nasa-hubble.jpg.asset.json";
+import { Donut, BarList } from "@/components/panels/infographic/Donut";
+const nebulaImg = orionAsset.url;
+const constellationImg = whirlpoolAsset.url;
+const stageImg = sombreroAsset.url;
+const controlImg = mocrAsset.url;
+const lexiconImg = hubbleAsset.url;
 import { HeroSlider, buildSlides } from "./HeroSlider";
 
 
