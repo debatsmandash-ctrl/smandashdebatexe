@@ -61,3 +61,41 @@ export function enrichKon(m: Motion, target = 10): string[] {
   }
   return base;
 }
+
+/**
+ * Pecah satu poin argumen menjadi bullet ringkas (klaim → mekanisme → dampak →
+ * bukti/uji) supaya mudah diserap saat latihan. Deterministik.
+ */
+export function bulletize(text: string, side: "pro" | "kon", index: number): { label: string; body: string }[] {
+  const t = text.replace(/\s+/g, " ").trim();
+  const parts = t.split(/(?<=[.;])\s+|\s+(?:karena|sehingga|akibatnya|maka)\s+/i).filter((s) => s.length > 3);
+  const klaim = parts[0] ?? t;
+  const seed = hash(side + index + t.slice(0, 30));
+
+  const MEKANISME = [
+    "Rantai sebabnya: aktor utama mengubah perilaku begitu insentif atau batas hukumnya bergeser.",
+    "Mekanismenya berjalan lewat perubahan biaya-manfaat yang dihadapi pihak yang paling terdampak.",
+    "Jalur kerjanya: aturan baru menutup celah yang selama ini dipakai untuk menghindar dari tanggung jawab.",
+    "Prosesnya bertahap — kebijakan menggeser norma, norma menggeser praktik sehari-hari.",
+  ];
+  const DAMPAK = [
+    "Dampak terukurnya jatuh pada kelompok yang paling sedikit punya daya tawar, dan itulah beban utama dalam penimbangan.",
+    "Dampaknya bersifat kumulatif: kecil per kasus, besar ketika diakumulasi lintas tahun.",
+    "Dampak terbesarnya bukan angka, melainkan perubahan ekspektasi publik terhadap institusi.",
+    "Dampaknya langsung terasa pada akses, biaya, dan rasa aman pihak yang dibela.",
+  ];
+  const UJI = [
+    "Uji lawan: minta mereka menunjukkan mekanisme tandingan yang konkret, bukan sekadar kemungkinan buruk.",
+    "Uji lawan: bandingkan dengan status quo, bukan dengan dunia ideal yang tidak pernah ada.",
+    "Uji lawan: tanyakan siapa yang menanggung biaya bila klaim mereka meleset.",
+    "Uji lawan: periksa apakah bukti mereka berlaku pada konteks yang sedang diperdebatkan.",
+  ];
+
+  const rest = parts.slice(1).join(" ").trim();
+  return [
+    { label: "Klaim", body: klaim },
+    { label: "Mekanisme", body: rest || MEKANISME[seed % MEKANISME.length] },
+    { label: "Dampak", body: DAMPAK[(seed >> 3) % DAMPAK.length] },
+    { label: "Uji", body: UJI[(seed >> 5) % UJI.length] },
+  ];
+}

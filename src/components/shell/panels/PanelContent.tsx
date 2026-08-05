@@ -11,7 +11,7 @@ import { useMemo, useState } from "react";
 import { SimeoneEgg } from "@/components/panels/SimeoneEgg";
 import { RiskBar } from "@/components/panels/RiskBar";
 import { analyzeMotion, analyzePoint, tierColor } from "@/lib/motion/win-probability";
-import { enrichPro, enrichKon } from "@/lib/motion/enrich";
+import { enrichPro, enrichKon, bulletize } from "@/lib/motion/enrich";
 import { RadarChart, HorizBar } from "@/components/panels/infographic/RadarChart";
 import { VocabText } from "@/components/panels/VocabText";
 
@@ -457,7 +457,19 @@ function ArgPointCard({ text, motionId, side, index }: { text: string; motionId:
         </div>
       </div>
       <VocabText text={text} style={{ ...para, fontSize: 13, margin: 0 }} />
-      <div style={{ marginTop: 6, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+      <ul style={{ listStyle: "none", margin: "10px 0 0", padding: 0, display: "grid", gap: 6 }}>
+        {bulletize(text, side, index).map((b) => (
+          <li key={b.label} style={{ display: "flex", gap: 8, alignItems: "flex-start" }}>
+            <span style={{
+              flex: "0 0 auto", marginTop: 3, fontFamily: "Space Mono", fontSize: 8.5,
+              letterSpacing: "0.14em", color: tCol, border: `1px solid ${tCol}55`,
+              borderRadius: 3, padding: "1px 5px", textTransform: "uppercase",
+            }}>{b.label}</span>
+            <VocabText text={b.body} style={{ ...para, fontSize: 12, margin: 0, lineHeight: 1.65 }} />
+          </li>
+        ))}
+      </ul>
+      <div style={{ marginTop: 8, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
         <HorizBar value={a.strength} color="#00ffc8" />
         <HorizBar value={a.risk} color="#fb7185" />
       </div>

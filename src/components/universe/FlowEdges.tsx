@@ -94,14 +94,17 @@ export function FlowEdges({
           varying float vLit;
           varying vec3 vColor;
           void main() {
-            // paket cahaya berjalan dari induk (0) ke anak (1)
-            float t = fract(uTime * 0.28 + vPhase);
-            float d = abs(vProgress - t);
-            float packet = smoothstep(0.22, 0.0, d);
-            float breathe = 0.85 + 0.15 * sin(uTime * 1.2 + vPhase * 6.2831);
-            float base = vLit > 0.9 ? 0.42 : (vLit > 0.1 ? 0.085 : 0.018);
-            float glow = vLit > 0.9 ? packet * 0.9 : packet * 0.12;
-            vec3 col = vColor * (0.75 + glow * 1.6);
+            // paket data: kepala terang + ekor memudar, berjalan induk → anak
+            float speed = vLit > 0.9 ? 0.55 : 0.24;
+            float t = fract(uTime * speed + vPhase);
+            float d = vProgress - t;
+            float head = smoothstep(0.05, 0.0, abs(d));
+            float tail = smoothstep(0.30, 0.0, max(0.0, -d));
+            float packet = max(head, tail * 0.55);
+            float breathe = 0.88 + 0.12 * sin(uTime * 1.2 + vPhase * 6.2831);
+            float base = vLit > 0.9 ? 0.55 : (vLit > 0.1 ? 0.20 : 0.07);
+            float glow = vLit > 0.9 ? packet * 1.25 : packet * 0.35;
+            vec3 col = vColor * (0.85 + glow * 1.8);
             float alpha = (base * breathe) + glow;
             if (alpha < 0.004) discard;
             gl_FragColor = vec4(col, alpha);

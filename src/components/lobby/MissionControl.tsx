@@ -6,11 +6,17 @@ import { useUniverse, useSettings } from "@/lib/store";
 import { analyzeMotion } from "@/lib/motion/win-probability";
 import logo from "@/assets/smandash-logo.png";
 import milkyway from "@/assets/milkyway_pano_hd.jpg.asset.json";
-import nebulaImg from "@/assets/lobby/nebula-gold.jpg";
-import constellationImg from "@/assets/lobby/constellation.jpg";
-import stageImg from "@/assets/lobby/debate-stage.jpg";
-import controlImg from "@/assets/lobby/mission-control.jpg";
-import lexiconImg from "@/assets/lobby/lexicon.jpg";
+import orionAsset from "@/assets/lobby/nasa-orion.jpg.asset.json";
+import whirlpoolAsset from "@/assets/lobby/nasa-whirlpool.jpg.asset.json";
+import sombreroAsset from "@/assets/lobby/nasa-sombrero.jpg.asset.json";
+import mocrAsset from "@/assets/lobby/nasa-mocr.jpg.asset.json";
+import hubbleAsset from "@/assets/lobby/nasa-hubble.jpg.asset.json";
+import { Donut, BarList } from "@/components/panels/infographic/Donut";
+const nebulaImg = orionAsset.url;
+const constellationImg = whirlpoolAsset.url;
+const stageImg = sombreroAsset.url;
+const controlImg = mocrAsset.url;
+const lexiconImg = hubbleAsset.url;
 import { HeroSlider, buildSlides } from "./HeroSlider";
 
 
@@ -144,6 +150,43 @@ export function MissionControl({ onInitiate }: { onInitiate: () => void }) {
     const off = MOTIONS.filter((m) => analyzeMotion(m).stance === "OFENSIF").length;
     const def = MOTIONS.filter((m) => analyzeMotion(m).stance === "DEFENSIF").length;
     return { off, def, hyb: MOTIONS.length - off - def };
+  }, []);
+
+  /** Komposisi jenis mosi + rata-rata peluang PRO per jenis. */
+  const jenisMix = useMemo(() => {
+    const PALETTE = ["#D8B26A", "#4FD1C5", "#7AA2F7", "#F7768E", "#BB9AF7", "#9ECE6A", "#E0AF68", "#89DDFF"];
+    const buckets = new Map<string, { n: number; pro: number; berat: number }>();
+    MOTIONS.forEach((m: any) => {
+      const key = String(m.type || m.cat || "lainnya").toLowerCase();
+      const a = analyzeMotion(m);
+      const b = buckets.get(key) ?? { n: 0, pro: 0, berat: 0 };
+      b.n += 1;
+      b.pro += a.winProProb;
+      if (Math.abs(a.balance) >= 0.35) b.berat += 1;
+      buckets.set(key, b);
+    });
+    const rows = Array.from(buckets.entries())
+      .map(([label, b], i) => ({
+        label,
+        value: b.n,
+        color: PALETTE[i % PALETTE.length],
+        avgPro: b.pro / b.n,
+        berat: b.berat,
+      }))
+      .sort((a, b) => b.value - a.value);
+    const top = rows.slice(0, 7);
+    const rest = rows.slice(7);
+    if (rest.length) {
+      top.push({
+        label: "lainnya",
+        value: rest.reduce((a, r) => a + r.value, 0),
+        color: "#606776",
+        avgPro: rest.reduce((a, r) => a + r.avgPro * r.value, 0) / Math.max(1, rest.reduce((a, r) => a + r.value, 0)),
+        berat: rest.reduce((a, r) => a + r.berat, 0),
+      });
+    }
+    const beratTotal = rows.reduce((a, r) => a + r.berat, 0);
+    return { rows: top, total: MOTIONS.length, beratTotal };
   }, []);
 
   const cats = useMemo(() => {
@@ -285,19 +328,45 @@ export function MissionControl({ onInitiate }: { onInitiate: () => void }) {
           <Stat label="Event" value={stats.events} accent={C.danger} />
         </div>
 
-        {/* stance distribution */}
+        {/* komposisi jenis mosi */}
         <div style={{ marginTop: 26, border: `1px solid ${C.lineSoft}`, padding: 24, background: "rgba(255,255,255,0.02)" }}>
-          <Eyebrow color={C.accent2}>Distribusi stance mosi</Eyebrow>
-          <div style={{ display: "flex", height: 10, marginTop: 16, overflow: "hidden", borderRadius: 2 }}>
-            <Seg w={mix.off / stats.motions} c={C.danger} />
-            <Seg w={mix.def / stats.motions} c={C.accent2} />
-            <Seg w={mix.hyb / stats.motions} c={C.accent} />
+          <Eyebrow color={C.accent2}>Komposisi jenis mosi</Eyebrow>
+          <div style={{ display: "grid", gridTemplateColumns: "minmax(190px, 220px) 1fr", gap: 30, marginTop: 18, alignItems: "center" }}>
+            <div style={{ display: "flex", justifyContent: "center" }}>
+              <Donut data={jenisMix.rows} centerTop={String(jenisMix.total)} centerSub="MOSI" />
+            </div>
+            <BarList data={jenisMix.rows} total={jenisMix.total} />
           </div>
-          <div style={{ display: "flex", gap: 22, flexWrap: "wrap", marginTop: 14, fontFamily: MONO, fontSize: 10.5, letterSpacing: "0.14em", color: C.dim }}>
-            <Legend c={C.danger} t={`OFENSIF ${mix.off}`} />
-            <Legend c={C.accent2} t={`DEFENSIF ${mix.def}`} />
-            <Legend c={C.accent} t={`HIBRID ${mix.hyb}`} />
+
+          {/* rata-rata peluang PRO per jenis */}
+          <div style={{ marginTop: 26, borderTop: `1px solid ${C.lineSoft}`, paddingTop: 20 }}>
+            <div style={{ fontFamily: MONO, fontSize: 9.5, letterSpacing: "0.22em", color: C.faint, textTransform: "uppercase", marginBottom: 12 }}>
+              Rata-rata peluang sisi PRO per jenis
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(168px,1fr))", gap: 12 }}>
+              {jenisMix.rows.map((r) => (
+                <div key={r.label} style={{ border: `1px solid ${C.lineSoft}`, padding: "12px 14px" }}>
+                  <div style={{ fontFamily: MONO, fontSize: 9.5, letterSpacing: "0.16em", color: C.dim, textTransform: "uppercase" }}>{r.label}</div>
+                  <div style={{ fontFamily: MONO, fontSize: 22, color: r.color, marginTop: 6 }}>{r.avgPro.toFixed(1)}%</div>
+                  <div style={{ height: 4, background: "rgba(255,255,255,0.05)", marginTop: 8 }}>
+                    <div style={{ width: `${r.avgPro}%`, height: "100%", background: r.color }} />
+                  </div>
+                  <div style={{ fontFamily: MONO, fontSize: 9, color: C.faint, marginTop: 8, letterSpacing: "0.12em" }}>
+                    {r.berat} MOSI BERAT SEBELAH
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
+
+          <p style={{ marginTop: 20, color: C.dim, fontSize: 13.5, lineHeight: 1.85, textAlign: "justify", hyphens: "auto", maxWidth: 900 }}>
+            Cara membaca: donat menunjukkan porsi tiap jenis mosi di dalam bank; batang di sebelahnya
+            memberi angka persis beserta jumlah mosinya. Kartu di bawah menampilkan rata-rata peluang
+            sisi PRO menurut analisis heuristik — semakin jauh dari 50%, semakin timpang jenis mosi itu
+            dan semakin besar kebutuhan latihan half-stance. Saat ini {jenisMix.beratTotal} dari {jenisMix.total} mosi
+            tergolong berat sebelah (selisih ≥ 17,5% dari titik seimbang), sehingga latihan sebaiknya diarahkan ke sisi yang
+            secara statistik lebih sulit dipertahankan, bukan sekadar diundi.
+          </p>
         </div>
       </section>
 
