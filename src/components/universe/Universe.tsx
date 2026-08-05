@@ -547,12 +547,14 @@ function Scene({ profile }: { profile: DeviceProfile }) {
 
   return (
     <>
-      {/* Pencahayaan minimal — ruang angkasa asli: hampir gelap total,
-          bintang jadi sumber cahayanya sendiri (emissive). */}
-      <ambientLight intensity={quality === "ultra" ? 0.05 : quality === "high" ? 0.045 : 0.04} />
-      <pointLight position={[0, 0, 0]} intensity={quality === "ultra" ? 0.30 : 0.18} color="#d8b27a" distance={quality === "ultra" ? 520 : 260} />
-      <pointLight position={[140, 80, -80]} intensity={quality === "ultra" ? 0.14 : 0.09} color="#00ffc8" distance={quality === "ultra" ? 560 : 360} />
-      <pointLight position={[-140, -60, 100]} intensity={quality === "ultra" ? 0.12 : 0.07} color="#8aa6d8" distance={quality === "ultra" ? 520 : 320} />
+      {/* Pencahayaan realistis: gelap tapi tetap terbaca — ambient lembut +
+          key light hangat di pusat dan dua fill dingin untuk kedalaman. */}
+      <ambientLight intensity={quality === "ultra" ? 0.20 : quality === "high" ? 0.18 : 0.16} />
+      <hemisphereLight args={["#9fc4ff", "#12060a", 0.16]} />
+      <pointLight position={[0, 0, 0]} intensity={quality === "ultra" ? 0.85 : 0.6} color="#ffd9a8" distance={quality === "ultra" ? 900 : 520} />
+      <pointLight position={[140, 80, -80]} intensity={quality === "ultra" ? 0.42 : 0.3} color="#00ffc8" distance={quality === "ultra" ? 760 : 520} />
+      <pointLight position={[-140, -60, 100]} intensity={quality === "ultra" ? 0.38 : 0.26} color="#8aa6d8" distance={quality === "ultra" ? 720 : 480} />
+      <directionalLight position={[260, 180, 220]} intensity={0.22} color="#cfe2ff" />
 
       <StarField />
       {profile.tier === "desktop" && <Galaxies />}
