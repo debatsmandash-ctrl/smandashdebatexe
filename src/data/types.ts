@@ -40,6 +40,23 @@ export interface Motion {
   ideal?: string;
   research?: string;
   comp?: string;
+  // Template analisis mosi lengkap (opsional)
+  hybrid?: string;
+  note?: string;
+  probPro?: number;
+  probKon?: number;
+  probNote?: string;
+  tiersPro?: MotionPoint[];
+  tiersKon?: MotionPoint[];
+  cases?: Partial<Record<"ideal" | "mayor" | "minor" | "niche", { pro?: string; kon?: string }>>;
+  rotation?: { ofensif?: string; defensif?: string };
+}
+
+export interface MotionPoint {
+  tier: "S" | "A" | "B" | "C";
+  text: string;
+  strength: number;
+  risk: number;
 }
 
 export interface JenisMosi {

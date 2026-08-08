@@ -9,6 +9,7 @@ import timeInception from "@/assets/audio/time-inception.mp3.asset.json";
 import internationale from "@/assets/audio/internationale-sovietwave.mp3.asset.json";
 import inThePool from "@/assets/audio/in-the-pool.mp3.asset.json";
 import solace from "@/assets/audio/solace-txmy.mp3.asset.json";
+import caribbean from "@/assets/audio/caribbean-blue-mashup.mp3.asset.json";
 import solas from "@/assets/audio/solas-jamie-duffy.mp3.asset.json";
 
 export interface Track {
@@ -30,6 +31,7 @@ export const TRACKS: Track[] = [
   { id: "internationale",title: "The Internationale (Sovietwave)",artist: "Forte Republic",    url: internationale.url },
   { id: "in-the-pool",   title: "In The Pool",                   artist: "The Dreamer Piano",  url: inThePool.url },
   { id: "solace",        title: "Solace",                        artist: "Txmy",               url: solace.url },
+  { id: "caribbean",     title: "Caribbean Blue × Golden Brown × Love Story", artist: "szxlie", url: caribbean.url },
   { id: "solas",         title: "Solas",                         artist: "Jamie Duffy",        url: solas.url },
 ];
 

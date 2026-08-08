@@ -387,6 +387,10 @@ function CameraController({ targetId, profile, autoRotate, autoRotateSpeed, damp
   const graph = useMemo(() => buildGraph(), []);
   const [interacting, setInteracting] = useState(false);
   const idleTimerRef = useRef<number | null>(null);
+  const zoomSens = useSettings((s) => s.zoomSens);
+  const rotateSens = useSettings((s) => s.rotateSens);
+  const panSens = useSettings((s) => s.panSens);
+  const sens = { zoom: zoomSens, rotate: rotateSens, pan: panSens };
 
   useEffect(() => {
     const c = controls.current;
@@ -449,9 +453,9 @@ function CameraController({ targetId, profile, autoRotate, autoRotateSpeed, damp
       enableDamping
       dampingFactor={damping}
       zoomToCursor
-      zoomSpeed={0.8}
-      rotateSpeed={profile.rotateSpeed}
-      panSpeed={0.7}
+      zoomSpeed={0.8 * sens.zoom}
+      rotateSpeed={profile.rotateSpeed * sens.rotate}
+      panSpeed={0.7 * sens.pan}
       maxDistance={900}
       minDistance={3}
       autoRotate={autoRotate && !interacting && !targetId}

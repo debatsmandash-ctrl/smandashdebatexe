@@ -48,10 +48,25 @@ export interface Settings {
   lobbySeen: boolean;
   introSeen: boolean;
 
+  // v1.0.2 — kontrol kamera 3D
+  zoomSens: number;    // 0.2 .. 3
+  rotateSens: number;  // 0.2 .. 3
+  panSens: number;     // 0.2 .. 3
+
+  // v1.0.2 — mode graf & opsi 2D ala Obsidian
+  graphMode: "3d" | "2d";
+  g2dHover: boolean;         // sorot tetangga saat hover
+  g2dChainDrag: boolean;     // tetangga ikut tertarik saat node digeser
+  g2dLabels: boolean;        // tampilkan label
+  g2dLinkForce: number;      // 0.02 .. 0.4
+  g2dRepel: number;          // 200 .. 4000
+  g2dPinned: Record<string, { x: number; y: number }>;
+
   // Offset draggable panel (desktop). { x, y } pixel relatif posisi default.
   sidebarOffset: { x: number; y: number };
   sidePanelOffset: { x: number; y: number };
 }
+
 
 const isMobileEnv = typeof window !== "undefined" && (window.matchMedia?.("(pointer: coarse)").matches || window.innerWidth < 900);
 
@@ -59,8 +74,8 @@ export const DEFAULT_SETTINGS: Settings = {
   quality: isMobileEnv ? "low" : "ultra",
   fpsCap: 60,
   showFps: false,
-  bloomIntensity: isMobileEnv ? 0.4 : 0.7,
-  nebulaOpacity: isMobileEnv ? 0.55 : 0.95,
+  bloomIntensity: isMobileEnv ? 0.3 : 0.45,
+  nebulaOpacity: isMobileEnv ? 0.45 : 0.7,
   starSize: 1.0,
   showHoverEdges: true,
   autoRotate: !isMobileEnv,
@@ -79,8 +94,19 @@ export const DEFAULT_SETTINGS: Settings = {
   fontPreset: "default",
   lobbySeen: false,
   introSeen: false,
+  zoomSens: 1.6,
+  rotateSens: 1.0,
+  panSens: 1.0,
+  graphMode: "3d",
+  g2dHover: true,
+  g2dChainDrag: true,
+  g2dLabels: true,
+  g2dLinkForce: 0.08,
+  g2dRepel: 1200,
+  g2dPinned: {},
   sidebarOffset: { x: 0, y: 0 },
   sidePanelOffset: { x: 0, y: 0 },
+
 };
 
 interface UniverseState {
@@ -174,7 +200,7 @@ export const useSettings = create<SettingsState>()(
       reset: () => set(DEFAULT_SETTINGS),
     }),
     {
-      name: "smandash-settings-v3",
+      name: "smandash-settings-v4",
       // merge persisted state onto defaults so new fields exist for old clients
       merge: (persisted, current) => ({ ...current, ...(persisted as object) }),
     }

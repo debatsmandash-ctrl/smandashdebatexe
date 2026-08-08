@@ -4378,5 +4378,1891 @@
     "ideal": "<strong>PRO-AKTOR:</strong> Linkback secara konsisten ke kepentingan spesifik negara berkembang sebagai aktor — bukan menolak international cooperation secara prinsip, tapi menuntut framework yang secara explicit mengakomodasi development needs (carve-outs untuk genuine economic substance activities, longer transition periods, revenue-sharing mechanisms yang compensate untuk reduced tax competition tool).<br><br>\n<strong>OPP:</strong> Tetap dari perspektif aktor negara berkembang, tapi argue bahwa strategic calculation yang lebih sophisticated menunjukkan bahwa long-term revenue dari mencegah base erosion (yang historically sangat merugikan negara berkembang) melebihi short-term loss dari reduced tax competition tool — anchor ke data tentang skala revenue loss dari profit shifting yang jauh exceed benefits dari tax incentive competition.<br><br>\n",
     "ctx": "[PANDANGAN] Dewan ini berpandangan implementasi pajak korporat minimum global (15% OECD framework) merugikan kedaulatan fiskal legitimate negara berkembang yang mengandalkan tax incentive sebagai strategi pembangunan. · [AKTOR] Sebagai negara berkembang, Dewan ini akan menolak menandatangani perjanjian pajak minimum global yang membatasi kemampuan kami menggunakan insentif pajak untuk menarik investasi.",
     "comp": "ofensif"
+  },
+  {
+    "id": "m216",
+    "title": "Dewan ini memprediksi Prabowo akan lengser sebelum masa jabatannya habis",
+    "cat": "politik",
+    "type": "kausalitas-prediksi",
+    "pro": [
+      "Akumulasi krisis ekonomi (PPN, pengangguran, nilai rupiah) menggerus basis dukungan koalisi",
+      "Fragmentasi koalisi besar historically tidak stabil — presiden butuh 2/3 parlemen buat survive tekanan",
+      "Preseden reformasi 1998 menunjukkan tekanan jalanan bisa memaksa presiden lengser di luar mekanisme formal",
+      "Krisis kepercayaan publik akibat skandal kabinet menciptakan snowball delegitimasi",
+      "Elite politik punya insentif reshuffle kekuasaan lewat mekanisme konstitusional (MPR/hak angket)",
+      "Media sosial mempercepat mobilisasi oposisi dibanding era-era sebelumnya",
+      "Tekanan internasional/investor bisa memperberat krisis domestik",
+      "Militer historically punya peran dalam transisi kekuasaan tak terduga di Indonesia",
+      "Isu kesehatan personal presiden bisa jadi trigger tak terduga",
+      "Skenario \"kudeta konstitusional\" via MPR dalam kondisi darurat"
+    ],
+    "kon": [
+      "Threshold pemakzulan di UUD sangat tinggi (proses MK + persetujuan 2/3 MPR) — historically hampir mustahil tercapai",
+      "Koalisi pemerintah menguasai mayoritas kursi DPR, membuat hak angket/interpelasi macet di hulu",
+      "Basis dukungan presiden masih solid di survei approval rating dibanding tekanan elite",
+      "Tidak ada precedent presiden terpilih langsung lengser di tengah jalan sejak era reformasi (SBY, Jokowi selesai penuh)",
+      "Isu ekonomi yang jadi basis argumen PRO bersifat siklikal, bukan struktural — bisa dikelola tanpa kejatuhan rezim",
+      "Aparat keamanan dan lembaga negara berada di bawah kendali eksekutif yang solid",
+      "Oposisi terfragmentasi, tidak ada figur alternatif yang cukup kuat untuk memobilisasi pergantian",
+      "Media utama tidak menunjukkan narasi delegitimasi masif dibanding era 1998",
+      "Elite bisnis besar cenderung mendukung stabilitas demi kepastian investasi",
+      "Bahkan skenario krisis ekstrem historically diselesaikan lewat reshuffle kabinet, bukan pergantian presiden"
+    ],
+    "tiersPro": [
+      {
+        "tier": "S",
+        "text": "Akumulasi krisis ekonomi (PPN, pengangguran, nilai rupiah) menggerus basis dukungan koalisi",
+        "strength": 71.4,
+        "risk": 38.2
+      },
+      {
+        "tier": "S",
+        "text": "Fragmentasi koalisi besar historically tidak stabil — presiden butuh 2/3 parlemen buat survive tekanan",
+        "strength": 69.8,
+        "risk": 41.5
+      },
+      {
+        "tier": "A",
+        "text": "Preseden reformasi 1998 menunjukkan tekanan jalanan bisa memaksa presiden lengser di luar mekanisme formal",
+        "strength": 64.2,
+        "risk": 49
+      },
+      {
+        "tier": "A",
+        "text": "Krisis kepercayaan publik akibat skandal kabinet menciptakan snowball delegitimasi",
+        "strength": 61.7,
+        "risk": 51.3
+      },
+      {
+        "tier": "A",
+        "text": "Elite politik punya insentif reshuffle kekuasaan lewat mekanisme konstitusional (MPR/hak angket)",
+        "strength": 58.9,
+        "risk": 53.8
+      },
+      {
+        "tier": "A",
+        "text": "Media sosial mempercepat mobilisasi oposisi dibanding era-era sebelumnya",
+        "strength": 60.1,
+        "risk": 50.2
+      },
+      {
+        "tier": "B",
+        "text": "Tekanan internasional/investor bisa memperberat krisis domestik",
+        "strength": 49.3,
+        "risk": 60.5
+      },
+      {
+        "tier": "B",
+        "text": "Militer historically punya peran dalam transisi kekuasaan tak terduga di Indonesia",
+        "strength": 45.8,
+        "risk": 66.1
+      },
+      {
+        "tier": "C",
+        "text": "Isu kesehatan personal presiden bisa jadi trigger tak terduga",
+        "strength": 38.2,
+        "risk": 70.4
+      },
+      {
+        "tier": "C",
+        "text": "Skenario \"kudeta konstitusional\" via MPR dalam kondisi darurat",
+        "strength": 35.6,
+        "risk": 74.8
+      }
+    ],
+    "tiersKon": [
+      {
+        "tier": "S",
+        "text": "Threshold pemakzulan di UUD sangat tinggi (proses MK + persetujuan 2/3 MPR) — historically hampir mustahil tercapai",
+        "strength": 82.1,
+        "risk": 19.7
+      },
+      {
+        "tier": "S",
+        "text": "Koalisi pemerintah menguasai mayoritas kursi DPR, membuat hak angket/interpelasi macet di hulu",
+        "strength": 78.4,
+        "risk": 24.3
+      },
+      {
+        "tier": "A",
+        "text": "Basis dukungan presiden masih solid di survei approval rating dibanding tekanan elite",
+        "strength": 70.2,
+        "risk": 33.6
+      },
+      {
+        "tier": "A",
+        "text": "Tidak ada precedent presiden terpilih langsung lengser di tengah jalan sejak era reformasi (SBY, Jokowi selesai penuh)",
+        "strength": 68.5,
+        "risk": 35.1
+      },
+      {
+        "tier": "A",
+        "text": "Isu ekonomi yang jadi basis argumen PRO bersifat siklikal, bukan struktural — bisa dikelola tanpa kejatuhan rezim",
+        "strength": 65,
+        "risk": 40.2
+      },
+      {
+        "tier": "A",
+        "text": "Aparat keamanan dan lembaga negara berada di bawah kendali eksekutif yang solid",
+        "strength": 63.7,
+        "risk": 42.6
+      },
+      {
+        "tier": "A",
+        "text": "Oposisi terfragmentasi, tidak ada figur alternatif yang cukup kuat untuk memobilisasi pergantian",
+        "strength": 61.9,
+        "risk": 44
+      },
+      {
+        "tier": "B",
+        "text": "Media utama tidak menunjukkan narasi delegitimasi masif dibanding era 1998",
+        "strength": 52.3,
+        "risk": 55.7
+      },
+      {
+        "tier": "B",
+        "text": "Elite bisnis besar cenderung mendukung stabilitas demi kepastian investasi",
+        "strength": 54.6,
+        "risk": 53.2
+      },
+      {
+        "tier": "C",
+        "text": "Bahkan skenario krisis ekstrem historically diselesaikan lewat reshuffle kabinet, bukan pergantian presiden",
+        "strength": 46.1,
+        "risk": 62.8
+      }
+    ],
+    "terms": [
+      "Impeachment",
+      "Hak Angket",
+      "Vote of No Confidence",
+      "Constitutional Threshold"
+    ],
+    "cases": {
+      "ideal": {
+        "pro": "Lock frame \"akumulasi tekanan struktural\" — jangan klaim lengser pasti terjadi, tapi bangun bahwa probabilitasnya signifikan meningkat dibanding baseline stabil. Poin: S1, S2.",
+        "kon": "Lock frame \"constitutional threshold\" — tunjukkan bar hukum & politik untuk lengser itu ekstrem tinggi, hampir tidak pernah tercapai historically. Poin: S1, S2."
+      },
+      "mayor": {
+        "pro": "Kombinasi krisis ekonomi + fragmentasi koalisi sebagai mesin utama tekanan. Poin: A1-A3.",
+        "kon": "Basis dukungan solid + kontrol koalisi DPR sebagai penahan struktural. Poin: A3-A5."
+      },
+      "minor": {
+        "pro": "Faktor eksternal (media sosial, tekanan investor, peran militer) sebagai akselerator sekunder. Poin: A4-A6, B7-B8.",
+        "kon": "Fragmentasi oposisi & dukungan elite bisnis sebagai penahan sekunder. Poin: A6-A7, B8-B9."
+      },
+      "niche": {
+        "pro": "Skenario ekstrem (kesehatan personal, kudeta konstitusional) — dipakai kalau room sudah condong ke ketidakstabilan. Risiko: mudah dibaca sebagai spekulasi tak berdasar kalau tidak di-warrant kuat.",
+        "kon": "Argumen precedent \"krisis selalu selesai via reshuffle kabinet\" sebagai closing yang menutup semua skenario PRO sekaligus."
+      }
+    },
+    "rotation": {
+      "ofensif": "(cocok PRO, underdog) P1 lock frame akumulasi tekanan + anchor S1/S2 -> P2 rebuttal ke threshold constitutional KON, tarik ke precedent 1998 -> P3 kompres ke 1 crux \"tekanan struktural vs bar hukum\", weighing ke real-world analogi.",
+      "defensif": "(cocok KON, favorit) P1 buka lock threshold constitutional lebar -> P2 konsolidasi basis dukungan + kontrol DPR -> P3 tanpa argumen baru, murni tutup dengan precedent stabilitas reformasi."
+    },
+    "hybrid": "politik-aktor",
+    "ctx": "Dewan ini memprediksi bahwa tekanan politik, ekonomi, dan sosial yang terakumulasi akan memaksa Presiden Prabowo Subianto mengakhiri masa jabatannya sebelum 2029, baik lewat pengunduran diri, pemakzulan, atau tekanan konstitusional lain.",
+    "note": "ini mosi prediksi spekulatif untuk latihan debat, bukan klaim faktual — treat sebagai exercise argumentasi kausal, bukan ramalan politik riil.",
+    "probPro": 34.6,
+    "probKon": 65.4,
+    "probNote": "bias kuat ke KON (pemakzulan presiden di Indonesia punya bar konstitusional sangat tinggi)",
+    "research": "Slater & Simmons (2013), Coping by Colluding: elite politik Asia Tenggara cenderung berkolusi menjaga stabilitas rezim ketimbang memicu pergantian kekuasaan non-konstitusional. Ambardi (2009), Mengungkap Politik Kartel: koalisi besar di Indonesia pasca-reformasi historically stabil karena logika power-sharing kartelistik, bukan ideologis.",
+    "ideal": "<strong>PRO (Ideal):</strong> Lock frame \"akumulasi tekanan struktural\" — jangan klaim lengser pasti terjadi, tapi bangun bahwa probabilitasnya signifikan meningkat dibanding baseline stabil. Poin: S1, S2.<br><br>\n<strong>KON (Ideal):</strong> Lock frame \"constitutional threshold\" — tunjukkan bar hukum & politik untuk lengser itu ekstrem tinggi, hampir tidak pernah tercapai historically. Poin: S1, S2."
+  },
+  {
+    "id": "m217",
+    "title": "Dewan ini mendukung program Makan Bergizi Gratis (MBG) sebagai solusi stunting nasional",
+    "cat": "ekonomi",
+    "type": "kebijakan",
+    "pro": [
+      "Intervensi gizi langsung di usia sekolah punya bukti kausal kuat menurunkan stunting jangka panjang",
+      "Program ini menciptakan multiplier effect ekonomi lokal via serapan bahan pangan UMKM/petani",
+      "Universalitas program menghindari stigma sosial dibanding bantuan bersyarat/targeted",
+      "Investasi gizi anak punya ROI jangka panjang lewat produktivitas SDM masa depan",
+      "Program terpusat lebih mudah diawasi dan dievaluasi dibanding skema desentralisasi lama",
+      "Menciptakan lapangan kerja baru di sektor dapur/logistik pangan skala nasional",
+      "Preseden program serupa di Brazil (Bolsa Familia terkait gizi) menunjukkan hasil positif",
+      "Efek psikologis: anak yang cukup gizi punya konsentrasi belajar lebih baik, dampak ke capaian akademik",
+      "Program ini bisa jadi entry point reformasi sistem logistik pangan nasional lebih luas",
+      "Alternatif kritikus (bantuan tunai langsung) historically rawan disalahgunakan untuk non-pangan"
+    ],
+    "kon": [
+      "Beban fiskal sangat besar berpotensi menggeser anggaran dari sektor esensial lain (kesehatan, infrastruktur)",
+      "Skala implementasi nasional rawan korupsi/kebocoran di rantai pasok dan distribusi",
+      "Kualitas gizi tergantung standar dapur lokal yang tidak seragam — risiko ketidakefektifan di lapangan",
+      "Universalitas program tidak efisien secara fiskal — anak dari keluarga mampu juga menerima subsidi yang sama",
+      "Solusi stunting sesungguhnya butuh intervensi 1000 hari pertama kehidupan (balita), bukan usia sekolah",
+      "Ketergantungan pada program pemerintah pusat rentan terhenti akibat perubahan kebijakan politik",
+      "Kapasitas logistik dapur umum di daerah terpencil belum memadai, risiko pemerataan gagal",
+      "Program serupa negara lain butuh puluhan tahun untuk lihat hasil signifikan — waktu tunggu politis panjang",
+      "Risiko dana bocor jadi alat politik menjelang pemilu (pork barrel)",
+      "Ketergantungan sistemik pada program tanpa membangun kemandirian ekonomi keluarga"
+    ],
+    "tiersPro": [
+      {
+        "tier": "S",
+        "text": "Intervensi gizi langsung di usia sekolah punya bukti kausal kuat menurunkan stunting jangka panjang",
+        "strength": 78.9,
+        "risk": 26.5
+      },
+      {
+        "tier": "S",
+        "text": "Program ini menciptakan multiplier effect ekonomi lokal via serapan bahan pangan UMKM/petani",
+        "strength": 74.1,
+        "risk": 30.8
+      },
+      {
+        "tier": "A",
+        "text": "Universalitas program menghindari stigma sosial dibanding bantuan bersyarat/targeted",
+        "strength": 68.3,
+        "risk": 39.7
+      },
+      {
+        "tier": "A",
+        "text": "Investasi gizi anak punya ROI jangka panjang lewat produktivitas SDM masa depan",
+        "strength": 70.5,
+        "risk": 37.2
+      },
+      {
+        "tier": "A",
+        "text": "Program terpusat lebih mudah diawasi dan dievaluasi dibanding skema desentralisasi lama",
+        "strength": 62.8,
+        "risk": 45.6
+      },
+      {
+        "tier": "A",
+        "text": "Menciptakan lapangan kerja baru di sektor dapur/logistik pangan skala nasional",
+        "strength": 60.4,
+        "risk": 47.9
+      },
+      {
+        "tier": "B",
+        "text": "Preseden program serupa di Brazil (Bolsa Familia terkait gizi) menunjukkan hasil positif",
+        "strength": 55.7,
+        "risk": 54.3
+      },
+      {
+        "tier": "B",
+        "text": "Efek psikologis: anak yang cukup gizi punya konsentrasi belajar lebih baik, dampak ke capaian akademik",
+        "strength": 57.2,
+        "risk": 52.8
+      },
+      {
+        "tier": "C",
+        "text": "Program ini bisa jadi entry point reformasi sistem logistik pangan nasional lebih luas",
+        "strength": 47.6,
+        "risk": 63.5
+      },
+      {
+        "tier": "C",
+        "text": "Alternatif kritikus (bantuan tunai langsung) historically rawan disalahgunakan untuk non-pangan",
+        "strength": 44.9,
+        "risk": 65.8
+      }
+    ],
+    "tiersKon": [
+      {
+        "tier": "S",
+        "text": "Beban fiskal sangat besar berpotensi menggeser anggaran dari sektor esensial lain (kesehatan, infrastruktur)",
+        "strength": 75.6,
+        "risk": 28.9
+      },
+      {
+        "tier": "A",
+        "text": "Skala implementasi nasional rawan korupsi/kebocoran di rantai pasok dan distribusi",
+        "strength": 69.7,
+        "risk": 36.4
+      },
+      {
+        "tier": "A",
+        "text": "Kualitas gizi tergantung standar dapur lokal yang tidak seragam — risiko ketidakefektifan di lapangan",
+        "strength": 66.2,
+        "risk": 41.8
+      },
+      {
+        "tier": "A",
+        "text": "Universalitas program tidak efisien secara fiskal — anak dari keluarga mampu juga menerima subsidi yang sama",
+        "strength": 63.9,
+        "risk": 43.5
+      },
+      {
+        "tier": "A",
+        "text": "Solusi stunting sesungguhnya butuh intervensi 1000 hari pertama kehidupan (balita), bukan usia sekolah",
+        "strength": 71.3,
+        "risk": 39
+      },
+      {
+        "tier": "A",
+        "text": "Ketergantungan pada program pemerintah pusat rentan terhenti akibat perubahan kebijakan politik",
+        "strength": 58.4,
+        "risk": 48.7
+      },
+      {
+        "tier": "B",
+        "text": "Kapasitas logistik dapur umum di daerah terpencil belum memadai, risiko pemerataan gagal",
+        "strength": 56.8,
+        "risk": 52.1
+      },
+      {
+        "tier": "B",
+        "text": "Program serupa negara lain butuh puluhan tahun untuk lihat hasil signifikan — waktu tunggu politis panjang",
+        "strength": 53.1,
+        "risk": 55.9
+      },
+      {
+        "tier": "C",
+        "text": "Risiko dana bocor jadi alat politik menjelang pemilu (pork barrel)",
+        "strength": 48.2,
+        "risk": 61.3
+      },
+      {
+        "tier": "C",
+        "text": "Ketergantungan sistemik pada program tanpa membangun kemandirian ekonomi keluarga",
+        "strength": 45.7,
+        "risk": 64
+      }
+    ],
+    "terms": [
+      "Stunting",
+      "Fiscal Space",
+      "Multiplier Effect",
+      "Targeted Subsidy"
+    ],
+    "cases": {
+      "ideal": {
+        "pro": "Lock frame \"gizi sebagai investasi produktivitas jangka panjang\", bukan sekadar bansos. Poin: S1, S2.",
+        "kon": "Lock frame \"efisiensi fiskal & sasaran tepat\", MBG usia sekolah salah timing intervensi. Poin: S1, A5."
+      },
+      "mayor": {
+        "pro": "Multiplier ekonomi + universalitas anti-stigma sebagai mesin dukungan. Poin: A1-A2.",
+        "kon": "Beban fiskal + timing intervensi salah sebagai mesin utama serangan. Poin: A2, A5."
+      },
+      "minor": {
+        "pro": "Preseden internasional + efek psikologis belajar. Poin: B7-B8.",
+        "kon": "Kapasitas logistik daerah + risiko ketergantungan sistemik. Poin: B7-B8."
+      },
+      "niche": {
+        "pro": "Klaim MBG sebagai entry point reformasi logistik pangan nasional — ambisius, butuh warrant kuat.",
+        "kon": "Framing MBG sebagai alat pork barrel elektoral — tajam tapi berisiko dibaca terlalu politis/cherry-picked."
+      }
+    },
+    "rotation": {
+      "ofensif": "P1 lock investasi produktivitas + preemptive ke isu fiskal -> P2 rebuttal langsung ke argumen kebocoran/timing -> P3 kompres ke crux \"investasi jangka panjang vs efisiensi jangka pendek\".",
+      "defensif": "P1 buka lebar beban fiskal + timing salah sasaran -> P2 konsolidasi risiko implementasi -> P3 tutup dengan weighing efisiensi anggaran negara."
+    },
+    "hybrid": "ekonomi-sosial",
+    "ctx": "Dewan ini akan mendukung kebijakan Makan Bergizi Gratis sebagai instrumen utama pemerintah menekan angka stunting dan meningkatkan kualitas gizi anak sekolah secara nasional.",
+    "probPro": 52.3,
+    "probKon": 47.7,
+    "probNote": "hampir seimbang, sensitif ke isu implementasi",
+    "research": "Bundy et al. (2009), Rethinking School Feeding: program makan sekolah terbukti efektif menaikkan partisipasi & performa akademik di negara berkembang, tapi dampak stunting maksimal bila dikombinasi intervensi usia dini. Hoddinott et al. (2013): intervensi gizi 1000 hari pertama kehidupan punya return ekonomi jauh lebih tinggi per dolar dibanding intervensi usia sekolah.",
+    "ideal": "<strong>PRO (Ideal):</strong> Lock frame \"gizi sebagai investasi produktivitas jangka panjang\", bukan sekadar bansos. Poin: S1, S2.<br><br>\n<strong>KON (Ideal):</strong> Lock frame \"efisiensi fiskal & sasaran tepat\", MBG usia sekolah salah timing intervensi. Poin: S1, A5."
+  },
+  {
+    "id": "m218",
+    "title": "Dewan ini mendukung Koperasi Desa Merah Putih (Kopdes) sebagai model ekonomi desa",
+    "cat": "politik",
+    "type": "kebijakan-ekonomi",
+    "pro": [
+      "Koperasi memberi kontrol kepemilikan kolektif ke warga desa, bukan investor luar",
+      "Menyediakan akses modal & pasar terstruktur untuk UMKM desa yang sebelumnya terfragmentasi",
+      "Skema nasional seragam memudahkan replikasi best practice antar-desa",
+      "Mengurangi ketergantungan desa pada tengkulak/rentenir informal",
+      "Membuka lapangan kerja lokal lewat unit usaha koperasi (simpan pinjam, sembako, logistik)",
+      "Basis data ekonomi desa terpusat memudahkan intervensi kebijakan berikutnya",
+      "Preseden koperasi sukses di sektor tertentu (KUD era Orba, koperasi kredit modern) bisa direplikasi dengan tata kelola baru",
+      "Program ini bisa jadi kanal distribusi subsidi pemerintah yang lebih efisien",
+      "Efek jangka panjang: desa mandiri secara ekonomi mengurangi urbanisasi paksa",
+      "Berpotensi jadi fondasi digitalisasi ekonomi desa (e-commerce lokal)"
+    ],
+    "kon": [
+      "Risiko elite capture — kepala desa/elite lokal mendominasi kepengurusan koperasi untuk kepentingan pribadi",
+      "Skala ekonomi desa kecil membuat unit usaha koperasi sulit kompetitif dan rawan merugi",
+      "Model seragam nasional tidak mempertimbangkan kondisi ekonomi desa yang sangat beragam",
+      "Preseden KUD era Orba justru identik dengan korupsi dan kegagalan struktural — sejarah berulang",
+      "Warga desa dengan literasi keuangan rendah rentan dieksploitasi pengurus koperasi",
+      "Program top-down berisiko tidak sesuai kebutuhan riil ekonomi lokal per desa",
+      "Ketergantungan pada dana bergulir pemerintah pusat rentan berhenti akibat perubahan anggaran",
+      "Alternatif penguatan BUMDes yang sudah ada dinilai lebih matang secara kelembagaan",
+      "Risiko koperasi jadi alat politik kepala desa menjelang pilkades",
+      "Kompetisi dengan usaha swasta lokal yang sudah eksis bisa mematikan ekosistem UMKM yang ada"
+    ],
+    "tiersPro": [
+      {
+        "tier": "S",
+        "text": "Koperasi memberi kontrol kepemilikan kolektif ke warga desa, bukan investor luar",
+        "strength": 73.6,
+        "risk": 29.4
+      },
+      {
+        "tier": "S",
+        "text": "Menyediakan akses modal & pasar terstruktur untuk UMKM desa yang sebelumnya terfragmentasi",
+        "strength": 71.9,
+        "risk": 32.1
+      },
+      {
+        "tier": "A",
+        "text": "Skema nasional seragam memudahkan replikasi best practice antar-desa",
+        "strength": 64.3,
+        "risk": 44.2
+      },
+      {
+        "tier": "A",
+        "text": "Mengurangi ketergantungan desa pada tengkulak/rentenir informal",
+        "strength": 68.7,
+        "risk": 38.5
+      },
+      {
+        "tier": "A",
+        "text": "Membuka lapangan kerja lokal lewat unit usaha koperasi (simpan pinjam, sembako, logistik)",
+        "strength": 62.1,
+        "risk": 46.8
+      },
+      {
+        "tier": "A",
+        "text": "Basis data ekonomi desa terpusat memudahkan intervensi kebijakan berikutnya",
+        "strength": 57.4,
+        "risk": 51.3
+      },
+      {
+        "tier": "B",
+        "text": "Preseden koperasi sukses di sektor tertentu (KUD era Orba, koperasi kredit modern) bisa direplikasi dengan tata kelola baru",
+        "strength": 53.8,
+        "risk": 56.7
+      },
+      {
+        "tier": "B",
+        "text": "Program ini bisa jadi kanal distribusi subsidi pemerintah yang lebih efisien",
+        "strength": 51.2,
+        "risk": 58.9
+      },
+      {
+        "tier": "C",
+        "text": "Efek jangka panjang: desa mandiri secara ekonomi mengurangi urbanisasi paksa",
+        "strength": 44.6,
+        "risk": 64.3
+      },
+      {
+        "tier": "C",
+        "text": "Berpotensi jadi fondasi digitalisasi ekonomi desa (e-commerce lokal)",
+        "strength": 41.9,
+        "risk": 67.1
+      }
+    ],
+    "tiersKon": [
+      {
+        "tier": "S",
+        "text": "Risiko elite capture — kepala desa/elite lokal mendominasi kepengurusan koperasi untuk kepentingan pribadi",
+        "strength": 76.8,
+        "risk": 25.7
+      },
+      {
+        "tier": "A",
+        "text": "Skala ekonomi desa kecil membuat unit usaha koperasi sulit kompetitif dan rawan merugi",
+        "strength": 68.4,
+        "risk": 37.9
+      },
+      {
+        "tier": "A",
+        "text": "Model seragam nasional tidak mempertimbangkan kondisi ekonomi desa yang sangat beragam",
+        "strength": 65.7,
+        "risk": 40.6
+      },
+      {
+        "tier": "A",
+        "text": "Preseden KUD era Orba justru identik dengan korupsi dan kegagalan struktural — sejarah berulang",
+        "strength": 70.1,
+        "risk": 35.2
+      },
+      {
+        "tier": "A",
+        "text": "Warga desa dengan literasi keuangan rendah rentan dieksploitasi pengurus koperasi",
+        "strength": 63.5,
+        "risk": 42.8
+      },
+      {
+        "tier": "A",
+        "text": "Program top-down berisiko tidak sesuai kebutuhan riil ekonomi lokal per desa",
+        "strength": 59.8,
+        "risk": 48.1
+      },
+      {
+        "tier": "B",
+        "text": "Ketergantungan pada dana bergulir pemerintah pusat rentan berhenti akibat perubahan anggaran",
+        "strength": 54.9,
+        "risk": 53.6
+      },
+      {
+        "tier": "B",
+        "text": "Alternatif penguatan BUMDes yang sudah ada dinilai lebih matang secara kelembagaan",
+        "strength": 52.3,
+        "risk": 56.4
+      },
+      {
+        "tier": "C",
+        "text": "Risiko koperasi jadi alat politik kepala desa menjelang pilkades",
+        "strength": 47.1,
+        "risk": 62.7
+      },
+      {
+        "tier": "C",
+        "text": "Kompetisi dengan usaha swasta lokal yang sudah eksis bisa mematikan ekosistem UMKM yang ada",
+        "strength": 43.8,
+        "risk": 65.9
+      }
+    ],
+    "terms": [
+      "Kelembagaan Ekonomi",
+      "Elite Capture",
+      "Skala Ekonomi",
+      "Local Ownership"
+    ],
+    "cases": {
+      "ideal": {
+        "pro": "Lock frame \"kepemilikan kolektif vs ketergantungan eksternal\". Poin: S1, S2.",
+        "kon": "Lock frame \"elite capture struktural — sejarah KUD berulang\". Poin: S1, A4."
+      },
+      "mayor": {
+        "pro": "Akses modal terstruktur + pengurangan ketergantungan tengkulak. Poin: A2, A4.",
+        "kon": "Skala ekonomi kecil + model seragam tidak kontekstual. Poin: A2-A3."
+      },
+      "minor": {
+        "pro": "Lapangan kerja lokal + basis data ekonomi terpusat. Poin: A5-A6.",
+        "kon": "Ketergantungan dana bergulir + BUMDes sebagai alternatif matang. Poin: B7-B8."
+      },
+      "niche": {
+        "pro": "Klaim jadi fondasi digitalisasi ekonomi desa — visioner tapi jauh dari implementasi riil, butuh warrant konkret.",
+        "kon": "Framing risiko koperasi jadi alat politik pilkades — tajam sebagai closing tapi harus dihubungkan balik ke elite capture di S1."
+      }
+    },
+    "rotation": {
+      "ofensif": "P1 lock kepemilikan kolektif + preemptive ke elite capture -> P2 rebuttal soal historical KUD, bedakan tata kelola baru -> P3 kompres crux \"kontrol lokal vs risiko elite\", tutup dengan preseden sukses modern.",
+      "defensif": "P1 buka lebar elite capture + preseden gagal KUD -> P2 konsolidasi skala ekonomi & model tidak kontekstual -> P3 tutup dengan BUMDes sebagai alternatif yang sudah terbukti."
+    },
+    "hybrid": "kelembagaan",
+    "ctx": "Dewan ini mendukung pembentukan Koperasi Desa Merah Putih di seluruh desa sebagai instrumen pemerataan ekonomi dan penguatan kelembagaan ekonomi lokal.",
+    "probPro": 47.8,
+    "probKon": 52.2,
+    "research": "Bebbington et al. (2006) tentang koperasi pedesaan: keberhasilan koperasi sangat tergantung pada kualitas tata kelola & pengawasan eksternal, bukan sekadar bentuk kelembagaan. World Bank (2020), laporan BUMDes Indonesia: unit usaha desa yang matang secara kelembagaan cenderung lebih stabil dibanding skema baru yang dipaksakan seragam nasional.",
+    "ideal": "<strong>PRO (Ideal):</strong> Lock frame \"kepemilikan kolektif vs ketergantungan eksternal\". Poin: S1, S2.<br><br>\n<strong>KON (Ideal):</strong> Lock frame \"elite capture struktural — sejarah KUD berulang\". Poin: S1, A4."
+  },
+  {
+    "id": "m219",
+    "title": "Dewan ini yakin bahwa pejabat yang terlibat kasus dugaan korupsi pengadaan Chromebook Kemendikbudristek harus diproses hukum tanpa pandang jabatan",
+    "cat": "politik",
+    "type": "kausalitas-legal",
+    "pro": [
+      "Prinsip equality before the law menuntut proses hukum berlaku sama tanpa memandang jabatan/pengaruh politik",
+      "Membiarkan pejabat tinggi lolos dari proses menciptakan preseden impunitas yang merusak kepercayaan publik pada institusi hukum",
+      "Kerugian negara dari dugaan penggelembungan anggaran pengadaan berdampak langsung pada kualitas pendidikan yang seharusnya diterima siswa",
+      "Proses hukum yang transparan justru melindungi pejabat yang tidak terlibat dari tuduhan sepihak",
+      "Sistem checks and balances butuh presedan bahwa lembaga pengawas (KPK/BPK) punya taring nyata terhadap pejabat tinggi",
+      "Akuntabilitas pejabat pendidikan penting secara simbolik karena sektor ini menyangkut generasi masa depan",
+      "Precedent kasus serupa di sektor lain menunjukkan proses hukum tuntas menaikkan indeks persepsi anti-korupsi",
+      "Transparansi proses hukum memberi efek jera bagi pejabat lain dalam pengadaan barang/jasa pemerintah",
+      "Momentum kasus ini bisa jadi entry point reformasi sistem pengadaan barang/jasa pendidikan secara nasional",
+      "Ketegasan pada kasus ini membangun modal politik kepercayaan publik pemerintahan saat ini"
+    ],
+    "kon": [
+      "Proses hukum harus menunggu due process lengkap — mosi yang mengasumsikan \"harus diproses\" tanpa bukti final berisiko melanggar prinsip praduga tak bersalah",
+      "Politisasi kasus hukum berisiko dipakai sebagai alat delegitimasi lawan politik, bukan murni penegakan hukum",
+      "Tanggung jawab kebijakan kolektif kabinet membuat sulit menentukan batas individual liability secara adil",
+      "Proses hukum yang dipaksakan cepat tanpa investigasi memadai berisiko menghasilkan keputusan yang keliru dan bisa dianulir",
+      "Fokus berlebihan pada individu mengalihkan perhatian dari reformasi sistemik pengadaan yang lebih fundamental",
+      "Preseden pengadilan kasus pejabat tinggi lain di Indonesia sering berujung pada vonis ringan — proses berisiko simbolik tanpa efek jera nyata",
+      "Institusi hukum berisiko dijadikan alat tawar-menawar politik antar-faksi kekuasaan",
+      "Ketidakpastian hukum berkepanjangan bisa mengganggu stabilitas kebijakan pendidikan yang sedang berjalan",
+      "Risiko chilling effect pada pejabat lain yang jadi terlalu defensif dalam pengambilan keputusan kebijakan",
+      "Isu ini bisa dipakai untuk menutupi masalah struktural lain dalam sistem pendidikan yang lebih mendesak"
+    ],
+    "tiersPro": [
+      {
+        "tier": "S",
+        "text": "Prinsip equality before the law menuntut proses hukum berlaku sama tanpa memandang jabatan/pengaruh politik",
+        "strength": 81.2,
+        "risk": 20.6
+      },
+      {
+        "tier": "S",
+        "text": "Membiarkan pejabat tinggi lolos dari proses menciptakan preseden impunitas yang merusak kepercayaan publik pada institusi hukum",
+        "strength": 77.5,
+        "risk": 24.8
+      },
+      {
+        "tier": "A",
+        "text": "Kerugian negara dari dugaan penggelembungan anggaran pengadaan berdampak langsung pada kualitas pendidikan yang seharusnya diterima siswa",
+        "strength": 70.3,
+        "risk": 34.1
+      },
+      {
+        "tier": "A",
+        "text": "Proses hukum yang transparan justru melindungi pejabat yang tidak terlibat dari tuduhan sepihak",
+        "strength": 65.8,
+        "risk": 39.6
+      },
+      {
+        "tier": "A",
+        "text": "Sistem checks and balances butuh presedan bahwa lembaga pengawas (KPK/BPK) punya taring nyata terhadap pejabat tinggi",
+        "strength": 68.1,
+        "risk": 37.4
+      },
+      {
+        "tier": "A",
+        "text": "Akuntabilitas pejabat pendidikan penting secara simbolik karena sektor ini menyangkut generasi masa depan",
+        "strength": 61.4,
+        "risk": 43.2
+      },
+      {
+        "tier": "B",
+        "text": "Precedent kasus serupa di sektor lain menunjukkan proses hukum tuntas menaikkan indeks persepsi anti-korupsi",
+        "strength": 54.7,
+        "risk": 53.5
+      },
+      {
+        "tier": "B",
+        "text": "Transparansi proses hukum memberi efek jera bagi pejabat lain dalam pengadaan barang/jasa pemerintah",
+        "strength": 57.9,
+        "risk": 50.8
+      },
+      {
+        "tier": "C",
+        "text": "Momentum kasus ini bisa jadi entry point reformasi sistem pengadaan barang/jasa pendidikan secara nasional",
+        "strength": 46.3,
+        "risk": 61.9
+      },
+      {
+        "tier": "C",
+        "text": "Ketegasan pada kasus ini membangun modal politik kepercayaan publik pemerintahan saat ini",
+        "strength": 42.8,
+        "risk": 65.4
+      }
+    ],
+    "tiersKon": [
+      {
+        "tier": "S",
+        "text": "Proses hukum harus menunggu due process lengkap — mosi yang mengasumsikan \"harus diproses\" tanpa bukti final berisiko melanggar prinsip praduga tak bersalah",
+        "strength": 74.6,
+        "risk": 27.3
+      },
+      {
+        "tier": "A",
+        "text": "Politisasi kasus hukum berisiko dipakai sebagai alat delegitimasi lawan politik, bukan murni penegakan hukum",
+        "strength": 66.9,
+        "risk": 38.7
+      },
+      {
+        "tier": "A",
+        "text": "Tanggung jawab kebijakan kolektif kabinet membuat sulit menentukan batas individual liability secara adil",
+        "strength": 60.2,
+        "risk": 46.5
+      },
+      {
+        "tier": "A",
+        "text": "Proses hukum yang dipaksakan cepat tanpa investigasi memadai berisiko menghasilkan keputusan yang keliru dan bisa dianulir",
+        "strength": 58.7,
+        "risk": 48.1
+      },
+      {
+        "tier": "A",
+        "text": "Fokus berlebihan pada individu mengalihkan perhatian dari reformasi sistemik pengadaan yang lebih fundamental",
+        "strength": 62.4,
+        "risk": 44.9
+      },
+      {
+        "tier": "B",
+        "text": "Preseden pengadilan kasus pejabat tinggi lain di Indonesia sering berujung pada vonis ringan — proses berisiko simbolik tanpa efek jera nyata",
+        "strength": 55.1,
+        "risk": 54.7
+      },
+      {
+        "tier": "B",
+        "text": "Institusi hukum berisiko dijadikan alat tawar-menawar politik antar-faksi kekuasaan",
+        "strength": 52.8,
+        "risk": 57.2
+      },
+      {
+        "tier": "C",
+        "text": "Ketidakpastian hukum berkepanjangan bisa mengganggu stabilitas kebijakan pendidikan yang sedang berjalan",
+        "strength": 47.5,
+        "risk": 61.8
+      },
+      {
+        "tier": "C",
+        "text": "Risiko chilling effect pada pejabat lain yang jadi terlalu defensif dalam pengambilan keputusan kebijakan",
+        "strength": 44.1,
+        "risk": 64.6
+      },
+      {
+        "tier": "C",
+        "text": "Isu ini bisa dipakai untuk menutupi masalah struktural lain dalam sistem pendidikan yang lebih mendesak",
+        "strength": 41.6,
+        "risk": 66.9
+      }
+    ],
+    "terms": [
+      "Equality Before the Law",
+      "Due Process",
+      "Impunitas",
+      "Conflict of Interest"
+    ],
+    "cases": {
+      "ideal": {
+        "pro": "Lock frame \"equality before the law sebagai prinsip non-negotiable\", pisahkan dari isu politisasi. Poin: S1, S2.",
+        "kon": "Lock frame \"due process dulu, baru proses\" — bukan menolak akuntabilitas, tapi menolak lompat ke kesimpulan sebelum bukti final. Poin: S1."
+      },
+      "mayor": {
+        "pro": "Kerugian negara nyata + fungsi checks and balances KPK/BPK sebagai mesin utama. Poin: A3, A5.",
+        "kon": "Risiko politisasi + kesulitan menentukan individual liability kolektif kabinet. Poin: A2-A3."
+      },
+      "minor": {
+        "pro": "Efek jera pengadaan barang/jasa + presedan sektor lain. Poin: B7-B8.",
+        "kon": "Preseden vonis ringan pejabat tinggi + risiko institusi hukum jadi alat tawar politik. Poin: B7-B8."
+      },
+      "niche": {
+        "pro": "Framing \"momentum reformasi sistem pengadaan nasional\" — ambisius, bisa terkesan melebar dari inti mosi kalau tidak di-tie back ke akuntabilitas.",
+        "kon": "Framing \"isu ini menutupi masalah struktural lain\" — berisiko dibaca sebagai deflection kalau tidak diimbangi warrant konkret soal apa masalah struktural itu."
+      }
+    },
+    "rotation": {
+      "ofensif": "(cocok PRO, favorit) P1 lock equality before the law + anchor kerugian negara -> P2 rebuttal ke argumen politisasi, tegaskan proses ≠ vonis -> P3 kompres ke crux \"impunitas vs due process\", tutup dengan checks and balances.",
+      "defensif": "(cocok KON, underdog di angka tapi principle-nya kuat) P1 buka lebar due process + praduga tak bersalah -> P2 konsolidasi risiko politisasi & individual liability -> P3 tanpa argumen baru, tutup dengan penekanan proses yang adil bukan penolakan akuntabilitas."
+    },
+    "hybrid": "politik-akuntabilitas",
+    "ctx": "Dewan ini akan mendukung proses hukum tuntas terhadap semua pihak yang diduga terlibat dalam kasus pengadaan laptop/Chromebook Kemendikbudristek era 2019-2024, termasuk pejabat tingkat menteri, tanpa memandang posisi politik atau jabatan saat ini.",
+    "note": "kasus ini merujuk pada penyelidikan yang sedang berjalan/dilaporkan publik. Mosi ini didebatkan sebagai prinsip akuntabilitas hukum (\"harus diproses\"), bukan penetapan bersalah — status hukum definitif ada di proses pengadilan, bukan di ruang debat.",
+    "probPro": 68.4,
+    "probKon": 31.6,
+    "probNote": "bias kuat ke PRO (prinsip equality before the law relatif sulit dilawan secara langsung)",
+    "research": "Transparency International (2023), Corruption Perceptions Index Indonesia: penegakan hukum yang konsisten pada pejabat tinggi berkorelasi dengan kenaikan indeks persepsi anti-korupsi jangka menengah. Pope (2000), Confronting Corruption: efektivitas lembaga anti-korupsi sangat tergantung independensi dari intervensi politik saat memproses pejabat tingkat tinggi.",
+    "ideal": "<strong>PRO (Ideal):</strong> Lock frame \"equality before the law sebagai prinsip non-negotiable\", pisahkan dari isu politisasi. Poin: S1, S2.<br><br>\n<strong>KON (Ideal):</strong> Lock frame \"due process dulu, baru proses\" — bukan menolak akuntabilitas, tapi menolak lompat ke kesimpulan sebelum bukti final. Poin: S1."
+  },
+  {
+    "id": "m220",
+    "title": "Dewan ini mendukung kuota 30% keterwakilan perempuan di parlemen bersifat wajib dan mengikat",
+    "cat": "politik",
+    "type": "sosial-aktor",
+    "pro": [
+      "Representasi deskriptif yang seimbang meningkatkan legitimasi demokratis lembaga legislatif",
+      "Kuota wajib mengatasi hambatan struktural (jaringan patronase, pendanaan kampanye) yang secara sistemik menghalangi perempuan",
+      "Studi lintas negara menunjukkan keterwakilan perempuan berkorelasi dengan kebijakan yang lebih responsif isu kesehatan & pendidikan keluarga",
+      "Tanpa unsur \"mengikat/sanksi\", kuota sukarela historically tidak efektif dipenuhi partai",
+      "Kuota mempercepat perubahan norma sosial soal kepemimpinan perempuan di ruang publik",
+      "Keberadaan role model perempuan di parlemen berdampak positif pada aspirasi politik generasi muda perempuan",
+      "Zipper system (selang-seling caleg pria-perempuan) di beberapa negara terbukti meningkatkan keterwakilan riil, bukan simbolik",
+      "Kuota bisa jadi entry point pembenahan sistem kaderisasi partai secara lebih luas",
+      "Keterwakilan yang meningkat berpotensi mengubah budaya kerja parlemen jadi lebih kolaboratif",
+      "Tekanan internasional (CEDAW, indeks gender global) mendukung reputasi diplomatik negara yang menerapkan kuota mengikat"
+    ],
+    "kon": [
+      "Kuota berbasis gender berisiko menggantikan meritokrasi dengan kriteria demografis, merugikan kualitas legislasi jangka panjang",
+      "Representasi deskriptif (jumlah kursi) tidak otomatis menghasilkan representasi substantif (kebijakan pro-perempuan riil)",
+      "Sanksi mengikat terhadap partai berisiko menciptakan pencalonan formalitas (\"kuota kertas\") tanpa dukungan struktural nyata pada kader perempuan",
+      "Kebijakan afirmatif berbasis kuota berisiko men-stigma perempuan terpilih sebagai \"produk kuota\", bukan kompetensi murni",
+      "Masalah struktural (pendanaan, jaringan patronase) lebih efektif diselesaikan lewat reformasi pembiayaan partai, bukan kuota kursi",
+      "Penerapan mengikat secara hukum berpotensi melanggar otonomi internal partai politik dalam menentukan kandidat",
+      "Preseden negara dengan kuota tinggi tidak selalu berkorelasi kuat dengan indeks kesetaraan gender secara umum di masyarakat",
+      "Fokus pada kuota gender mengabaikan dimensi keterwakilan lain yang sama pentingnya (kelas, disabilitas, etnis minoritas)",
+      "Risiko backlash sosial-politik dari kelompok yang merasa proses seleksi jadi tidak adil",
+      "Ketergantungan pada kuota bisa melemahkan insentif partai membangun sistem kaderisasi perempuan yang genuine dari bawah"
+    ],
+    "tiersPro": [
+      {
+        "tier": "S",
+        "text": "Representasi deskriptif yang seimbang meningkatkan legitimasi demokratis lembaga legislatif",
+        "strength": 76.4,
+        "risk": 27.1
+      },
+      {
+        "tier": "S",
+        "text": "Kuota wajib mengatasi hambatan struktural (jaringan patronase, pendanaan kampanye) yang secara sistemik menghalangi perempuan",
+        "strength": 74.8,
+        "risk": 29.6
+      },
+      {
+        "tier": "A",
+        "text": "Studi lintas negara menunjukkan keterwakilan perempuan berkorelasi dengan kebijakan yang lebih responsif isu kesehatan & pendidikan keluarga",
+        "strength": 69.5,
+        "risk": 36.8
+      },
+      {
+        "tier": "A",
+        "text": "Tanpa unsur \"mengikat/sanksi\", kuota sukarela historically tidak efektif dipenuhi partai",
+        "strength": 67.2,
+        "risk": 38.9
+      },
+      {
+        "tier": "A",
+        "text": "Kuota mempercepat perubahan norma sosial soal kepemimpinan perempuan di ruang publik",
+        "strength": 63.7,
+        "risk": 42.3
+      },
+      {
+        "tier": "A",
+        "text": "Keberadaan role model perempuan di parlemen berdampak positif pada aspirasi politik generasi muda perempuan",
+        "strength": 60.9,
+        "risk": 45.1
+      },
+      {
+        "tier": "B",
+        "text": "Zipper system (selang-seling caleg pria-perempuan) di beberapa negara terbukti meningkatkan keterwakilan riil, bukan simbolik",
+        "strength": 56.3,
+        "risk": 52.4
+      },
+      {
+        "tier": "B",
+        "text": "Kuota bisa jadi entry point pembenahan sistem kaderisasi partai secara lebih luas",
+        "strength": 53.7,
+        "risk": 55.6
+      },
+      {
+        "tier": "C",
+        "text": "Keterwakilan yang meningkat berpotensi mengubah budaya kerja parlemen jadi lebih kolaboratif",
+        "strength": 45.9,
+        "risk": 62.7
+      },
+      {
+        "tier": "C",
+        "text": "Tekanan internasional (CEDAW, indeks gender global) mendukung reputasi diplomatik negara yang menerapkan kuota mengikat",
+        "strength": 43.2,
+        "risk": 64.8
+      }
+    ],
+    "tiersKon": [
+      {
+        "tier": "S",
+        "text": "Kuota berbasis gender berisiko menggantikan meritokrasi dengan kriteria demografis, merugikan kualitas legislasi jangka panjang",
+        "strength": 68.9,
+        "risk": 33.4
+      },
+      {
+        "tier": "A",
+        "text": "Representasi deskriptif (jumlah kursi) tidak otomatis menghasilkan representasi substantif (kebijakan pro-perempuan riil)",
+        "strength": 71.6,
+        "risk": 32.7
+      },
+      {
+        "tier": "A",
+        "text": "Sanksi mengikat terhadap partai berisiko menciptakan pencalonan formalitas (\"kuota kertas\") tanpa dukungan struktural nyata pada kader perempuan",
+        "strength": 66.4,
+        "risk": 39.8
+      },
+      {
+        "tier": "A",
+        "text": "Kebijakan afirmatif berbasis kuota berisiko men-stigma perempuan terpilih sebagai \"produk kuota\", bukan kompetensi murni",
+        "strength": 62.1,
+        "risk": 44.7
+      },
+      {
+        "tier": "A",
+        "text": "Masalah struktural (pendanaan, jaringan patronase) lebih efektif diselesaikan lewat reformasi pembiayaan partai, bukan kuota kursi",
+        "strength": 64.7,
+        "risk": 41.5
+      },
+      {
+        "tier": "A",
+        "text": "Penerapan mengikat secara hukum berpotensi melanggar otonomi internal partai politik dalam menentukan kandidat",
+        "strength": 58.3,
+        "risk": 47.9
+      },
+      {
+        "tier": "B",
+        "text": "Preseden negara dengan kuota tinggi tidak selalu berkorelasi kuat dengan indeks kesetaraan gender secara umum di masyarakat",
+        "strength": 53.6,
+        "risk": 54.2
+      },
+      {
+        "tier": "B",
+        "text": "Fokus pada kuota gender mengabaikan dimensi keterwakilan lain yang sama pentingnya (kelas, disabilitas, etnis minoritas)",
+        "strength": 51.9,
+        "risk": 56.8
+      },
+      {
+        "tier": "C",
+        "text": "Risiko backlash sosial-politik dari kelompok yang merasa proses seleksi jadi tidak adil",
+        "strength": 46.8,
+        "risk": 61.4
+      },
+      {
+        "tier": "C",
+        "text": "Ketergantungan pada kuota bisa melemahkan insentif partai membangun sistem kaderisasi perempuan yang genuine dari bawah",
+        "strength": 44.3,
+        "risk": 63.9
+      }
+    ],
+    "terms": [
+      "Descriptive Representation",
+      "Substantive Representation",
+      "Affirmative Action",
+      "Zipper System"
+    ],
+    "cases": {
+      "ideal": {
+        "pro": "Lock frame \"hambatan struktural butuh intervensi struktural\" — kuota sebagai koreksi atas ketidaksetaraan sistemik, bukan diskriminasi terbalik. Poin: S1, S2.",
+        "kon": "Lock frame \"deskriptif vs substantif\" — jumlah kursi tidak sama dengan dampak kebijakan riil. Poin: A2."
+      },
+      "mayor": {
+        "pro": "Efektivitas sanksi mengikat dibanding kuota sukarela + dampak kebijakan responsif gender. Poin: A3-A4.",
+        "kon": "Risiko kuota kertas/formalitas + stigma \"produk kuota\" merugikan kredibilitas individual. Poin: A3-A4."
+      },
+      "minor": {
+        "pro": "Zipper system sebagai mekanisme teknis yang terbukti + efek role model generasi muda. Poin: A6, B7.",
+        "kon": "Reformasi pembiayaan partai sebagai alternatif lebih tepat sasaran + preseden internasional yang tidak konsisten. Poin: A5, B7."
+      },
+      "niche": {
+        "pro": "Framing tekanan internasional/reputasi diplomatik — relevan tapi bisa terkesan argumen sekunder dibanding substansi domestik.",
+        "kon": "Framing risiko mengabaikan dimensi keterwakilan lain (kelas, disabilitas) — kuat secara intersectional tapi harus dijaga agar tidak melebar dari inti mosi gender."
+      }
+    },
+    "rotation": {
+      "ofensif": "(cocok PRO) P1 lock hambatan struktural + anchor efektivitas sanksi mengikat -> P2 rebuttal ke klaim \"kuota kertas\", tunjukkan mekanisme zipper system -> P3 kompres crux \"koreksi struktural vs meritokrasi formal\", tutup dengan dampak kebijakan responsif gender.",
+      "defensif": "(cocok KON) P1 buka lebar deskriptif vs substantif + risiko stigma -> P2 konsolidasi alternatif reformasi pembiayaan partai -> P3 tutup tanpa argumen baru, tegaskan otonomi partai dan preseden internasional yang beragam."
+    },
+    "hybrid": "kebijakan-gender",
+    "ctx": "Dewan ini mendukung penerapan kuota 30% keterwakilan perempuan di parlemen yang bersifat wajib dan mengikat secara hukum, termasuk sanksi bagi partai yang tidak memenuhi.",
+    "probPro": 58.7,
+    "probKon": 41.3,
+    "research": "Krook (2009), Quotas for Women in Politics: efektivitas kuota gender sangat bergantung pada desain mekanisme (placement mandate, sanksi) bukan sekadar angka target. Franceschet & Piscopo (2008): representasi deskriptif perempuan tidak otomatis linear dengan representasi substantif — tergantung konteks institusional partai.",
+    "ideal": "<strong>PRO (Ideal):</strong> Lock frame \"hambatan struktural butuh intervensi struktural\" — kuota sebagai koreksi atas ketidaksetaraan sistemik, bukan diskriminasi terbalik. Poin: S1, S2.<br><br>\n<strong>KON (Ideal):</strong> Lock frame \"deskriptif vs substantif\" — jumlah kursi tidak sama dengan dampak kebijakan riil. Poin: A2."
+  },
+  {
+    "id": "m221",
+    "title": "Dewan ini mendukung kenaikan PPN menjadi 12% untuk barang dan jasa non-esensial",
+    "cat": "politik",
+    "type": "kebijakan-ekonomi",
+    "pro": [
+      "Kenaikan PPN terbatas pada barang non-esensial menjaga progresivitas pajak — kelompok mampu menanggung beban lebih besar",
+      "Penerimaan negara tambahan dibutuhkan untuk membiayai program prioritas (kesehatan, pendidikan, infrastruktur) tanpa menambah utang",
+      "Barang non-esensial punya elastisitas permintaan lebih rendah terhadap kenaikan harga di kalangan konsumen mampu",
+      "Kebijakan ini lebih adil dibanding kenaikan PPN merata yang membebani semua golongan termasuk barang esensial",
+      "Basis penerimaan pajak yang lebih besar mengurangi ketergantungan fiskal pada utang luar negeri",
+      "Kebijakan serupa (pajak barang mewah, cukai) sudah punya presedan implementasi yang relatif berhasil",
+      "Tambahan penerimaan bisa dialokasikan langsung ke subsidi kelompok bawah, menciptakan redistribusi",
+      "Kenaikan bertahap dan terbatas memberi waktu adaptasi pelaku usaha sektor terkait",
+      "Penerimaan ini bisa jadi basis pembiayaan program transisi energi/lingkungan jangka panjang",
+      "Kebijakan ini menunjukkan komitmen fiskal yang disiplin ke lembaga rating internasional"
+    ],
+    "kon": [
+      "Definisi \"non-esensial\" sering kabur dalam implementasi dan berisiko merembet ke barang yang sebenarnya dibutuhkan kelas menengah",
+      "Kenaikan pajak konsumsi bersifat regresif secara struktural — dampak riil lebih terasa di kelompok menengah-bawah meski kategorinya \"non-esensial\"",
+      "Daya beli yang sudah lemah pasca-pandemi berisiko makin tertekan, memperlambat pemulihan ekonomi domestik",
+      "Kenaikan PPN berisiko memicu efek domino ke sektor informal yang terhubung dengan rantai pasok barang non-esensial",
+      "Alternatif peningkatan penerimaan negara (perbaikan rasio pajak, penindakan penghindaran pajak korporasi) lebih efektif tanpa membebani konsumen",
+      "Ketidakpastian kebijakan fiskal berulang menciptakan iklim bisnis yang tidak stabil bagi investor",
+      "Preseden kenaikan pajak konsumsi di negara lain sering memicu resistensi publik dan penurunan konsumsi lebih dari perkiraan",
+      "Sektor UMKM yang memproduksi barang kategori \"non-esensial\" (kerajinan, fashion lokal) ikut terdampak meski bukan target utama",
+      "Risiko kebijakan ini dipakai sebagai tameng politik untuk menghindari reformasi pajak progresif yang lebih fundamental",
+      "Ketidakpercayaan publik pada transparansi penggunaan penerimaan pajak tambahan dapat memicu resistensi sosial"
+    ],
+    "tiersPro": [
+      {
+        "tier": "S",
+        "text": "Kenaikan PPN terbatas pada barang non-esensial menjaga progresivitas pajak — kelompok mampu menanggung beban lebih besar",
+        "strength": 71.8,
+        "risk": 30.4
+      },
+      {
+        "tier": "S",
+        "text": "Penerimaan negara tambahan dibutuhkan untuk membiayai program prioritas (kesehatan, pendidikan, infrastruktur) tanpa menambah utang",
+        "strength": 73.5,
+        "risk": 28.7
+      },
+      {
+        "tier": "A",
+        "text": "Barang non-esensial punya elastisitas permintaan lebih rendah terhadap kenaikan harga di kalangan konsumen mampu",
+        "strength": 62.9,
+        "risk": 44.6
+      },
+      {
+        "tier": "A",
+        "text": "Kebijakan ini lebih adil dibanding kenaikan PPN merata yang membebani semua golongan termasuk barang esensial",
+        "strength": 65.3,
+        "risk": 41.2
+      },
+      {
+        "tier": "A",
+        "text": "Basis penerimaan pajak yang lebih besar mengurangi ketergantungan fiskal pada utang luar negeri",
+        "strength": 60.7,
+        "risk": 46.8
+      },
+      {
+        "tier": "A",
+        "text": "Kebijakan serupa (pajak barang mewah, cukai) sudah punya presedan implementasi yang relatif berhasil",
+        "strength": 57.4,
+        "risk": 50.3
+      },
+      {
+        "tier": "B",
+        "text": "Tambahan penerimaan bisa dialokasikan langsung ke subsidi kelompok bawah, menciptakan redistribusi",
+        "strength": 53.8,
+        "risk": 55.1
+      },
+      {
+        "tier": "B",
+        "text": "Kenaikan bertahap dan terbatas memberi waktu adaptasi pelaku usaha sektor terkait",
+        "strength": 51.2,
+        "risk": 57.4
+      },
+      {
+        "tier": "C",
+        "text": "Penerimaan ini bisa jadi basis pembiayaan program transisi energi/lingkungan jangka panjang",
+        "strength": 43.6,
+        "risk": 63.8
+      },
+      {
+        "tier": "C",
+        "text": "Kebijakan ini menunjukkan komitmen fiskal yang disiplin ke lembaga rating internasional",
+        "strength": 40.9,
+        "risk": 66.2
+      }
+    ],
+    "tiersKon": [
+      {
+        "tier": "S",
+        "text": "Definisi \"non-esensial\" sering kabur dalam implementasi dan berisiko merembet ke barang yang sebenarnya dibutuhkan kelas menengah",
+        "strength": 74.2,
+        "risk": 27.9
+      },
+      {
+        "tier": "S",
+        "text": "Kenaikan pajak konsumsi bersifat regresif secara struktural — dampak riil lebih terasa di kelompok menengah-bawah meski kategorinya \"non-esensial\"",
+        "strength": 71.6,
+        "risk": 31.5
+      },
+      {
+        "tier": "A",
+        "text": "Daya beli yang sudah lemah pasca-pandemi berisiko makin tertekan, memperlambat pemulihan ekonomi domestik",
+        "strength": 68.4,
+        "risk": 36.7
+      },
+      {
+        "tier": "A",
+        "text": "Kenaikan PPN berisiko memicu efek domino ke sektor informal yang terhubung dengan rantai pasok barang non-esensial",
+        "strength": 63.1,
+        "risk": 42.9
+      },
+      {
+        "tier": "A",
+        "text": "Alternatif peningkatan penerimaan negara (perbaikan rasio pajak, penindakan penghindaran pajak korporasi) lebih efektif tanpa membebani konsumen",
+        "strength": 66.8,
+        "risk": 38.4
+      },
+      {
+        "tier": "A",
+        "text": "Ketidakpastian kebijakan fiskal berulang menciptakan iklim bisnis yang tidak stabil bagi investor",
+        "strength": 58.9,
+        "risk": 47.6
+      },
+      {
+        "tier": "B",
+        "text": "Preseden kenaikan pajak konsumsi di negara lain sering memicu resistensi publik dan penurunan konsumsi lebih dari perkiraan",
+        "strength": 54.3,
+        "risk": 53.8
+      },
+      {
+        "tier": "B",
+        "text": "Sektor UMKM yang memproduksi barang kategori \"non-esensial\" (kerajinan, fashion lokal) ikut terdampak meski bukan target utama",
+        "strength": 52.7,
+        "risk": 56.3
+      },
+      {
+        "tier": "C",
+        "text": "Risiko kebijakan ini dipakai sebagai tameng politik untuk menghindari reformasi pajak progresif yang lebih fundamental",
+        "strength": 47.1,
+        "risk": 61.7
+      },
+      {
+        "tier": "C",
+        "text": "Ketidakpercayaan publik pada transparansi penggunaan penerimaan pajak tambahan dapat memicu resistensi sosial",
+        "strength": 44.6,
+        "risk": 64.1
+      }
+    ],
+    "terms": [
+      "Regressive Tax",
+      "Fiscal Space",
+      "Multiplier Effect",
+      "Elasticity of Demand"
+    ],
+    "cases": {
+      "ideal": {
+        "pro": "Lock frame \"progresivitas terbatas pada non-esensial\" — bedakan tegas dari kenaikan PPN merata yang lebih regresif. Poin: S1, S2.",
+        "kon": "Lock frame \"regresivitas struktural tersembunyi di balik label non-esensial\" — definisi kabur membuat klaim progresif PRO tidak solid di implementasi. Poin: S1, S2."
+      },
+      "mayor": {
+        "pro": "Elastisitas permintaan rendah di kalangan mampu + keadilan dibanding kenaikan merata. Poin: A3-A4.",
+        "kon": "Tekanan daya beli pasca-pandemi + efek domino ke sektor informal. Poin: A3-A4."
+      },
+      "minor": {
+        "pro": "Redistribusi via subsidi kelompok bawah + kenaikan bertahap beri waktu adaptasi. Poin: B7-B8.",
+        "kon": "Preseden resistensi publik negara lain + dampak tak sengaja ke UMKM. Poin: B7-B8."
+      },
+      "niche": {
+        "pro": "Framing \"basis pembiayaan transisi energi\" — relevan tapi agak jauh dari inti fiskal, butuh warrant penghubung eksplisit.",
+        "kon": "Framing \"tameng politik menghindari reformasi pajak progresif\" — tajam sebagai closing tapi berisiko dibaca spekulatif soal motif kalau tidak di-tie ke bukti kebijakan konkret."
+      }
+    },
+    "rotation": {
+      "ofensif": "(cocok PRO, underdog di angka) P1 lock progresivitas terbatas + anchor kebutuhan fiskal -> P2 rebuttal langsung ke argumen definisi kabur, tunjukkan mekanisme kategorisasi konkret -> P3 kompres crux \"adil terbatas vs regresif merata\", tutup dengan redistribusi subsidi.",
+      "defensif": "(cocok KON, favorit) P1 buka lebar regresivitas struktural + definisi kabur -> P2 konsolidasi tekanan daya beli & alternatif penerimaan pajak lain -> P3 tutup tanpa argumen baru, tegaskan risiko efek domino ekonomi."
+    },
+    "hybrid": "fiskal",
+    "ctx": "Dewan ini mendukung kebijakan pemerintah menaikkan Pajak Pertambahan Nilai (PPN) menjadi 12% khusus untuk kategori barang dan jasa non-esensial/mewah, sebagai instrumen penerimaan negara.",
+    "probPro": 44.6,
+    "probKon": 55.4,
+    "research": "Bird & Zolt (2005), Redistribution via Taxation: pajak konsumsi cenderung regresif kecuali disertai mekanisme pengecualian yang sangat presisi dan pengawasan implementasi ketat. IMF (2022), Fiscal Monitor: kenaikan PPN paling efektif secara redistributif ketika dikombinasikan langsung dengan transfer tunai bersasaran ke kelompok rentan.",
+    "ideal": "<strong>PRO (Ideal):</strong> Lock frame \"progresivitas terbatas pada non-esensial\" — bedakan tegas dari kenaikan PPN merata yang lebih regresif. Poin: S1, S2.<br><br>\n<strong>KON (Ideal):</strong> Lock frame \"regresivitas struktural tersembunyi di balik label non-esensial\" — definisi kabur membuat klaim progresif PRO tidak solid di implementasi. Poin: S1, S2."
+  },
+  {
+    "id": "m222",
+    "title": "Dewan ini mendukung penghapusan sistem zonasi dalam PPDB (Penerimaan Peserta Didik Baru)",
+    "cat": "sosial",
+    "type": "kebijakan-pendidikan",
+    "pro": [
+      "Sistem zonasi ketat berisiko menurunkan motivasi belajar siswa karena penerimaan tidak lagi berbasis prestasi",
+      "Orang tua kehilangan pilihan mengakses sekolah berkualitas di luar zona tempat tinggal, membatasi mobilitas sosial via pendidikan",
+      "Kualitas sekolah antar-zona sangat tidak merata, membuat zonasi justru mengunci ketimpangan geografis yang sudah ada",
+      "Sistem berbasis nilai memberi sinyal jelas dan terukur untuk perencanaan pendidikan siswa sejak dini",
+      "Praktik manipulasi domisili yang marak justru muncul akibat sistem zonasi, menciptakan ketidakadilan baru",
+      "Sekolah favorit kehilangan insentif menjaga standar akademik tinggi karena penerimaan tidak lagi kompetitif",
+      "Preseden sebelum zonasi menunjukkan sistem berbasis nilai lebih mudah diaudit dan transparan",
+      "Penghapusan zonasi bisa dibarengi kebijakan lain (beasiswa, bus sekolah) untuk tetap menjaga akses",
+      "Kompetisi akademik yang lebih tinggi bisa mendorong perbaikan kualitas guru secara merata jangka panjang",
+      "Sistem ini bisa menjadi entry point reformasi pemerataan kualitas sekolah, bukan sekadar soal seleksi"
+    ],
+    "kon": [
+      "Zonasi dirancang justru untuk mengatasi ketimpangan akses ke sekolah favorit yang selama ini menumpuk di kelompok mampu secara ekonomi",
+      "Penghapusan zonasi berisiko mengembalikan segregasi sekolah berdasarkan kelas sosial-ekonomi, bukan murni prestasi",
+      "Sistem berbasis nilai murni mengabaikan disparitas kualitas pendidikan dasar antar-wilayah yang tidak setara sejak awal",
+      "Zonasi mendorong pemerataan investasi pemerintah ke sekolah-sekolah yang sebelumnya terpinggirkan",
+      "Masalah manipulasi domisili adalah kegagalan implementasi/pengawasan, bukan kegagalan konsep zonasi itu sendiri",
+      "Sistem zonasi mengurangi beban transportasi & biaya sosial siswa dari keluarga kurang mampu ke sekolah jauh",
+      "Preseden negara dengan sistem zonasi/catchment area (banyak negara maju) menunjukkan efektivitas jangka panjang bila diikuti pemerataan fasilitas",
+      "Penghapusan zonasi berisiko memicu kompetisi tidak sehat lewat bimbingan belajar mahal yang hanya terjangkau kelompok mampu",
+      "Fokus mengembalikan sistem nilai mengalihkan perhatian dari investasi pemerataan kualitas guru dan fasilitas yang lebih mendasar",
+      "Zonasi juga berfungsi membangun ikatan komunitas lokal sekitar sekolah yang hilang bila sistem murni kompetitif"
+    ],
+    "tiersPro": [
+      {
+        "tier": "S",
+        "text": "Sistem zonasi ketat berisiko menurunkan motivasi belajar siswa karena penerimaan tidak lagi berbasis prestasi",
+        "strength": 69.7,
+        "risk": 34.8
+      },
+      {
+        "tier": "A",
+        "text": "Orang tua kehilangan pilihan mengakses sekolah berkualitas di luar zona tempat tinggal, membatasi mobilitas sosial via pendidikan",
+        "strength": 66.4,
+        "risk": 39.6
+      },
+      {
+        "tier": "A",
+        "text": "Kualitas sekolah antar-zona sangat tidak merata, membuat zonasi justru mengunci ketimpangan geografis yang sudah ada",
+        "strength": 64.8,
+        "risk": 42.1
+      },
+      {
+        "tier": "A",
+        "text": "Sistem berbasis nilai memberi sinyal jelas dan terukur untuk perencanaan pendidikan siswa sejak dini",
+        "strength": 61.3,
+        "risk": 45.7
+      },
+      {
+        "tier": "A",
+        "text": "Praktik manipulasi domisili yang marak justru muncul akibat sistem zonasi, menciptakan ketidakadilan baru",
+        "strength": 63.9,
+        "risk": 43.4
+      },
+      {
+        "tier": "A",
+        "text": "Sekolah favorit kehilangan insentif menjaga standar akademik tinggi karena penerimaan tidak lagi kompetitif",
+        "strength": 58.6,
+        "risk": 48.9
+      },
+      {
+        "tier": "B",
+        "text": "Preseden sebelum zonasi menunjukkan sistem berbasis nilai lebih mudah diaudit dan transparan",
+        "strength": 54.1,
+        "risk": 54.6
+      },
+      {
+        "tier": "B",
+        "text": "Penghapusan zonasi bisa dibarengi kebijakan lain (beasiswa, bus sekolah) untuk tetap menjaga akses",
+        "strength": 51.7,
+        "risk": 57.2
+      },
+      {
+        "tier": "C",
+        "text": "Kompetisi akademik yang lebih tinggi bisa mendorong perbaikan kualitas guru secara merata jangka panjang",
+        "strength": 44.3,
+        "risk": 63.1
+      },
+      {
+        "tier": "C",
+        "text": "Sistem ini bisa menjadi entry point reformasi pemerataan kualitas sekolah, bukan sekadar soal seleksi",
+        "strength": 41.8,
+        "risk": 65.7
+      }
+    ],
+    "tiersKon": [
+      {
+        "tier": "S",
+        "text": "Zonasi dirancang justru untuk mengatasi ketimpangan akses ke sekolah favorit yang selama ini menumpuk di kelompok mampu secara ekonomi",
+        "strength": 75.3,
+        "risk": 26.4
+      },
+      {
+        "tier": "S",
+        "text": "Penghapusan zonasi berisiko mengembalikan segregasi sekolah berdasarkan kelas sosial-ekonomi, bukan murni prestasi",
+        "strength": 73.6,
+        "risk": 29.1
+      },
+      {
+        "tier": "A",
+        "text": "Sistem berbasis nilai murni mengabaikan disparitas kualitas pendidikan dasar antar-wilayah yang tidak setara sejak awal",
+        "strength": 68.9,
+        "risk": 35.7
+      },
+      {
+        "tier": "A",
+        "text": "Zonasi mendorong pemerataan investasi pemerintah ke sekolah-sekolah yang sebelumnya terpinggirkan",
+        "strength": 65.2,
+        "risk": 39.8
+      },
+      {
+        "tier": "A",
+        "text": "Masalah manipulasi domisili adalah kegagalan implementasi/pengawasan, bukan kegagalan konsep zonasi itu sendiri",
+        "strength": 62.7,
+        "risk": 43.6
+      },
+      {
+        "tier": "A",
+        "text": "Sistem zonasi mengurangi beban transportasi & biaya sosial siswa dari keluarga kurang mampu ke sekolah jauh",
+        "strength": 60.4,
+        "risk": 46.2
+      },
+      {
+        "tier": "B",
+        "text": "Preseden negara dengan sistem zonasi/catchment area (banyak negara maju) menunjukkan efektivitas jangka panjang bila diikuti pemerataan fasilitas",
+        "strength": 55.8,
+        "risk": 52.9
+      },
+      {
+        "tier": "B",
+        "text": "Penghapusan zonasi berisiko memicu kompetisi tidak sehat lewat bimbingan belajar mahal yang hanya terjangkau kelompok mampu",
+        "strength": 53.1,
+        "risk": 55.8
+      },
+      {
+        "tier": "C",
+        "text": "Fokus mengembalikan sistem nilai mengalihkan perhatian dari investasi pemerataan kualitas guru dan fasilitas yang lebih mendasar",
+        "strength": 48.6,
+        "risk": 61.2
+      },
+      {
+        "tier": "C",
+        "text": "Zonasi juga berfungsi membangun ikatan komunitas lokal sekitar sekolah yang hilang bila sistem murni kompetitif",
+        "strength": 43.9,
+        "risk": 65.3
+      }
+    ],
+    "terms": [
+      "Meritocracy",
+      "Educational Equity",
+      "School Segregation",
+      "Catchment Area"
+    ],
+    "cases": {
+      "ideal": {
+        "pro": "Lock frame \"meritokrasi sebagai sinyal & insentif belajar\" — zonasi mengunci ketimpangan bukan menyelesaikannya. Poin: S1.",
+        "kon": "Lock frame \"zonasi sebagai koreksi struktural atas ketimpangan akses ekonomi\" — penghapusan mengembalikan segregasi kelas. Poin: S1, S2."
+      },
+      "mayor": {
+        "pro": "Mobilitas sosial terbatas + ketimpangan geografis terkunci + manipulasi domisili. Poin: A2-A3, A5.",
+        "kon": "Disparitas kualitas pendidikan dasar antar-wilayah + pemerataan investasi pemerintah. Poin: A3-A4."
+      },
+      "minor": {
+        "pro": "Transparansi audit sistem nilai + kebijakan pelengkap (beasiswa, bus sekolah). Poin: B7-B8.",
+        "kon": "Preseden internasional catchment area + risiko bimbel mahal jadi kompetisi tak sehat. Poin: B7-B8."
+      },
+      "niche": {
+        "pro": "Framing \"entry point reformasi pemerataan kualitas sekolah\" — berisiko dibaca kontradiktif kalau PRO sendiri menolak zonasi yang justru alat pemerataan.",
+        "kon": "Framing \"zonasi membangun ikatan komunitas lokal\" — soft argument, cocok jadi closing emosional tapi lemah secara kausal murni."
+      }
+    },
+    "rotation": {
+      "ofensif": "(cocok PRO, underdog) P1 lock meritokrasi sebagai insentif + anchor manipulasi domisili -> P2 rebuttal ke klaim koreksi struktural, tunjukkan zonasi justru mengunci ketimpangan -> P3 kompres crux \"insentif belajar vs proteksi akses\", tutup dengan kebijakan pelengkap.",
+      "defensif": "(cocok KON, favorit) P1 buka lebar koreksi struktural + risiko segregasi kelas -> P2 konsolidasi disparitas kualitas pendidikan dasar & pemerataan investasi -> P3 tutup tanpa argumen baru, tegaskan risiko kompetisi tak sehat."
+    },
+    "hybrid": "sosial-ekonomi",
+    "ctx": "Dewan ini mendukung penghapusan sistem zonasi berbasis jarak tempat tinggal dalam Penerimaan Peserta Didik Baru (PPDB) dan mengembalikan sistem seleksi berbasis nilai/prestasi akademik.",
+    "probPro": 41.2,
+    "probKon": 58.8,
+    "research": "Reardon (2011), The Widening Academic Achievement Gap: kesenjangan prestasi akademik berbasis kelas sosial-ekonomi terus melebar tanpa intervensi struktural pada akses sekolah. Burgess & Briggs (2010), School Assignment: sistem zonasi/catchment area efektif mengurangi segregasi sosial-ekonomi sekolah hanya jika dibarengi investasi pemerataan kualitas antar-sekolah.",
+    "ideal": "<strong>PRO (Ideal):</strong> Lock frame \"meritokrasi sebagai sinyal & insentif belajar\" — zonasi mengunci ketimpangan bukan menyelesaikannya. Poin: S1.<br><br>\n<strong>KON (Ideal):</strong> Lock frame \"zonasi sebagai koreksi struktural atas ketimpangan akses ekonomi\" — penghapusan mengembalikan segregasi kelas. Poin: S1, S2."
+  },
+  {
+    "id": "m223",
+    "title": "Dewan ini mendukung pemblokiran total akses internet ke situs dan aplikasi judi online",
+    "cat": "sosial",
+    "type": "kebijakan-digital",
+    "pro": [
+      "Judi online menciptakan kerugian ekonomi rumah tangga masif dan berkontribusi pada kasus kriminal turunan (utang, KDRT, pinjol ilegal)",
+      "Negara punya kewajiban melindungi warga dari eksploitasi finansial predatoris yang dirancang adiktif secara algoritmik",
+      "Pemblokiran infrastruktur pembayaran (rekening, e-wallet) lebih efektif dibanding hanya blokir situs yang mudah bermigrasi domain",
+      "Precedent negara lain yang menekan interdiksi finansial menunjukkan penurunan signifikan volume transaksi judi online",
+      "Pemblokiran total memberi sinyal ketegasan negara terhadap ekonomi ilegal yang merongrong sistem keuangan",
+      "Dampak psikologis dan sosial dari kecanduan judi mengharuskan pendekatan preventif yang tegas, bukan sekadar edukasi",
+      "Kolaborasi lintas kementerian dan penyedia layanan pembayaran meningkatkan efektivitas penindakan",
+      "Pemblokiran memberi ruang bagi penguatan literasi keuangan sebagai kebijakan pelengkap jangka panjang",
+      "Momentum ini bisa jadi entry point regulasi ekonomi digital ilegal secara lebih luas (pinjol ilegal, investasi bodong)",
+      "Ketegasan kebijakan ini membangun kepercayaan publik terhadap kapasitas negara mengelola ruang digital"
+    ],
+    "kon": [
+      "Pemblokiran situs/domain historically gagal jangka panjang karena efek \"whac-a-mole\" — domain baru bermunculan lebih cepat dari kapasitas blokir",
+      "Pemblokiran total tanpa penindakan hukum terhadap operator/bandar hanya mengatasi simtom, bukan akar masalah",
+      "Larangan absolut berisiko mendorong pemain berpindah ke platform lebih tersembunyi/gelap yang justru lebih berisiko secara finansial",
+      "Kebijakan represif tanpa pendekatan harm reduction (edukasi risiko, bantuan pemulihan kecanduan) tidak menyelesaikan akar perilaku adiktif",
+      "Pemblokiran infrastruktur pembayaran berisiko berdampak juga ke transaksi keuangan digital legal yang sah",
+      "Kapasitas teknis dan SDM pengawasan digital pemerintah belum memadai untuk pemblokiran total yang efektif dan berkelanjutan",
+      "Fokus pada pemblokiran mengalihkan perhatian dari penindakan aktor kunci (bandar besar, jaringan pencucian uang)",
+      "Preseden internasional menunjukkan regulasi & perizinan terkontrol kadang lebih efektif menekan judi ilegal dibanding larangan total",
+      "Risiko kebijakan ini dipakai sebagai pencitraan politik tanpa follow-up penindakan struktural yang konsisten",
+      "Represi digital berlebihan berpotensi disalahgunakan untuk pengawasan/pembatasan aktivitas digital lain di luar judi"
+    ],
+    "tiersPro": [
+      {
+        "tier": "S",
+        "text": "Judi online menciptakan kerugian ekonomi rumah tangga masif dan berkontribusi pada kasus kriminal turunan (utang, KDRT, pinjol ilegal)",
+        "strength": 79.4,
+        "risk": 22.7
+      },
+      {
+        "tier": "S",
+        "text": "Negara punya kewajiban melindungi warga dari eksploitasi finansial predatoris yang dirancang adiktif secara algoritmik",
+        "strength": 76.8,
+        "risk": 25.3
+      },
+      {
+        "tier": "A",
+        "text": "Pemblokiran infrastruktur pembayaran (rekening, e-wallet) lebih efektif dibanding hanya blokir situs yang mudah bermigrasi domain",
+        "strength": 68.2,
+        "risk": 36.4
+      },
+      {
+        "tier": "A",
+        "text": "Precedent negara lain yang menekan interdiksi finansial menunjukkan penurunan signifikan volume transaksi judi online",
+        "strength": 65.7,
+        "risk": 39.1
+      },
+      {
+        "tier": "A",
+        "text": "Pemblokiran total memberi sinyal ketegasan negara terhadap ekonomi ilegal yang merongrong sistem keuangan",
+        "strength": 62.4,
+        "risk": 42.8
+      },
+      {
+        "tier": "A",
+        "text": "Dampak psikologis dan sosial dari kecanduan judi mengharuskan pendekatan preventif yang tegas, bukan sekadar edukasi",
+        "strength": 60.9,
+        "risk": 44.6
+      },
+      {
+        "tier": "B",
+        "text": "Kolaborasi lintas kementerian dan penyedia layanan pembayaran meningkatkan efektivitas penindakan",
+        "strength": 55.3,
+        "risk": 51.7
+      },
+      {
+        "tier": "B",
+        "text": "Pemblokiran memberi ruang bagi penguatan literasi keuangan sebagai kebijakan pelengkap jangka panjang",
+        "strength": 52.6,
+        "risk": 54.9
+      },
+      {
+        "tier": "C",
+        "text": "Momentum ini bisa jadi entry point regulasi ekonomi digital ilegal secara lebih luas (pinjol ilegal, investasi bodong)",
+        "strength": 46.1,
+        "risk": 61.4
+      },
+      {
+        "tier": "C",
+        "text": "Ketegasan kebijakan ini membangun kepercayaan publik terhadap kapasitas negara mengelola ruang digital",
+        "strength": 42.7,
+        "risk": 64.8
+      }
+    ],
+    "tiersKon": [
+      {
+        "tier": "S",
+        "text": "Pemblokiran situs/domain historically gagal jangka panjang karena efek \"whac-a-mole\" — domain baru bermunculan lebih cepat dari kapasitas blokir",
+        "strength": 72.6,
+        "risk": 28.4
+      },
+      {
+        "tier": "A",
+        "text": "Pemblokiran total tanpa penindakan hukum terhadap operator/bandar hanya mengatasi simtom, bukan akar masalah",
+        "strength": 68.7,
+        "risk": 35.9
+      },
+      {
+        "tier": "A",
+        "text": "Larangan absolut berisiko mendorong pemain berpindah ke platform lebih tersembunyi/gelap yang justru lebih berisiko secara finansial",
+        "strength": 63.4,
+        "risk": 43.2
+      },
+      {
+        "tier": "A",
+        "text": "Kebijakan represif tanpa pendekatan harm reduction (edukasi risiko, bantuan pemulihan kecanduan) tidak menyelesaikan akar perilaku adiktif",
+        "strength": 66.1,
+        "risk": 39.6
+      },
+      {
+        "tier": "A",
+        "text": "Pemblokiran infrastruktur pembayaran berisiko berdampak juga ke transaksi keuangan digital legal yang sah",
+        "strength": 58.9,
+        "risk": 47.3
+      },
+      {
+        "tier": "A",
+        "text": "Kapasitas teknis dan SDM pengawasan digital pemerintah belum memadai untuk pemblokiran total yang efektif dan berkelanjutan",
+        "strength": 61.7,
+        "risk": 44.1
+      },
+      {
+        "tier": "B",
+        "text": "Fokus pada pemblokiran mengalihkan perhatian dari penindakan aktor kunci (bandar besar, jaringan pencucian uang)",
+        "strength": 54.8,
+        "risk": 53.6
+      },
+      {
+        "tier": "B",
+        "text": "Preseden internasional menunjukkan regulasi & perizinan terkontrol kadang lebih efektif menekan judi ilegal dibanding larangan total",
+        "strength": 51.4,
+        "risk": 56.7
+      },
+      {
+        "tier": "C",
+        "text": "Risiko kebijakan ini dipakai sebagai pencitraan politik tanpa follow-up penindakan struktural yang konsisten",
+        "strength": 47.3,
+        "risk": 61.9
+      },
+      {
+        "tier": "C",
+        "text": "Represi digital berlebihan berpotensi disalahgunakan untuk pengawasan/pembatasan aktivitas digital lain di luar judi",
+        "strength": 43.8,
+        "risk": 65.2
+      }
+    ],
+    "terms": [
+      "Whac-A-Mole Effect",
+      "Financial Interdiction",
+      "Digital Sovereignty",
+      "Harm Reduction"
+    ],
+    "cases": {
+      "ideal": {
+        "pro": "Lock frame \"kewajiban negara melindungi warga dari eksploitasi finansial predatoris\" — pemblokiran sebagai bentuk proteksi, bukan represi semata. Poin: S1, S2.",
+        "kon": "Lock frame \"whac-a-mole effect\" — pemblokiran situs tanpa penindakan struktural terbukti gagal secara historis. Poin: S1."
+      },
+      "mayor": {
+        "pro": "Interdiksi finansial (blokir rekening/e-wallet) sebagai mekanisme lebih efektif dibanding blokir domain semata. Poin: A3-A4.",
+        "kon": "Penindakan operator/bandar sebagai akar masalah + risiko migrasi ke platform lebih gelap. Poin: A2-A3."
+      },
+      "minor": {
+        "pro": "Kolaborasi lintas kementerian + literasi keuangan sebagai pelengkap. Poin: B7-B8.",
+        "kon": "Kapasitas SDM pengawasan digital terbatas + preseden regulasi terkontrol yang lebih efektif. Poin: A6, B8."
+      },
+      "niche": {
+        "pro": "Framing \"entry point regulasi ekonomi digital ilegal lebih luas\" — kuat sebagai visi tapi harus tetap ditambatkan ke inti mosi judi online.",
+        "kon": "Framing \"risiko represi digital disalahgunakan untuk pengawasan di luar judi\" — tajam tapi butuh warrant konkret soal potensi penyalahgunaan, jangan cuma spekulatif."
+      }
+    },
+    "rotation": {
+      "ofensif": "(cocok PRO, favorit) P1 lock kewajiban proteksi negara + anchor interdiksi finansial -> P2 rebuttal ke argumen whac-a-mole, tunjukkan mekanisme pembayaran sebagai solusi berbeda dari blokir domain semata -> P3 kompres crux \"proteksi warga vs migrasi platform\", tutup dengan literasi keuangan.",
+      "defensif": "(cocok KON, underdog di angka) P1 buka lebar whac-a-mole effect + kegagalan historis blokir domain -> P2 konsolidasi kebutuhan penindakan operator & harm reduction -> P3 tutup tanpa argumen baru, tegaskan risiko migrasi ke platform lebih gelap."
+    },
+    "hybrid": "sosial-hukum",
+    "ctx": "Dewan ini mendukung kebijakan pemerintah melakukan pemblokiran total dan permanen terhadap seluruh akses situs, aplikasi, dan infrastruktur pembayaran yang terkait judi online di Indonesia.",
+    "probPro": 63.9,
+    "probKon": 36.1,
+    "research": "Gainsbury (2015), Online Gambling Addiction: pendekatan represif tanpa harm reduction terbukti kurang efektif menekan perilaku adiktif dibanding kombinasi interdiksi finansial dan intervensi psikologis. Australian Communications and Media Authority (2021): pemblokiran domain situs judi ilegal efektif jangka pendek tapi butuh pembaruan terus-menerus karena migrasi domain cepat.",
+    "ideal": "<strong>PRO (Ideal):</strong> Lock frame \"kewajiban negara melindungi warga dari eksploitasi finansial predatoris\" — pemblokiran sebagai bentuk proteksi, bukan represi semata. Poin: S1, S2.<br><br>\n<strong>KON (Ideal):</strong> Lock frame \"whac-a-mole effect\" — pemblokiran situs tanpa penindakan struktural terbukti gagal secara historis. Poin: S1."
+  },
+  {
+    "id": "m224",
+    "title": "Dewan ini mendukung penggunaan hak angket DPR sebagai instrumen rutin pengawasan eksekutif",
+    "cat": "politik",
+    "type": "kelembagaan-politik",
+    "pro": [
+      "Hak angket adalah instrumen konstitusional sah untuk checks and balances yang selama ini kurang dimanfaatkan optimal",
+      "Penggunaan lebih rutin mencegah akumulasi masalah kebijakan yang baru diperiksa setelah krisis besar terjadi",
+      "Transparansi proses angket yang lebih sering meningkatkan literasi publik terhadap kinerja eksekutif",
+      "Instrumen ini memperkuat posisi parlemen sebagai representasi rakyat dalam mengontrol kekuasaan eksekutif",
+      "Preseden penggunaan proaktif di parlemen demokrasi lain menunjukkan efektivitas pencegahan maladministrasi dini",
+      "Angket rutin mendorong kementerian/lembaga lebih disiplin dalam dokumentasi dan akuntabilitas kebijakan sehari-hari",
+      "Meningkatkan kapasitas investigatif DPR secara keseluruhan lewat pembiasaan proses angket",
+      "Bisa menjadi kanal formal penyaluran keluhan publik terhadap kebijakan sebelum eskalasi ke protes jalanan",
+      "Penggunaan rutin bisa mendorong reformasi birokrasi jadi lebih responsif terhadap pengawasan legislatif",
+      "Instrumen ini bisa memperkuat budaya politik akuntabel jangka panjang di luar momen krisis"
+    ],
+    "kon": [
+      "Hak angket rutin berisiko tinggi dipolitisasi sebagai alat tawar-menawar kekuasaan antar-fraksi, bukan murni pengawasan",
+      "Penggunaan terlalu sering berisiko mengganggu stabilitas kerja eksekutif dan memperlambat implementasi kebijakan penting",
+      "Proses angket butuh resource besar (waktu, biaya, tenaga ahli) — penggunaan rutin berisiko menurunkan kualitas investigasi per kasus",
+      "Instrumen pengawasan lain (rapat kerja, interpelasi, komisi) sudah cukup untuk pengawasan rutin tanpa perlu eskalasi ke angket",
+      "Risiko konflik antar-cabang kekuasaan meningkat bila angket dipakai terlalu sering, mengganggu separation of powers yang sehat",
+      "Publik berisiko mengalami angket fatigue — terlalu sering dipakai justru menurunkan bobot politis & efek jera instrumen ini",
+      "Preseden angket yang dipakai untuk isu politis di masa lalu justru berujung deadlock tanpa hasil substantif",
+      "Fokus berlebihan pada instrumen formal mengabaikan penguatan kapasitas pengawasan informal/masyarakat sipil",
+      "Risiko instrumen ini disalahgunakan fraksi oposisi murni untuk pencitraan politik jelang pemilu",
+      "Ketidakstabilan yang ditimbulkan berpotensi menurunkan kepercayaan investor terhadap prediktabilitas kebijakan"
+    ],
+    "tiersPro": [
+      {
+        "tier": "S",
+        "text": "Hak angket adalah instrumen konstitusional sah untuk checks and balances yang selama ini kurang dimanfaatkan optimal",
+        "strength": 74.6,
+        "risk": 27.8
+      },
+      {
+        "tier": "A",
+        "text": "Penggunaan lebih rutin mencegah akumulasi masalah kebijakan yang baru diperiksa setelah krisis besar terjadi",
+        "strength": 67.3,
+        "risk": 37.6
+      },
+      {
+        "tier": "A",
+        "text": "Transparansi proses angket yang lebih sering meningkatkan literasi publik terhadap kinerja eksekutif",
+        "strength": 61.8,
+        "risk": 43.9
+      },
+      {
+        "tier": "A",
+        "text": "Instrumen ini memperkuat posisi parlemen sebagai representasi rakyat dalam mengontrol kekuasaan eksekutif",
+        "strength": 63.4,
+        "risk": 41.2
+      },
+      {
+        "tier": "A",
+        "text": "Preseden penggunaan proaktif di parlemen demokrasi lain menunjukkan efektivitas pencegahan maladministrasi dini",
+        "strength": 59.7,
+        "risk": 46.8
+      },
+      {
+        "tier": "A",
+        "text": "Angket rutin mendorong kementerian/lembaga lebih disiplin dalam dokumentasi dan akuntabilitas kebijakan sehari-hari",
+        "strength": 57.2,
+        "risk": 49.3
+      },
+      {
+        "tier": "B",
+        "text": "Meningkatkan kapasitas investigatif DPR secara keseluruhan lewat pembiasaan proses angket",
+        "strength": 52.6,
+        "risk": 55.1
+      },
+      {
+        "tier": "B",
+        "text": "Bisa menjadi kanal formal penyaluran keluhan publik terhadap kebijakan sebelum eskalasi ke protes jalanan",
+        "strength": 50.4,
+        "risk": 57.6
+      },
+      {
+        "tier": "C",
+        "text": "Penggunaan rutin bisa mendorong reformasi birokrasi jadi lebih responsif terhadap pengawasan legislatif",
+        "strength": 44.8,
+        "risk": 62.9
+      },
+      {
+        "tier": "C",
+        "text": "Instrumen ini bisa memperkuat budaya politik akuntabel jangka panjang di luar momen krisis",
+        "strength": 41.9,
+        "risk": 65.7
+      }
+    ],
+    "tiersKon": [
+      {
+        "tier": "S",
+        "text": "Hak angket rutin berisiko tinggi dipolitisasi sebagai alat tawar-menawar kekuasaan antar-fraksi, bukan murni pengawasan",
+        "strength": 76.1,
+        "risk": 24.6
+      },
+      {
+        "tier": "A",
+        "text": "Penggunaan terlalu sering berisiko mengganggu stabilitas kerja eksekutif dan memperlambat implementasi kebijakan penting",
+        "strength": 69.8,
+        "risk": 34.2
+      },
+      {
+        "tier": "A",
+        "text": "Proses angket butuh resource besar (waktu, biaya, tenaga ahli) — penggunaan rutin berisiko menurunkan kualitas investigasi per kasus",
+        "strength": 64.3,
+        "risk": 41.7
+      },
+      {
+        "tier": "A",
+        "text": "Instrumen pengawasan lain (rapat kerja, interpelasi, komisi) sudah cukup untuk pengawasan rutin tanpa perlu eskalasi ke angket",
+        "strength": 62.7,
+        "risk": 43.5
+      },
+      {
+        "tier": "A",
+        "text": "Risiko konflik antar-cabang kekuasaan meningkat bila angket dipakai terlalu sering, mengganggu separation of powers yang sehat",
+        "strength": 60.4,
+        "risk": 45.8
+      },
+      {
+        "tier": "A",
+        "text": "Publik berisiko mengalami angket fatigue — terlalu sering dipakai justru menurunkan bobot politis & efek jera instrumen ini",
+        "strength": 56.9,
+        "risk": 49.6
+      },
+      {
+        "tier": "B",
+        "text": "Preseden angket yang dipakai untuk isu politis di masa lalu justru berujung deadlock tanpa hasil substantif",
+        "strength": 53.7,
+        "risk": 53.9
+      },
+      {
+        "tier": "B",
+        "text": "Fokus berlebihan pada instrumen formal mengabaikan penguatan kapasitas pengawasan informal/masyarakat sipil",
+        "strength": 51.2,
+        "risk": 56.4
+      },
+      {
+        "tier": "C",
+        "text": "Risiko instrumen ini disalahgunakan fraksi oposisi murni untuk pencitraan politik jelang pemilu",
+        "strength": 46.5,
+        "risk": 61.8
+      },
+      {
+        "tier": "C",
+        "text": "Ketidakstabilan yang ditimbulkan berpotensi menurunkan kepercayaan investor terhadap prediktabilitas kebijakan",
+        "strength": 43.1,
+        "risk": 64.7
+      }
+    ],
+    "terms": [
+      "Checks and Balances",
+      "Separation of Powers",
+      "Political Weaponization",
+      "Parliamentary Inquiry"
+    ],
+    "cases": {
+      "ideal": {
+        "pro": "Lock frame \"checks and balances yang kurang dimanfaatkan\" — angket rutin sebagai pencegahan dini, bukan eskalasi krisis. Poin: S1.",
+        "kon": "Lock frame \"risiko politisasi struktural\" — instrumen kuat yang mudah disalahgunakan jadi alat tawar kekuasaan. Poin: S1."
+      },
+      "mayor": {
+        "pro": "Pencegahan akumulasi masalah kebijakan + penguatan posisi parlemen. Poin: A2, A4.",
+        "kon": "Gangguan stabilitas eksekutif + resource investigasi yang terbatas. Poin: A2-A3."
+      },
+      "minor": {
+        "pro": "Kapasitas investigatif DPR meningkat + kanal formal keluhan publik. Poin: B7-B8.",
+        "kon": "Instrumen pengawasan lain sudah cukup + risiko angket fatigue. Poin: A4, A6."
+      },
+      "niche": {
+        "pro": "Framing \"budaya politik akuntabel jangka panjang\" — visioner tapi abstrak, butuh contoh konkret mekanisme penguatannya.",
+        "kon": "Framing \"penyalahgunaan jelang pemilu\" — tajam sebagai closing tapi berisiko dibaca terlalu sinis/spekulatif tanpa data konkret pola penggunaan angket."
+      }
+    },
+    "rotation": {
+      "ofensif": "(cocok PRO) P1 lock checks and balances + anchor pencegahan dini -> P2 rebuttal ke risiko politisasi, tunjukkan mekanisme pembatasan prosedural -> P3 kompres crux \"pengawasan proaktif vs stabilitas eksekutif\", tutup dengan penguatan kapasitas DPR.",
+      "defensif": "(cocok KON, favorit) P1 buka lebar risiko politisasi struktural + gangguan stabilitas -> P2 konsolidasi resource terbatas & instrumen alternatif yang cukup -> P3 tutup tanpa argumen baru, tegaskan risiko angket fatigue."
+    },
+    "hybrid": "hukum tata negara",
+    "ctx": "Dewan ini mendukung penggunaan hak angket DPR secara lebih rutin dan proaktif sebagai instrumen pengawasan terhadap kebijakan dan tindakan eksekutif, tidak hanya dalam situasi krisis besar.",
+    "probPro": 46.9,
+    "probKon": 53.1,
+    "research": "Fish & Kroenig (2009), The Handbook of National Legislatures: efektivitas instrumen pengawasan parlementer sangat tergantung pada desain prosedural yang membatasi penyalahgunaan politis, bukan pada frekuensi penggunaan semata. Indrayana (2008), Indonesian Constitutional Reform: hak angket di Indonesia secara historis lebih sering berhenti di ranah politis dibanding menghasilkan rekomendasi kebijakan substantif.",
+    "ideal": "<strong>PRO (Ideal):</strong> Lock frame \"checks and balances yang kurang dimanfaatkan\" — angket rutin sebagai pencegahan dini, bukan eskalasi krisis. Poin: S1.<br><br>\n<strong>KON (Ideal):</strong> Lock frame \"risiko politisasi struktural\" — instrumen kuat yang mudah disalahgunakan jadi alat tawar kekuasaan. Poin: S1."
+  },
+  {
+    "id": "m225",
+    "title": "Dewan ini yakin otomatisasi berbasis AI akan menciptakan lebih banyak pengangguran struktural daripada lapangan kerja baru dalam dekade ini",
+    "cat": "sains",
+    "type": "kausalitas-ekonomi",
+    "pro": [
+      "Historically, transisi teknologi besar selalu diikuti periode disrupsi tenaga kerja jangka menengah sebelum ekuilibrium baru tercapai — dan skala AI generatif lebih cepat dari revolusi teknologi sebelumnya",
+      "Pekerjaan kelas menengah berbasis tugas kognitif rutin (admin, customer service, data entry) paling rentan tergantikan otomatisasi generatif",
+      "Kesenjangan reskilling (reskilling gap) antara kecepatan disrupsi dan kapasitas pelatihan ulang tenaga kerja menciptakan periode pengangguran struktural yang nyata",
+      "Negara berkembang dengan basis ekonomi outsourcing jasa digital (BPO, customer support) paling terekspos risiko disrupsi ini",
+      "Lapangan kerja baru dari AI (prompt engineer, AI trainer) jumlahnya jauh lebih kecil dibanding jumlah pekerjaan yang tergantikan",
+      "Konsentrasi kepemilikan teknologi AI di segelintir perusahaan besar mengurangi distribusi keuntungan produktivitas ke tenaga kerja luas",
+      "Preseden otomatisasi manufaktur sebelumnya menunjukkan penciptaan kerja baru butuh waktu jauh lebih lama dari penghilangan kerja lama",
+      "Tekanan kompetitif global mendorong perusahaan mengadopsi AI lebih cepat dari kapasitas regulasi ketenagakerjaan menyesuaikan",
+      "Skenario ini bisa memicu kebutuhan kebijakan radikal seperti universal basic income dalam dekade ini",
+      "Disrupsi ini berpotensi memperlebar kesenjangan ekonomi global antara negara maju pemilik teknologi dan negara berkembang"
+    ],
+    "kon": [
+      "Historically, setiap gelombang teknologi besar (revolusi industri, komputerisasi, internet) net menciptakan lebih banyak pekerjaan baru dalam jangka panjang meski disruptif jangka pendek",
+      "AI generatif lebih berfungsi sebagai complement (alat bantu produktivitas) dibanding substitute penuh pada banyak jenis pekerjaan kognitif",
+      "Sektor jasa berbasis interaksi manusia (kesehatan, perawatan lansia, pendidikan personal) justru tumbuh sebagai respons demografis, tidak tergantikan AI",
+      "Data historis creative destruction menunjukkan pekerjaan yang hilang sering digantikan jenis pekerjaan baru yang belum ada kategorinya saat prediksi dibuat",
+      "Regulasi ketenagakerjaan dan kebijakan reskilling proaktif di banyak negara mulai beradaptasi lebih cepat dibanding revolusi teknologi sebelumnya",
+      "Adopsi AI di banyak sektor riil masih jauh lebih lambat dari narasi hype media — implementasi penuh butuh waktu lebih dari satu dekade",
+      "Studi ekonomi tenaga kerja menunjukkan net job creation dari teknologi baru secara historis konsisten meski distribusinya tidak merata",
+      "Kewirausahaan berbasis AI (UMKM digital, kreator konten) menciptakan jenis lapangan kerja baru yang sulit terukur di data resmi",
+      "Framing \"pengangguran struktural\" berisiko mengabaikan transisi kerja informal yang sebenarnya tetap produktif meski tidak tercatat formal",
+      "Narasi ketakutan berlebihan terhadap AI berisiko menghambat adopsi teknologi yang justru dibutuhkan untuk daya saing ekonomi nasional"
+    ],
+    "tiersPro": [
+      {
+        "tier": "S",
+        "text": "Historically, transisi teknologi besar selalu diikuti periode disrupsi tenaga kerja jangka menengah sebelum ekuilibrium baru tercapai — dan skala AI generatif lebih cepat dari revolusi teknologi sebelumnya",
+        "strength": 73.8,
+        "risk": 29.6
+      },
+      {
+        "tier": "A",
+        "text": "Pekerjaan kelas menengah berbasis tugas kognitif rutin (admin, customer service, data entry) paling rentan tergantikan otomatisasi generatif",
+        "strength": 69.4,
+        "risk": 35.8
+      },
+      {
+        "tier": "A",
+        "text": "Kesenjangan reskilling (reskilling gap) antara kecepatan disrupsi dan kapasitas pelatihan ulang tenaga kerja menciptakan periode pengangguran struktural yang nyata",
+        "strength": 71.2,
+        "risk": 33.4
+      },
+      {
+        "tier": "A",
+        "text": "Negara berkembang dengan basis ekonomi outsourcing jasa digital (BPO, customer support) paling terekspos risiko disrupsi ini",
+        "strength": 64.7,
+        "risk": 40.6
+      },
+      {
+        "tier": "A",
+        "text": "Lapangan kerja baru dari AI (prompt engineer, AI trainer) jumlahnya jauh lebih kecil dibanding jumlah pekerjaan yang tergantikan",
+        "strength": 62.3,
+        "risk": 43.9
+      },
+      {
+        "tier": "A",
+        "text": "Konsentrasi kepemilikan teknologi AI di segelintir perusahaan besar mengurangi distribusi keuntungan produktivitas ke tenaga kerja luas",
+        "strength": 60.8,
+        "risk": 45.7
+      },
+      {
+        "tier": "B",
+        "text": "Preseden otomatisasi manufaktur sebelumnya menunjukkan penciptaan kerja baru butuh waktu jauh lebih lama dari penghilangan kerja lama",
+        "strength": 55.4,
+        "risk": 53.2
+      },
+      {
+        "tier": "B",
+        "text": "Tekanan kompetitif global mendorong perusahaan mengadopsi AI lebih cepat dari kapasitas regulasi ketenagakerjaan menyesuaikan",
+        "strength": 53.1,
+        "risk": 55.9
+      },
+      {
+        "tier": "C",
+        "text": "Skenario ini bisa memicu kebutuhan kebijakan radikal seperti universal basic income dalam dekade ini",
+        "strength": 45.6,
+        "risk": 62.3
+      },
+      {
+        "tier": "C",
+        "text": "Disrupsi ini berpotensi memperlebar kesenjangan ekonomi global antara negara maju pemilik teknologi dan negara berkembang",
+        "strength": 43.2,
+        "risk": 64.6
+      }
+    ],
+    "tiersKon": [
+      {
+        "tier": "S",
+        "text": "Historically, setiap gelombang teknologi besar (revolusi industri, komputerisasi, internet) net menciptakan lebih banyak pekerjaan baru dalam jangka panjang meski disruptif jangka pendek",
+        "strength": 72.4,
+        "risk": 30.8
+      },
+      {
+        "tier": "A",
+        "text": "AI generatif lebih berfungsi sebagai complement (alat bantu produktivitas) dibanding substitute penuh pada banyak jenis pekerjaan kognitif",
+        "strength": 68.6,
+        "risk": 36.4
+      },
+      {
+        "tier": "A",
+        "text": "Sektor jasa berbasis interaksi manusia (kesehatan, perawatan lansia, pendidikan personal) justru tumbuh sebagai respons demografis, tidak tergantikan AI",
+        "strength": 65.9,
+        "risk": 39.7
+      },
+      {
+        "tier": "A",
+        "text": "Data historis creative destruction menunjukkan pekerjaan yang hilang sering digantikan jenis pekerjaan baru yang belum ada kategorinya saat prediksi dibuat",
+        "strength": 63.2,
+        "risk": 42.1
+      },
+      {
+        "tier": "A",
+        "text": "Regulasi ketenagakerjaan dan kebijakan reskilling proaktif di banyak negara mulai beradaptasi lebih cepat dibanding revolusi teknologi sebelumnya",
+        "strength": 58.7,
+        "risk": 46.8
+      },
+      {
+        "tier": "A",
+        "text": "Adopsi AI di banyak sektor riil masih jauh lebih lambat dari narasi hype media — implementasi penuh butuh waktu lebih dari satu dekade",
+        "strength": 61.4,
+        "risk": 44.3
+      },
+      {
+        "tier": "B",
+        "text": "Studi ekonomi tenaga kerja menunjukkan net job creation dari teknologi baru secara historis konsisten meski distribusinya tidak merata",
+        "strength": 54.8,
+        "risk": 53.6
+      },
+      {
+        "tier": "B",
+        "text": "Kewirausahaan berbasis AI (UMKM digital, kreator konten) menciptakan jenis lapangan kerja baru yang sulit terukur di data resmi",
+        "strength": 52.3,
+        "risk": 56.1
+      },
+      {
+        "tier": "C",
+        "text": "Framing \"pengangguran struktural\" berisiko mengabaikan transisi kerja informal yang sebenarnya tetap produktif meski tidak tercatat formal",
+        "strength": 47.6,
+        "risk": 61.4
+      },
+      {
+        "tier": "C",
+        "text": "Narasi ketakutan berlebihan terhadap AI berisiko menghambat adopsi teknologi yang justru dibutuhkan untuk daya saing ekonomi nasional",
+        "strength": 44.9,
+        "risk": 63.8
+      }
+    ],
+    "terms": [
+      "Structural Unemployment",
+      "Skill-Biased Technological Change",
+      "Creative Destruction",
+      "Reskilling Gap"
+    ],
+    "cases": {
+      "ideal": {
+        "pro": "Lock frame \"disrupsi jangka menengah nyata dan terukur dalam dekade ini\" — mosi bicara dekade spesifik, bukan ekuilibrium jangka sangat panjang. Poin: S1, A3.",
+        "kon": "Lock frame \"historical precedent net job creation\" — setiap panic moral soal teknologi baru historically salah prediksi skala disrupsi netonya. Poin: S1."
+      },
+      "mayor": {
+        "pro": "Reskilling gap konkret + kerentanan pekerjaan kognitif rutin sebagai mesin utama. Poin: A2-A3.",
+        "kon": "AI sebagai complement bukan substitute + pertumbuhan sektor jasa manusia yang tidak tergantikan. Poin: A2-A3."
+      },
+      "minor": {
+        "pro": "Preseden otomatisasi manufaktur + tekanan kompetitif global melampaui regulasi. Poin: B7-B8.",
+        "kon": "Regulasi reskilling proaktif + adopsi AI riil lebih lambat dari hype. Poin: A5-A6."
+      },
+      "niche": {
+        "pro": "Framing kebutuhan UBI radikal dalam dekade ini — dramatis tapi berisiko overclaim skala waktu kalau tidak diimbangi data adopsi konkret.",
+        "kon": "Framing \"transisi kerja informal yang tidak tercatat\" — argumen defensif cerdas menutup celah data PRO, tapi butuh kehati-hatian supaya tidak terkesan meremehkan dampak riil pengangguran formal."
+      }
+    },
+    "rotation": {
+      "ofensif": "(cocok PRO) P1 lock disrupsi jangka menengah + anchor reskilling gap -> P2 rebuttal ke argumen historical precedent, tunjukkan skala kecepatan AI generatif berbeda dari revolusi sebelumnya -> P3 kompres crux \"kecepatan disrupsi vs kapasitas adaptasi\", tutup dengan konsentrasi kepemilikan teknologi.",
+      "defensif": "(cocok KON) P1 buka lebar historical precedent net job creation + AI sebagai complement -> P2 konsolidasi pertumbuhan sektor jasa manusia & regulasi reskilling -> P3 tutup tanpa argumen baru, tegaskan adopsi riil lebih lambat dari hype media."
+    },
+    "hybrid": "teknologi-tenaga kerja",
+    "ctx": "Dewan ini yakin bahwa dalam sepuluh tahun ke depan, otomatisasi dan adopsi AI generatif akan menghilangkan lebih banyak lapangan kerja (pengangguran struktural) dibanding jumlah lapangan kerja baru yang tercipta dari transformasi tersebut.",
+    "probPro": 49.1,
+    "probKon": 50.9,
+    "probNote": "hampir seimbang, mosi genuinely kontestasi empiris terbuka",
+    "research": "Acemoglu & Restrepo (2019), Automation and New Tasks: dampak otomatisasi pada lapangan kerja sangat bergantung pada rasio penciptaan tugas baru versus penggantian tugas lama — hasilnya historically bervariasi per periode teknologi. Autor (2015), Why Are There Still So Many Jobs?: histori otomatisasi menunjukkan pola polarisasi pekerjaan (job polarization) alih-alih penghilangan total lapangan kerja secara agregat.",
+    "ideal": "<strong>PRO (Ideal):</strong> Lock frame \"disrupsi jangka menengah nyata dan terukur dalam dekade ini\" — mosi bicara dekade spesifik, bukan ekuilibrium jangka sangat panjang. Poin: S1, A3.<br><br>\n<strong>KON (Ideal):</strong> Lock frame \"historical precedent net job creation\" — setiap panic moral soal teknologi baru historically salah prediksi skala disrupsi netonya. Poin: S1."
   }
 ]

@@ -508,6 +508,8 @@ function MotionPanel({ refId }: { refId: string }) {
     { k: "research", label: "RESEARCH" },
   ] as const;
 
+  const pP = m.probPro ?? analysis.winProProb;
+  const pK = m.probKon ?? analysis.winKonProb;
   const stanceColor = analysis.stance === "OFENSIF" ? "#ef4444" : analysis.stance === "DEFENSIF" ? "#22d3ee" : "#a855f7";
   const rotationColor = analysis.needsHalfStance ? "#fb7185" : "#00ffc8";
 
@@ -548,16 +550,16 @@ function MotionPanel({ refId }: { refId: string }) {
               <div style={{ display: "flex", gap: 12, alignItems: "flex-end", marginBottom: 12 }}>
                 <div style={{ flex: 1 }}>
                   <div style={{ ...muted, color: "#ff6b6b", marginBottom: 4 }}>Sisi PRO</div>
-                  <div style={{ fontFamily: "Bebas Neue", fontSize: 34, color: "#ff6b6b", lineHeight: 1 }}>{analysis.winProProb.toFixed(2)}%</div>
+                  <div style={{ fontFamily: "Bebas Neue", fontSize: 34, color: "#ff6b6b", lineHeight: 1 }}>{pP.toFixed(2)}%</div>
                 </div>
                 <div style={{ flex: 1, textAlign: "right" }}>
                   <div style={{ ...muted, color: "#38bdf8", marginBottom: 4 }}>Sisi KON</div>
-                  <div style={{ fontFamily: "Bebas Neue", fontSize: 34, color: "#38bdf8", lineHeight: 1 }}>{analysis.winKonProb.toFixed(2)}%</div>
+                  <div style={{ fontFamily: "Bebas Neue", fontSize: 34, color: "#38bdf8", lineHeight: 1 }}>{pK.toFixed(2)}%</div>
                 </div>
               </div>
               <div style={{ position: "relative", height: 12, borderRadius: 999, overflow: "hidden", background: "#1e293b" }}>
                 <div style={{
-                  position: "absolute", left: 0, top: 0, bottom: 0, width: `${analysis.winProProb}%`,
+                  position: "absolute", left: 0, top: 0, bottom: 0, width: `${pP}%`,
                   background: "linear-gradient(90deg, #ff6b6b, #ff9f43)",
                   boxShadow: "0 0 12px #ff6b6b88",
                 }} />
@@ -566,7 +568,7 @@ function MotionPanel({ refId }: { refId: string }) {
                 }} />
               </div>
               <div style={{ marginTop: 8, ...muted, fontSize: 9 }}>
-                Bias: <span style={{ color: "var(--au-text)", fontWeight: 700 }}>{analysis.bias}</span>
+                Bias: <span style={{ color: "var(--au-text)", fontWeight: 700 }}>{m.probNote ?? analysis.bias}</span>
                 &nbsp;·&nbsp;Confidence: <span style={{ color: "var(--au-cyan)" }}>{(analysis.confidence * 100).toFixed(0)}%</span>
               </div>
             </Bento>
@@ -652,6 +654,43 @@ function MotionPanel({ refId }: { refId: string }) {
 
         {tab === "ideal" && (
           <>
+            {(m.cases || m.rotation) && (
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(12, 1fr)", gap: 10, marginBottom: 14 }}>
+                {([
+                  ["ideal", "Ideal Case", "#a855f7"],
+                  ["mayor", "Mayor Case", "#00ffc8"],
+                  ["minor", "Minor Case", "#38bdf8"],
+                  ["niche", "Niche Case", "#fde047"],
+                ] as const).map(([k, label, color]) => {
+                  const c = m.cases?.[k];
+                  if (!c) return null;
+                  return (
+                    <Bento key={k} accent={color} title={label} span={12}>
+                      {c.pro && (
+                        <p style={{ ...para, margin: "0 0 8px" }}>
+                          <strong style={{ color: "#ff6b6b" }}>PRO · </strong>{c.pro}
+                        </p>
+                      )}
+                      {c.kon && (
+                        <p style={{ ...para, margin: 0 }}>
+                          <strong style={{ color: "#38bdf8" }}>KON · </strong>{c.kon}
+                        </p>
+                      )}
+                    </Bento>
+                  );
+                })}
+                {m.rotation?.ofensif && (
+                  <Bento accent="#ef4444" title="Rotasi Ofensif" span={12}>
+                    <p style={{ ...para, margin: 0 }}>{m.rotation.ofensif}</p>
+                  </Bento>
+                )}
+                {m.rotation?.defensif && (
+                  <Bento accent="#22d3ee" title="Rotasi Defensif" span={12}>
+                    <p style={{ ...para, margin: 0 }}>{m.rotation.defensif}</p>
+                  </Bento>
+                )}
+              </div>
+            )}
             {m.ideal ? (
               <div style={{
                 padding: "14px 16px", borderRadius: 6,
@@ -736,8 +775,22 @@ function SectionPanel({ cluster, refId }: { cluster: string; refId: string }) {
   else if (cluster === "editor") item = EDITOR_NODES.find((p) => p.id === refId);
   else if (cluster === "meta") item = META_NODES.find((p) => p.id === refId);
   if (!item) return <p style={para}>Tidak ada konten.</p>;
+  const isPkn = cluster === "circuit" && refId === "pkn";
   return (
     <div>
+      {isPkn && (
+        <figure style={{ margin: "0 0 14px", borderRadius: 8, overflow: "hidden", border: "1px solid rgba(148,163,184,0.22)" }}>
+          <img
+            src={dprAsset.url}
+            alt="Sidang paripurna DPR RI di Gedung Nusantara"
+            loading="lazy"
+            style={{ display: "block", width: "100%", height: 170, objectFit: "cover" }}
+          />
+          <figcaption style={{ ...muted, padding: "8px 10px", fontSize: 9 }}>
+            Ruang Rapat Paripurna DPR RI — rujukan visual format PKN Parlemen.
+          </figcaption>
+        </figure>
+      )}
       <p style={para}>{item.desc}</p>
       <div style={{ marginTop: 18, padding: "12px 14px", background: "rgba(168,85,247,0.05)", border: "1px solid rgba(168,85,247,0.2)", borderRadius: 4 }}>
         <div style={muted}>Status</div>

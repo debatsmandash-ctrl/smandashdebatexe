@@ -129,7 +129,43 @@ export function SettingsPanel() {
 
         <div className="panel-scroll" style={{ flex: 1, overflowY: "auto", padding: "16px 18px" }}>
           {tab === "display" && (<>
+          <Section title="Mode Graf">
+            <Row label="Tampilan" hint="3D Universe (semesta bintang) atau 2D Obsidian (graf bisa ditarik & dipaku)">
+              <div style={{ display: "flex", gap: 4 }}>
+                <Pill active={s.graphMode === "3d"} onClick={() => update({ graphMode: "3d" })}>3D</Pill>
+                <Pill active={s.graphMode === "2d"} onClick={() => update({ graphMode: "2d" })}>2D</Pill>
+              </div>
+            </Row>
+          </Section>
+          {s.graphMode === "2d" && (
+            <Section title="Obsidian 2D">
+              <Row label="Sorot tetangga saat hover"><Toggle value={s.g2dHover} onChange={(v) => update({ g2dHover: v })} /></Row>
+              <Row label="Tetangga ikut tertarik" hint="Saat node digeser, tetangganya ikut bergerak"><Toggle value={s.g2dChainDrag} onChange={(v) => update({ g2dChainDrag: v })} /></Row>
+              <Row label="Tampilkan label"><Toggle value={s.g2dLabels} onChange={(v) => update({ g2dLabels: v })} /></Row>
+              <Row label={`Gaya tautan ${s.g2dLinkForce.toFixed(2)}`}>
+                <Slider value={s.g2dLinkForce} min={0.02} max={0.4} step={0.01} onChange={(v) => update({ g2dLinkForce: v })} />
+              </Row>
+              <Row label={`Gaya tolak ${Math.round(s.g2dRepel)}`}>
+                <Slider value={s.g2dRepel} min={200} max={4000} step={50} onChange={(v) => update({ g2dRepel: v })} />
+              </Row>
+              <Row label="Lepas semua paku" hint="Kembalikan posisi node ke simulasi bebas">
+                <Pill active={false} onClick={() => update({ g2dPinned: {} })}>RESET</Pill>
+              </Row>
+            </Section>
+          )}
+          <Section title="Sensitivitas Kontrol">
+            <Row label={`Zoom ×${s.zoomSens.toFixed(2)}`} hint="Naikkan bila zoom terasa mendek">
+              <Slider value={s.zoomSens} min={0.2} max={3} step={0.05} onChange={(v) => update({ zoomSens: v })} />
+            </Row>
+            <Row label={`Rotasi ×${s.rotateSens.toFixed(2)}`}>
+              <Slider value={s.rotateSens} min={0.2} max={3} step={0.05} onChange={(v) => update({ rotateSens: v })} />
+            </Row>
+            <Row label={`Geser (pan) ×${s.panSens.toFixed(2)}`}>
+              <Slider value={s.panSens} min={0.2} max={3} step={0.05} onChange={(v) => update({ panSens: v })} />
+            </Row>
+          </Section>
           <Section title="Visual">
+
             <Row label={`Bloom ${s.bloomIntensity.toFixed(2)}`}>
               <Slider value={s.bloomIntensity} min={0} max={1.5} step={0.05} onChange={(v) => update({ bloomIntensity: v })} />
             </Row>

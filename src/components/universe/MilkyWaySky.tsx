@@ -1,7 +1,7 @@
 import { useMemo, useRef } from "react";
 import { useFrame, useLoader } from "@react-three/fiber";
 import * as THREE from "three";
-import nebulaAsset from "@/assets/nebula-skybox.jpg.asset.json";
+import nebulaAsset from "@/assets/milkyway_pano_hd.jpg.asset.json";
 
 /**
  * MilkyWaySky — texture-based nebula skybox.
@@ -17,7 +17,7 @@ export function MilkyWaySky({ opacity = 1 }: { opacity?: number }) {
     tex.wrapS = THREE.RepeatWrapping;
     tex.wrapT = THREE.ClampToEdgeWrapping;
     tex.colorSpace = THREE.SRGBColorSpace;
-    tex.anisotropy = 8;
+    tex.anisotropy = 16;
     tex.needsUpdate = true;
   }, [tex]);
 
