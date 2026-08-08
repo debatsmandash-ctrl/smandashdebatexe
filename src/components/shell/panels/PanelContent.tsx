@@ -1,3 +1,4 @@
+import dprAsset from "@/assets/lobby/dpr-paripurna.jpg.asset.json";
 import type { StarNode } from "@/data/types";
 import {
   MOTIONS, JENIS_MOSI, VOCAB, MATTER, STYLES, ROLES,
