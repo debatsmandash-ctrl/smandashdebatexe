@@ -71,7 +71,7 @@ export function Graph2D() {
     for (const l of links) { nbr[l.a].push(l.b); nbr[l.b].push(l.a); }
 
     // ─── kamera ───
-    let zoom = 0.35;
+    let zoom = 0.55;
     let ox = 0, oy = 0; // offset dunia→layar (px)
     let dpr = Math.min(2, window.devicePixelRatio || 1);
     const resize = () => {
@@ -264,7 +264,7 @@ export function Graph2D() {
       ctx.lineWidth = 1 / zoom;
       for (const l of links) {
         const on = active < 0 ? true : lit.has(l.a) && lit.has(l.b);
-        ctx.globalAlpha = active < 0 ? 0.18 : on ? 0.85 : 0.04;
+        ctx.globalAlpha = active < 0 ? 0.22 : on ? 0.9 : 0.06;
         ctx.strokeStyle = on && active >= 0 ? nodes[active].color : "#63788f";
         ctx.lineWidth = (on && active >= 0 ? 1.6 : 1) / zoom;
         ctx.beginPath();
@@ -276,7 +276,7 @@ export function Graph2D() {
       for (let i = 0; i < n; i++) {
         const p = nodes[i];
         const on = active < 0 || lit.has(i);
-        ctx.globalAlpha = on ? 1 : 0.16;
+        ctx.globalAlpha = on ? 1 : 0.22;
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
         ctx.fillStyle = p.color;
