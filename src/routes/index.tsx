@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { Universe } from "@/components/universe/Universe";
+import { Graph2D } from "@/components/universe/Graph2D";
 import { Loader } from "@/components/shell/Loader";
 import { Sidebar } from "@/components/shell/Sidebar";
 import { SidePanel } from "@/components/shell/SidePanel";
@@ -35,6 +36,7 @@ function Index() {
   const update = useSettings((s) => s.update);
   const [lobbyOpen, setLobbyOpen] = useState(!lobbySeen);
   const [introOpen, setIntroOpen] = useState(!introSeen);
+  const graphMode = useSettings((s) => s.graphMode);
 
   useEffect(() => {
     const mq = window.matchMedia("(pointer: coarse), (max-width: 900px)");
@@ -48,7 +50,7 @@ function Index() {
     <main style={{ position: "fixed", inset: 0, overflow: "hidden", background: "#05080f" }}>
       <FontPresetApplier />
       <div className="aurora-bg" />
-      <Universe />
+      {graphMode === "2d" ? <Graph2D /> : <Universe />}
       {isMobile ? (
         <MobileShell />
       ) : (
@@ -62,6 +64,22 @@ function Index() {
       <SettingsPanel />
       <AmbientAudio />
       <AssistantPanel />
+      {!loading && !introOpen && !lobbyOpen && (
+        <button
+          onClick={() => setLobbyOpen(true)}
+          title="Kembali ke lobby"
+          style={{
+            position: "fixed", top: 16, left: "50%", transform: "translateX(-50%)", zIndex: 24,
+            display: "flex", alignItems: "center", gap: 8, padding: "8px 16px", borderRadius: 999,
+            background: "linear-gradient(180deg, rgba(9,14,26,0.85), rgba(2,4,10,0.9))",
+            border: "1px solid rgba(148,163,184,0.22)", color: "#cfe3ff", cursor: "pointer",
+            fontFamily: "Space Mono, monospace", fontSize: 10, letterSpacing: "0.22em",
+            textTransform: "uppercase", backdropFilter: "blur(14px)",
+          }}
+        >
+          ← Lobby
+        </button>
+      )}
       {loading && <Loader onDone={() => setLoading(false)} />}
       {!loading && introOpen && (
         <Intro onDone={() => { update({ introSeen: true }); setIntroOpen(false); }} />
@@ -76,7 +94,7 @@ function Index() {
           color: "rgba(168,85,247,0.55)", textTransform: "uppercase", pointerEvents: "none",
         }}
       >
-        v1.1 · CORPORATE
+        v1.0.2 · {graphMode === "2d" ? "OBSIDIAN 2D" : "UNIVERSE 3D"}
       </div>
     </main>
   );

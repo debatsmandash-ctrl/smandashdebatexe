@@ -130,14 +130,19 @@ function placeCloud(center: V3, radius: number, count: number, minSep?: number):
       u[1] * dirLocal[0] + w[1] * dirLocal[1] + v[1] * dirLocal[2],
       u[2] * dirLocal[0] + w[2] * dirLocal[1] + v[2] * dirLocal[2],
     ];
-    // kulit bergelombang: radius dimodulasi gelombang halus + jitter
+    // Volume terisi merata: radius diambil dari distribusi pangkat (r^(1/2.4))
+    // sehingga node tersebar dari inti sampai tepi, bukan menumpuk di kulit.
+    const uR = 0.16 + r0() * 0.84;
+    const fill = Math.pow(uR, 1 / 2.4);
+    // permukaan bergelombang → siluet tidak bulat sempurna, punya karakter
     const bump =
-      0.12 * Math.sin(dirLocal[0] * 2.7 + phase) +
-      0.10 * Math.sin(dirLocal[1] * 3.3 - phase * 0.7) +
-      0.08 * Math.sin(dirLocal[2] * 2.1 + phase * 1.3);
-    let rr = radius * (0.92 + bump + (r0() - 0.5) * 0.10);
-    // ~14% node ditarik ke dalam agar volume terisi
-    if (r0() < 0.14) rr *= 0.52 + r0() * 0.22;
+      0.20 * Math.sin(dirLocal[0] * 2.7 + phase) +
+      0.16 * Math.sin(dirLocal[1] * 3.3 - phase * 0.7) +
+      0.13 * Math.sin(dirLocal[2] * 2.1 + phase * 1.3) +
+      0.08 * Math.sin(dirLocal[0] * 5.9 + dirLocal[2] * 4.1 - phase);
+    // filamen: sebagian kecil node melompat jauh keluar membentuk untaian
+    const filament = r0() < 0.10 ? 1.18 + r0() * 0.30 : 1.0;
+    let rr = radius * 1.22 * fill * (1 + bump * 0.55 + (r0() - 0.5) * 0.14) * filament;
     pts.push([
       center[0] + dir[0] * rr,
       center[1] + dir[1] * rr,
@@ -146,8 +151,8 @@ function placeCloud(center: V3, radius: number, count: number, minSep?: number):
   }
 
   // Relaksasi tabrakan ringan
-  const sep = minSep ?? radius * 0.26;
-  for (let iter = 0; iter < 6; iter++) {
+  const sep = minSep ?? radius * 0.30;
+  for (let iter = 0; iter < 9; iter++) {
     for (let i = 0; i < pts.length; i++) {
       for (let j = i + 1; j < pts.length; j++) {
         const d = dist(pts[i], pts[j]);
