@@ -2,8 +2,14 @@
   "events": [
     {
       "id": "op15",
-      "nama": "OP 15",
-      "desc": "Olimpiade Parlemen ke-15. 23 tim, sistem gugur dari Quarter Finals.",
+      "nama": "Olimpiade PPKn 15 (OP 15)",
+      "desc": "Debat dalam rangkaian Olimpiade PPKn 15 Tingkat Nasional yang diselenggarakan oleh Himaprodi PPKn FKIP Universitas Riau pada 4–8 Mei 2026. Kompetisi mencakup tingkat SMA dan Mahasiswa dengan sistem peraturan Parlemen Inggris (British Parliamentary). 23 tim bertanding, sistem gugur dimulai dari Quarter Finals.",
+      "cover": "dpr",
+      "status": "selesai",
+      "penyelenggara": "Himatika/Himaprodi PPKn FKIP Universitas Riau",
+      "tanggal": "4–8 Mei 2026",
+      "tingkat": "Nasional · SMA & Mahasiswa",
+      "sistem": "British Parliamentary",
       "brackets": [
         { "id": "quarter", "nama": "Quarter Finalis", "teams": ["manic-t1","witama-t2","sman1pku-t1","sman2sh-t2","sman1pku-t2","darmayudha-t1","sman2sh-t1","darmayudha-t2"] },
         { "id": "semi", "nama": "Semi Finalis", "teams": ["sman2sh-t1","sman2sh-t2","manic-t1","darmayudha-t1"] },
@@ -19,6 +25,45 @@
           { "speaker": "sman1pku-t2-p2", "label": "Best Speaker #3" }
         ]
       }
+    },
+    {
+      "id": "unri-ilmiah",
+      "nama": "Kompetisi Ilmiah Nasional Universitas Riau",
+      "desc": "Ajang kompetisi ilmiah nasional tahunan oleh Universitas Riau yang mencakup cabang lomba Debat Mahasiswa (DEBMA) dan Debat Siswa (DEBSIS). SMANDASH menurunkan tiga tim pada cabang Debat Siswa.",
+      "cover": "unri",
+      "status": "mendatang",
+      "penyelenggara": "Universitas Riau",
+      "tanggal": "Mendatang",
+      "tingkat": "Nasional · DEBMA & DEBSIS",
+      "sistem": "Debat kompetitif nasional",
+      "roster": [
+        { "id": "pandau-united", "nama": "Pandau United", "anggota": ["Valentino Alexandros Saragih", "Pramudya Fathur Roza", "Ismat Habibi Akma"] },
+        { "id": "ceciwii-bosss", "nama": "Ceciwii Bosss", "anggota": ["Syifa Aurelia Qalbina", "Nur Amirah Syahnas Nasution", "Enp Iryany Sangjia Putri"] },
+        { "id": "cihul-twiga", "nama": "Cihul Twiga", "anggota": ["Nabila Meysun Nur Fitriana", "Raysa Rahmania", "Marsha Millano"] }
+      ],
+      "brackets": [],
+      "prestasi": { "best_speakers": [] }
+    },
+    {
+      "id": "ldi",
+      "nama": "Lomba Debat Indonesia (LDI) Tingkat Nasional",
+      "desc": "Kompetisi debat resmi bagi siswa jenjang pendidikan menengah (SMA/SMK/sederajat) yang diselenggarakan oleh Pusat Prestasi Nasional (Puspresnas) di bawah Kementerian Pendidikan Dasar dan Menengah untuk melatih kemampuan berpikir kritis. Valentino, Amirah, dan Eny mewakili SMANDASH dalam seleksi kabupaten dan lolos menjadi delegasi Kampar; setelah menang pada tingkat provinsi, ketiga pembicara secara utuh menjadi delegasi Riau untuk tingkat nasional.",
+      "cover": "bp",
+      "status": "berjalan",
+      "penyelenggara": "Puspresnas · Kementerian Pendidikan Dasar dan Menengah",
+      "tanggal": "Seleksi berjenjang 2026",
+      "tingkat": "Nasional · SMA/SMK",
+      "sistem": "Debat parlemen Asia/Indonesia",
+      "roster": [
+        { "id": "delegasi-riau", "nama": "Delegasi Riau (dari Kampar)", "anggota": ["Valentino Alexandros Saragih", "Nur Amirah Syahnas Nasution", "Enp Iryany Sangjia Putri"] }
+      ],
+      "milestones": [
+        "Seleksi tingkat kabupaten — mewakili SMANDASH, lolos.",
+        "Delegasi Kabupaten Kampar — menang pada seleksi berikutnya.",
+        "Delegasi Provinsi Riau — tiga pembicara utuh maju ke tingkat nasional."
+      ],
+      "brackets": [],
+      "prestasi": { "best_speakers": [] }
     }
   ]
 }
