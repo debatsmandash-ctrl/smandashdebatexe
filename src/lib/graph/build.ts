@@ -103,61 +103,124 @@ function discBasis(center: V3, seed: number): { u: V3; v: V3; w: V3 } {
   return { u, v, w };
 }
 
+/** Noise deterministik 3D murah (-1..1). */
+function fbm3(x: number, y: number, z: number) {
+  const h = (a: number, b: number, c: number) => {
+    const s = Math.sin(a * 12.9898 + b * 78.233 + c * 37.719) * 43758.5453;
+    return (s - Math.floor(s)) * 2 - 1;
+  };
+  return h(x, y, z) * 0.6 + h(x * 2.3 + 5.1, y * 2.3 - 3.7, z * 2.3 + 1.9) * 0.3 + h(x * 4.7 - 9.3, y * 4.7 + 2.1, z * 4.7 - 6.5) * 0.1;
+}
+
 /**
- * Sebar `count` titik pada KULIT BOLA tidak sempurna berpusat di `center`.
- * Titik didistribusi merata (fibonacci sphere) lalu radiusnya dimodulasi noise
- * sehingga permukaannya bergelombang — menyebar, berjarak, tetap terasa 3D.
- * Sebagian kecil titik ditarik lebih dalam agar tidak terlihat seperti cangkang kosong.
+ * COSMIC WEB PLACEMENT — sebaran node ala supercluster:
+ *  • 1–3 KNOT per gugus dengan ukuran & kepadatan berbeda (asimetris).
+ *  • Kepadatan power-law: inti knot sangat rapat, makin ke tepi makin renggang.
+ *  • FILAMEN: sebagian node ditaruh di sepanjang jembatan melengkung antar knot.
+ *  • VOID: knot dijaga berjarak sehingga ada rongga nyata di antaranya.
+ * Titik pertama selalu paling dekat inti knot utama (dipakai untuk node penting).
  */
 function placeCloud(center: V3, radius: number, count: number, minSep?: number): V3[] {
   if (count === 0) return [];
   const seed = center[0] * 0.731 + center[1] * 1.319 + center[2] * 0.517;
   const { u, v, w } = discBasis(center, seed);
   const r0 = mulberry32(Math.abs(Math.round(seed * 1e4)) + 104729);
-  const GA = Math.PI * (3 - Math.sqrt(5));
-  const phase = r0() * Math.PI * 2;
+  const toWorld = (a: number, b: number, c: number): V3 => [
+    u[0] * a + w[0] * b + v[0] * c,
+    u[1] * a + w[1] * b + v[1] * c,
+    u[2] * a + w[2] * b + v[2] * c,
+  ];
 
-  const pts: V3[] = [];
-  for (let i = 0; i < count; i++) {
-    // fibonacci sphere → distribusi merata pada permukaan
-    const y = count === 1 ? 0 : 1 - (2 * (i + 0.5)) / count;
-    const rxy = Math.sqrt(Math.max(0, 1 - y * y));
-    const th = GA * i + phase;
-    const dirLocal: V3 = [Math.cos(th) * rxy, y, Math.sin(th) * rxy];
-    // ke basis dunia (u,w,v) supaya orientasi tiap cluster berbeda
-    const dir: V3 = [
-      u[0] * dirLocal[0] + w[0] * dirLocal[1] + v[0] * dirLocal[2],
-      u[1] * dirLocal[0] + w[1] * dirLocal[1] + v[1] * dirLocal[2],
-      u[2] * dirLocal[0] + w[2] * dirLocal[1] + v[2] * dirLocal[2],
-    ];
-    // Volume terisi merata: radius diambil dari distribusi pangkat (r^(1/2.4))
-    // sehingga node tersebar dari inti sampai tepi, bukan menumpuk di kulit.
-    const uR = 0.16 + r0() * 0.84;
-    const fill = Math.pow(uR, 1 / 2.4);
-    // permukaan bergelombang → siluet tidak bulat sempurna, punya karakter
-    const bump =
-      0.20 * Math.sin(dirLocal[0] * 2.7 + phase) +
-      0.16 * Math.sin(dirLocal[1] * 3.3 - phase * 0.7) +
-      0.13 * Math.sin(dirLocal[2] * 2.1 + phase * 1.3) +
-      0.08 * Math.sin(dirLocal[0] * 5.9 + dirLocal[2] * 4.1 - phase);
-    // filamen: sebagian kecil node melompat jauh keluar membentuk untaian
-    const filament = r0() < 0.10 ? 1.18 + r0() * 0.30 : 1.0;
-    let rr = radius * 1.22 * fill * (1 + bump * 0.55 + (r0() - 0.5) * 0.14) * filament;
-    pts.push([
-      center[0] + dir[0] * rr,
-      center[1] + dir[1] * rr,
-      center[2] + dir[2] * rr,
-    ]);
+  // ── 1. Bentuk knot: jumlah & bobot berbeda supaya tidak simetris ──
+  const knotCount = count < 6 ? 1 : count < 22 ? 2 : 2 + (r0() < 0.55 ? 1 : 0);
+  const knots: { c: V3; w: number; r: number }[] = [];
+  let wsum = 0;
+  for (let k = 0; k < knotCount; k++) {
+    // arah knot: acak terarah, jarak dari pusat gugus ~0.45–0.95 radius → ada void di antaranya
+    const th = r0() * Math.PI * 2;
+    const ph = Math.acos(1 - 2 * r0());
+    const off = k === 0 ? radius * (0.10 + r0() * 0.12) : radius * (0.52 + r0() * 0.48);
+    const dirL: V3 = [Math.sin(ph) * Math.cos(th), Math.cos(ph) * 0.72, Math.sin(ph) * Math.sin(th)];
+    const dir = toWorld(dirL[0], dirL[1], dirL[2]);
+    const weight = k === 0 ? 1 : 0.28 + r0() * 0.55; // knot utama jauh lebih padat
+    const kr = radius * (k === 0 ? 0.52 + r0() * 0.16 : 0.24 + r0() * 0.24);
+    knots.push({ c: add(center, scale(normalize(dir), off)), w: weight, r: kr });
+    wsum += weight;
+  }
+  // jaga jarak antar knot (void)
+  const voidGap = radius * 0.5;
+  for (let it = 0; it < 6; it++) {
+    for (let i = 0; i < knots.length; i++) {
+      for (let j = i + 1; j < knots.length; j++) {
+        const d = dist(knots[i].c, knots[j].c);
+        if (d < voidGap && d > 1e-4) {
+          const push = (voidGap - d) * 0.5;
+          const dir = scale(normalize(sub(knots[j].c, knots[i].c)), push);
+          knots[i].c = sub(knots[i].c, dir);
+          knots[j].c = add(knots[j].c, dir);
+        }
+      }
+    }
   }
 
-  // Relaksasi tabrakan ringan
-  const sep = minSep ?? radius * 0.30;
-  for (let iter = 0; iter < 9; iter++) {
+  // ── 2. Alokasi: sebagian node jadi penghuni filamen antar knot ──
+  const filamentShare = knotCount > 1 ? 0.16 + r0() * 0.10 : 0.0;
+  const pts: V3[] = [];
+  const pickKnot = () => {
+    let t = r0() * wsum;
+    for (const k of knots) { t -= k.w; if (t <= 0) return k; }
+    return knots[0];
+  };
+
+  for (let i = 0; i < count; i++) {
+    const onFilament = i > 0 && knotCount > 1 && r0() < filamentShare;
+    if (onFilament) {
+      // jembatan melengkung antara dua knot: padat → renggang → padat
+      let ai = Math.floor(r0() * knots.length);
+      let bi = (ai + 1 + Math.floor(r0() * (knots.length - 1))) % knots.length;
+      const A = knots[ai].c, B = knots[bi].c;
+      // titik kontrol melengkung supaya filamen tidak lurus geometris
+      const mid = lerp(A, B, 0.5);
+      const bend = toWorld((r0() - 0.5), (r0() - 0.5), (r0() - 0.5));
+      const ctrl = add(mid, scale(normalize(bend), radius * (0.22 + r0() * 0.28)));
+      // t bias ke tengah (renggang) tapi tetap menyambung
+      const t = r0();
+      const q = 1 - t;
+      const base: V3 = [
+        q * q * A[0] + 2 * q * t * ctrl[0] + t * t * B[0],
+        q * q * A[1] + 2 * q * t * ctrl[1] + t * t * B[1],
+        q * q * A[2] + 2 * q * t * ctrl[2] + t * t * B[2],
+      ];
+      // radius tabung menipis di tengah
+      const tube = radius * 0.10 * (0.45 + Math.abs(t - 0.5) * 1.6);
+      const jn = normalize([r0() - 0.5, r0() - 0.5, r0() - 0.5]);
+      pts.push(add(base, scale(jn, tube * (0.4 + r0()))));
+      continue;
+    }
+    const K = pickKnot();
+    // arah acak 3D penuh (bukan bidang) + sedikit pipih di satu sumbu → asimetris
+    const th = r0() * Math.PI * 2;
+    const ph = Math.acos(1 - 2 * r0());
+    const dirL: V3 = [Math.sin(ph) * Math.cos(th), Math.cos(ph) * (0.62 + r0() * 0.5), Math.sin(ph) * Math.sin(th)];
+    const dir = normalize(toWorld(dirL[0], dirL[1], dirL[2]));
+    // power-law: pangkat besar → menumpuk di inti, ekor tipis ke luar
+    const uR = r0();
+    const core = i === 0 ? 0.04 : Math.pow(uR, 2.1);
+    // ekor sparse: ~12% node melesat jauh keluar jadi node transisi/pulau
+    const stray = r0() < 0.12 ? 1.35 + r0() * 0.85 : 1.0;
+    const nz = fbm3(dir[0] * 2.2 + seed, dir[1] * 2.2 - seed, dir[2] * 2.2);
+    const rr = K.r * (0.12 + core * 1.35) * stray * (1 + nz * 0.32);
+    pts.push(add(K.c, scale(dir, rr)));
+  }
+
+  // ── 3. Relaksasi tabrakan (lembut, agar inti tetap padat) ──
+  const sep = minSep ?? radius * 0.16;
+  for (let iter = 0; iter < 6; iter++) {
     for (let i = 0; i < pts.length; i++) {
       for (let j = i + 1; j < pts.length; j++) {
         const d = dist(pts[i], pts[j]);
         if (d < sep && d > 1e-4) {
-          const push = (sep - d) * 0.5;
+          const push = (sep - d) * 0.42;
           const dir = scale(normalize(sub(pts[j], pts[i])), push);
           pts[i] = sub(pts[i], dir);
           pts[j] = add(pts[j], dir);
