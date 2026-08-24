@@ -103,61 +103,124 @@ function discBasis(center: V3, seed: number): { u: V3; v: V3; w: V3 } {
   return { u, v, w };
 }
 
+/** Noise deterministik 3D murah (-1..1). */
+function fbm3(x: number, y: number, z: number) {
+  const h = (a: number, b: number, c: number) => {
+    const s = Math.sin(a * 12.9898 + b * 78.233 + c * 37.719) * 43758.5453;
+    return (s - Math.floor(s)) * 2 - 1;
+  };
+  return h(x, y, z) * 0.6 + h(x * 2.3 + 5.1, y * 2.3 - 3.7, z * 2.3 + 1.9) * 0.3 + h(x * 4.7 - 9.3, y * 4.7 + 2.1, z * 4.7 - 6.5) * 0.1;
+}
+
 /**
- * Sebar `count` titik pada KULIT BOLA tidak sempurna berpusat di `center`.
- * Titik didistribusi merata (fibonacci sphere) lalu radiusnya dimodulasi noise
- * sehingga permukaannya bergelombang — menyebar, berjarak, tetap terasa 3D.
- * Sebagian kecil titik ditarik lebih dalam agar tidak terlihat seperti cangkang kosong.
+ * COSMIC WEB PLACEMENT — sebaran node ala supercluster:
+ *  • 1–3 KNOT per gugus dengan ukuran & kepadatan berbeda (asimetris).
+ *  • Kepadatan power-law: inti knot sangat rapat, makin ke tepi makin renggang.
+ *  • FILAMEN: sebagian node ditaruh di sepanjang jembatan melengkung antar knot.
+ *  • VOID: knot dijaga berjarak sehingga ada rongga nyata di antaranya.
+ * Titik pertama selalu paling dekat inti knot utama (dipakai untuk node penting).
  */
 function placeCloud(center: V3, radius: number, count: number, minSep?: number): V3[] {
   if (count === 0) return [];
   const seed = center[0] * 0.731 + center[1] * 1.319 + center[2] * 0.517;
   const { u, v, w } = discBasis(center, seed);
   const r0 = mulberry32(Math.abs(Math.round(seed * 1e4)) + 104729);
-  const GA = Math.PI * (3 - Math.sqrt(5));
-  const phase = r0() * Math.PI * 2;
+  const toWorld = (a: number, b: number, c: number): V3 => [
+    u[0] * a + w[0] * b + v[0] * c,
+    u[1] * a + w[1] * b + v[1] * c,
+    u[2] * a + w[2] * b + v[2] * c,
+  ];
 
-  const pts: V3[] = [];
-  for (let i = 0; i < count; i++) {
-    // fibonacci sphere → distribusi merata pada permukaan
-    const y = count === 1 ? 0 : 1 - (2 * (i + 0.5)) / count;
-    const rxy = Math.sqrt(Math.max(0, 1 - y * y));
-    const th = GA * i + phase;
-    const dirLocal: V3 = [Math.cos(th) * rxy, y, Math.sin(th) * rxy];
-    // ke basis dunia (u,w,v) supaya orientasi tiap cluster berbeda
-    const dir: V3 = [
-      u[0] * dirLocal[0] + w[0] * dirLocal[1] + v[0] * dirLocal[2],
-      u[1] * dirLocal[0] + w[1] * dirLocal[1] + v[1] * dirLocal[2],
-      u[2] * dirLocal[0] + w[2] * dirLocal[1] + v[2] * dirLocal[2],
-    ];
-    // Volume terisi merata: radius diambil dari distribusi pangkat (r^(1/2.4))
-    // sehingga node tersebar dari inti sampai tepi, bukan menumpuk di kulit.
-    const uR = 0.16 + r0() * 0.84;
-    const fill = Math.pow(uR, 1 / 2.4);
-    // permukaan bergelombang → siluet tidak bulat sempurna, punya karakter
-    const bump =
-      0.20 * Math.sin(dirLocal[0] * 2.7 + phase) +
-      0.16 * Math.sin(dirLocal[1] * 3.3 - phase * 0.7) +
-      0.13 * Math.sin(dirLocal[2] * 2.1 + phase * 1.3) +
-      0.08 * Math.sin(dirLocal[0] * 5.9 + dirLocal[2] * 4.1 - phase);
-    // filamen: sebagian kecil node melompat jauh keluar membentuk untaian
-    const filament = r0() < 0.10 ? 1.18 + r0() * 0.30 : 1.0;
-    let rr = radius * 1.22 * fill * (1 + bump * 0.55 + (r0() - 0.5) * 0.14) * filament;
-    pts.push([
-      center[0] + dir[0] * rr,
-      center[1] + dir[1] * rr,
-      center[2] + dir[2] * rr,
-    ]);
+  // ── 1. Bentuk knot: jumlah & bobot berbeda supaya tidak simetris ──
+  const knotCount = count < 6 ? 1 : count < 22 ? 2 : 2 + (r0() < 0.55 ? 1 : 0);
+  const knots: { c: V3; w: number; r: number }[] = [];
+  let wsum = 0;
+  for (let k = 0; k < knotCount; k++) {
+    // arah knot: acak terarah, jarak dari pusat gugus ~0.45–0.95 radius → ada void di antaranya
+    const th = r0() * Math.PI * 2;
+    const ph = Math.acos(1 - 2 * r0());
+    const off = k === 0 ? radius * (0.10 + r0() * 0.12) : radius * (0.52 + r0() * 0.48);
+    const dirL: V3 = [Math.sin(ph) * Math.cos(th), Math.cos(ph) * 0.72, Math.sin(ph) * Math.sin(th)];
+    const dir = toWorld(dirL[0], dirL[1], dirL[2]);
+    const weight = k === 0 ? 1 : 0.28 + r0() * 0.55; // knot utama jauh lebih padat
+    const kr = radius * (k === 0 ? 0.52 + r0() * 0.16 : 0.24 + r0() * 0.24);
+    knots.push({ c: add(center, scale(normalize(dir), off)), w: weight, r: kr });
+    wsum += weight;
+  }
+  // jaga jarak antar knot (void)
+  const voidGap = radius * 0.5;
+  for (let it = 0; it < 6; it++) {
+    for (let i = 0; i < knots.length; i++) {
+      for (let j = i + 1; j < knots.length; j++) {
+        const d = dist(knots[i].c, knots[j].c);
+        if (d < voidGap && d > 1e-4) {
+          const push = (voidGap - d) * 0.5;
+          const dir = scale(normalize(sub(knots[j].c, knots[i].c)), push);
+          knots[i].c = sub(knots[i].c, dir);
+          knots[j].c = add(knots[j].c, dir);
+        }
+      }
+    }
   }
 
-  // Relaksasi tabrakan ringan
-  const sep = minSep ?? radius * 0.30;
-  for (let iter = 0; iter < 9; iter++) {
+  // ── 2. Alokasi: sebagian node jadi penghuni filamen antar knot ──
+  const filamentShare = knotCount > 1 ? 0.16 + r0() * 0.10 : 0.0;
+  const pts: V3[] = [];
+  const pickKnot = () => {
+    let t = r0() * wsum;
+    for (const k of knots) { t -= k.w; if (t <= 0) return k; }
+    return knots[0];
+  };
+
+  for (let i = 0; i < count; i++) {
+    const onFilament = i > 0 && knotCount > 1 && r0() < filamentShare;
+    if (onFilament) {
+      // jembatan melengkung antara dua knot: padat → renggang → padat
+      let ai = Math.floor(r0() * knots.length);
+      let bi = (ai + 1 + Math.floor(r0() * (knots.length - 1))) % knots.length;
+      const A = knots[ai].c, B = knots[bi].c;
+      // titik kontrol melengkung supaya filamen tidak lurus geometris
+      const mid = lerp(A, B, 0.5);
+      const bend = toWorld((r0() - 0.5), (r0() - 0.5), (r0() - 0.5));
+      const ctrl = add(mid, scale(normalize(bend), radius * (0.22 + r0() * 0.28)));
+      // t bias ke tengah (renggang) tapi tetap menyambung
+      const t = r0();
+      const q = 1 - t;
+      const base: V3 = [
+        q * q * A[0] + 2 * q * t * ctrl[0] + t * t * B[0],
+        q * q * A[1] + 2 * q * t * ctrl[1] + t * t * B[1],
+        q * q * A[2] + 2 * q * t * ctrl[2] + t * t * B[2],
+      ];
+      // radius tabung menipis di tengah
+      const tube = radius * 0.10 * (0.45 + Math.abs(t - 0.5) * 1.6);
+      const jn = normalize([r0() - 0.5, r0() - 0.5, r0() - 0.5]);
+      pts.push(add(base, scale(jn, tube * (0.4 + r0()))));
+      continue;
+    }
+    const K = pickKnot();
+    // arah acak 3D penuh (bukan bidang) + sedikit pipih di satu sumbu → asimetris
+    const th = r0() * Math.PI * 2;
+    const ph = Math.acos(1 - 2 * r0());
+    const dirL: V3 = [Math.sin(ph) * Math.cos(th), Math.cos(ph) * (0.62 + r0() * 0.5), Math.sin(ph) * Math.sin(th)];
+    const dir = normalize(toWorld(dirL[0], dirL[1], dirL[2]));
+    // power-law: pangkat besar → menumpuk di inti, ekor tipis ke luar
+    const uR = r0();
+    const core = i === 0 ? 0.04 : Math.pow(uR, 2.1);
+    // ekor sparse: ~12% node melesat jauh keluar jadi node transisi/pulau
+    const stray = r0() < 0.12 ? 1.35 + r0() * 0.85 : 1.0;
+    const nz = fbm3(dir[0] * 2.2 + seed, dir[1] * 2.2 - seed, dir[2] * 2.2);
+    const rr = K.r * (0.12 + core * 1.35) * stray * (1 + nz * 0.32);
+    pts.push(add(K.c, scale(dir, rr)));
+  }
+
+  // ── 3. Relaksasi tabrakan (lembut, agar inti tetap padat) ──
+  const sep = minSep ?? radius * 0.16;
+  for (let iter = 0; iter < 6; iter++) {
     for (let i = 0; i < pts.length; i++) {
       for (let j = i + 1; j < pts.length; j++) {
         const d = dist(pts[i], pts[j]);
         if (d < sep && d > 1e-4) {
-          const push = (sep - d) * 0.5;
+          const push = (sep - d) * 0.42;
           const dir = scale(normalize(sub(pts[j], pts[i])), push);
           pts[i] = sub(pts[i], dir);
           pts[j] = add(pts[j], dir);
@@ -242,30 +305,46 @@ export function buildGraph(): Graph {
   const nodes: StarNode[] = [];
   const edges: StarEdge[] = [];
 
-  // ─── Cluster centers on noise-deformed ellipsoid (blobby, non-symmetric) ───
-  const clusterDirs = fibDirections(CLUSTERS.length, 0.22);
+  // ─── SUPERCLUSTER LAYOUT ───────────────────────────────────────────────
+  // Gugus tidak lagi disebar merata di bola. Domain yang berkerabat ditarik ke
+  // wilayah supercluster yang sama; wilayah yang tidak berkerabat dipisah void.
   const clusterCenter: Record<string, V3> = {};
   const colorOf: Record<string, string> = {};
-  // 3-axis ellipsoid scaling (a ≠ b ≠ c) + per-cluster radial noise
-  const ELL: V3 = [1.15, 0.85, 1.05];
-  // pseudo simplex: cheap deterministic noise from 3D coords
-  const noise3 = (x: number, y: number, z: number) => {
-    const s = Math.sin(x * 12.9898 + y * 78.233 + z * 37.719) * 43758.5453;
-    return (s - Math.floor(s)) * 2 - 1; // -1..1
-  };
-
-  // Root
-  nodes.push({ id: "root", label: "DEBATE UNIVERSE", kind: "root", cluster: "root", color: "#ffffff", size: 1.4, pos: [0, 0, 0] });
-
+  const SUPERCLUSTERS: { id: string; dir: V3; dist: number; spread: number; members: ClusterKey[] }[] = [
+    // Supercluster besar & padat — inti pengetahuan
+    { id: "kurikulum", dir: normalize([0.92, 0.16, 0.36]),  dist: 78,  spread: 40, members: ["matter", "kamus", "motion"] },
+    // Supercluster kompetisi — di seberang, agak lebih jauh & lebih tinggi
+    { id: "arena",     dir: normalize([-0.66, 0.52, 0.54]), dist: 104, spread: 34, members: ["competitor", "active_member", "event"] },
+    // Supercluster teknik berbicara — di bawah, mendekat ke kamera
+    { id: "teknik",    dir: normalize([-0.18, -0.78, -0.60]), dist: 72, spread: 32, members: ["roles", "styles", "practice", "circuit"] },
+    // Pulau kecil terpencil — sistem & meta
+    { id: "sistem",    dir: normalize([0.34, 0.72, -0.88]), dist: 122, spread: 22, members: ["assistant", "editor", "meta"] },
+  ];
+  const scOf: Record<string, string> = {};
+  for (const sc of SUPERCLUSTERS) {
+    const anchor = scale(sc.dir, sc.dist);
+    const dirs = fibDirections(sc.members.length, 0.5);
+    const r0 = mulberry32(sc.id.length * 7919 + Math.round(sc.dist * 13));
+    sc.members.forEach((key, i) => {
+      const meta = CLUSTERS.find((c) => c.key === key);
+      if (!meta) return;
+      scOf[key] = sc.id;
+      // offset di dalam supercluster: variasi jarak & kedalaman → tidak simetris
+      const local = scale(normalize(dirs[i]), sc.spread * (0.45 + r0() * 0.9));
+      // dorong sepanjang sumbu radial supaya ada kedalaman Z antar gugus
+      const depth = scale(sc.dir, (r0() - 0.45) * sc.spread * 1.4);
+      const center = add(add(anchor, local), depth);
+      clusterCenter[key] = center;
+      colorOf[key] = meta.color;
+      nodes.push({ id: `cluster:${key}`, label: meta.label, kind: "cluster", cluster: key, color: meta.color, size: 0.7, pos: center });
+      edges.push({ a: "root", b: `cluster:${key}`, strength: "strong", color: meta.color });
+    });
+  }
+  // Fallback: gugus yang belum masuk supercluster manapun
   CLUSTERS.forEach((c, i) => {
-    const u = clusterDirs[i];
-    // apply ellipsoid warp + low-freq noise deform (±28%)
-    const ell: V3 = [u[0] * ELL[0], u[1] * ELL[1], u[2] * ELL[2]];
-    const un: V3 = normalize(ell);
-    const n1 = noise3(un[0] * 1.8, un[1] * 1.8, un[2] * 1.8);
-    const n2 = noise3(un[0] * 4.1 + 11, un[1] * 4.1 - 7, un[2] * 4.1 + 3) * 0.4;
-    const deform = 1 + (n1 * 0.28 + n2 * 0.12);
-    const center = scale(un, c.dist * deform);
+    if (clusterCenter[c.key]) return;
+    const d = fibDirections(CLUSTERS.length, 0.3)[i];
+    const center = scale(d, c.dist);
     clusterCenter[c.key] = center;
     colorOf[c.key] = c.color;
     nodes.push({ id: `cluster:${c.key}`, label: c.label, kind: "cluster", cluster: c.key, color: c.color, size: 0.7, pos: center });
@@ -732,6 +811,59 @@ export function buildGraph(): Graph {
       nodes.push({ id, label: it.nama, kind: sc.kind, cluster: sc.key, color: sc.color, size: sc.size, pos: pos[i], refId: it.id });
       edges.push({ a: `cluster:${sc.key}`, b: id, strength: sc.key === "editor" || sc.key === "meta" ? "weak" : "strong", color: sc.color });
     });
+  }
+
+  // ─── FILAMEN ANTAR GUGUS ────────────────────────────────────────────────
+  // Node daun yang benar-benar punya relasi lintas gugus (edge kind="link")
+  // dipindah ke jembatan melengkung antara dua pusat gugus: padat di ujung,
+  // renggang di tengah. Ini yang bikin gugus terasa tersambung secara alami,
+  // bukan lewat garis geometris.
+  {
+    const posById = new Map(nodes.map((n) => [n.id, n]));
+    const MOVABLE = new Set(["vocab", "subbab", "motion", "roleskill", "bab"]);
+    // pasangan relasi nyata → berapa banyak node yang boleh dipindah ke filamen
+    const pairs: Record<string, { from: ClusterKey; to: ClusterKey; quota: number }> = {};
+    for (const e of edges) {
+      if (e.kind !== "link") continue;
+      const A = posById.get(e.a), B = posById.get(e.b);
+      if (!A || !B || A.cluster === B.cluster) continue;
+      const key = [A.cluster, B.cluster].sort().join("→");
+      pairs[key] ||= { from: A.cluster, to: B.cluster, quota: 0 };
+      pairs[key].quota++;
+    }
+    const rf = mulberry32(31337);
+    const moved = new Set<string>();
+    for (const e of edges) {
+      if (e.kind !== "link") continue;
+      const A = posById.get(e.a), B = posById.get(e.b);
+      if (!A || !B || A.cluster === B.cluster) continue;
+      const leaf = MOVABLE.has(A.kind) ? A : MOVABLE.has(B.kind) ? B : null;
+      if (!leaf || moved.has(leaf.id)) continue;
+      const other = leaf === A ? B : A;
+      const cA = clusterCenter[leaf.cluster as string];
+      const cB = clusterCenter[other.cluster as string];
+      if (!cA || !cB) continue;
+      // hanya sebagian kecil daun yang naik ke filamen → gugus tetap padat
+      if (rf() > 0.16) continue;
+      const mid = lerp(cA, cB, 0.5);
+      const seedv = normalize([
+        Math.sin(leaf.id.length * 3.1 + cA[0]) , Math.cos(cB[1] * 0.7 + leaf.id.length), Math.sin(cA[2] * 0.4 - cB[0] * 0.3),
+      ]);
+      const ctrl = add(mid, scale(seedv, dist(cA, cB) * (0.10 + rf() * 0.16)));
+      // t bias ke ujung asal (0.12–0.62) → kepadatan meluruh dari gugus asal
+      const t = 0.12 + Math.pow(rf(), 1.5) * 0.5;
+      const q = 1 - t;
+      const base: V3 = [
+        q * q * cA[0] + 2 * q * t * ctrl[0] + t * t * cB[0],
+        q * q * cA[1] + 2 * q * t * ctrl[1] + t * t * cB[1],
+        q * q * cA[2] + 2 * q * t * ctrl[2] + t * t * cB[2],
+      ];
+      const tube = dist(cA, cB) * 0.045 * (0.5 + Math.abs(t - 0.5) * 1.5);
+      const jn = normalize([rf() - 0.5, rf() - 0.5, rf() - 0.5]);
+      leaf.pos = add(base, scale(jn, tube * (0.3 + rf() * 1.2)));
+      leaf.importance = Math.min(0.45, (leaf.importance ?? 0.3) + 0.05);
+      moved.add(leaf.id);
+    }
   }
 
   // ─── Cross-cluster collision push: jaga buffer >= 8 antara leaf cluster berbeda ───
