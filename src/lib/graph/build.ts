@@ -305,30 +305,46 @@ export function buildGraph(): Graph {
   const nodes: StarNode[] = [];
   const edges: StarEdge[] = [];
 
-  // ─── Cluster centers on noise-deformed ellipsoid (blobby, non-symmetric) ───
-  const clusterDirs = fibDirections(CLUSTERS.length, 0.22);
+  // ─── SUPERCLUSTER LAYOUT ───────────────────────────────────────────────
+  // Gugus tidak lagi disebar merata di bola. Domain yang berkerabat ditarik ke
+  // wilayah supercluster yang sama; wilayah yang tidak berkerabat dipisah void.
   const clusterCenter: Record<string, V3> = {};
   const colorOf: Record<string, string> = {};
-  // 3-axis ellipsoid scaling (a ≠ b ≠ c) + per-cluster radial noise
-  const ELL: V3 = [1.15, 0.85, 1.05];
-  // pseudo simplex: cheap deterministic noise from 3D coords
-  const noise3 = (x: number, y: number, z: number) => {
-    const s = Math.sin(x * 12.9898 + y * 78.233 + z * 37.719) * 43758.5453;
-    return (s - Math.floor(s)) * 2 - 1; // -1..1
-  };
-
-  // Root
-  nodes.push({ id: "root", label: "DEBATE UNIVERSE", kind: "root", cluster: "root", color: "#ffffff", size: 1.4, pos: [0, 0, 0] });
-
+  const SUPERCLUSTERS: { id: string; dir: V3; dist: number; spread: number; members: ClusterKey[] }[] = [
+    // Supercluster besar & padat — inti pengetahuan
+    { id: "kurikulum", dir: normalize([0.92, 0.16, 0.36]),  dist: 78,  spread: 40, members: ["matter", "kamus", "motion"] },
+    // Supercluster kompetisi — di seberang, agak lebih jauh & lebih tinggi
+    { id: "arena",     dir: normalize([-0.66, 0.52, 0.54]), dist: 104, spread: 34, members: ["competitor", "active_member", "event"] },
+    // Supercluster teknik berbicara — di bawah, mendekat ke kamera
+    { id: "teknik",    dir: normalize([-0.18, -0.78, -0.60]), dist: 72, spread: 32, members: ["roles", "styles", "practice", "circuit"] },
+    // Pulau kecil terpencil — sistem & meta
+    { id: "sistem",    dir: normalize([0.34, 0.72, -0.88]), dist: 122, spread: 22, members: ["assistant", "editor", "meta"] },
+  ];
+  const scOf: Record<string, string> = {};
+  for (const sc of SUPERCLUSTERS) {
+    const anchor = scale(sc.dir, sc.dist);
+    const dirs = fibDirections(sc.members.length, 0.5);
+    const r0 = mulberry32(sc.id.length * 7919 + Math.round(sc.dist * 13));
+    sc.members.forEach((key, i) => {
+      const meta = CLUSTERS.find((c) => c.key === key);
+      if (!meta) return;
+      scOf[key] = sc.id;
+      // offset di dalam supercluster: variasi jarak & kedalaman → tidak simetris
+      const local = scale(normalize(dirs[i]), sc.spread * (0.45 + r0() * 0.9));
+      // dorong sepanjang sumbu radial supaya ada kedalaman Z antar gugus
+      const depth = scale(sc.dir, (r0() - 0.45) * sc.spread * 1.4);
+      const center = add(add(anchor, local), depth);
+      clusterCenter[key] = center;
+      colorOf[key] = meta.color;
+      nodes.push({ id: `cluster:${key}`, label: meta.label, kind: "cluster", cluster: key, color: meta.color, size: 0.7, pos: center });
+      edges.push({ a: "root", b: `cluster:${key}`, strength: "strong", color: meta.color });
+    });
+  }
+  // Fallback: gugus yang belum masuk supercluster manapun
   CLUSTERS.forEach((c, i) => {
-    const u = clusterDirs[i];
-    // apply ellipsoid warp + low-freq noise deform (±28%)
-    const ell: V3 = [u[0] * ELL[0], u[1] * ELL[1], u[2] * ELL[2]];
-    const un: V3 = normalize(ell);
-    const n1 = noise3(un[0] * 1.8, un[1] * 1.8, un[2] * 1.8);
-    const n2 = noise3(un[0] * 4.1 + 11, un[1] * 4.1 - 7, un[2] * 4.1 + 3) * 0.4;
-    const deform = 1 + (n1 * 0.28 + n2 * 0.12);
-    const center = scale(un, c.dist * deform);
+    if (clusterCenter[c.key]) return;
+    const d = fibDirections(CLUSTERS.length, 0.3)[i];
+    const center = scale(d, c.dist);
     clusterCenter[c.key] = center;
     colorOf[c.key] = c.color;
     nodes.push({ id: `cluster:${c.key}`, label: c.label, kind: "cluster", cluster: c.key, color: c.color, size: 0.7, pos: center });
