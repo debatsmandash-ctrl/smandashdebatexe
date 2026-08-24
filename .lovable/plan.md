@@ -38,6 +38,7 @@ Semua fungsi tetap: tiap bintang tetap node konten yang bisa diklik, di-hover, d
 - **Node 2D berdasarkan hierarki**: radius node di Graph2D dihitung dari jumlah keturunan — makin banyak percabangan, makin besar bulatannya.
 - **Rekomendasi mosi di lobby**: blok "Rekomendasi Mosi Menarik" berisi mosi Prabowo dan mosi ujian nasional/UTBK, klik langsung ke panel analisisnya.
 - **Mosi & lagu**: sisa batch mosi dari unggahan dimasukkan ke bank mosi dengan template lengkap (probabilitas, 10 poin S/A/B/C, cases, rotasi, riset); lagu baru ditambahkan ke playlist.
+- **Mosi hybrid**: mosi yang menggabungkan dua tipe (mis. kebijakan × aktor, pandangan × aktor) ditandai sebagai hybrid dan **ditautkan ke kedua jenis mosi induknya** — di graf muncul dua sambungan ke node jenis mosi terkait, dan di panel analisis ada blok "Hybrid" yang menjelaskan kedua sisi beserta konsekuensi beban pembuktiannya.
 - **Performa & bug**: preset kualitas adaptif, batas label yang dirender, jeda animasi saat tab tidak aktif, dan pembersihan error build/runtime.
 
 ## Detail teknis
