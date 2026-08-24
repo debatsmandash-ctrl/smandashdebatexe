@@ -813,6 +813,59 @@ export function buildGraph(): Graph {
     });
   }
 
+  // ─── FILAMEN ANTAR GUGUS ────────────────────────────────────────────────
+  // Node daun yang benar-benar punya relasi lintas gugus (edge kind="link")
+  // dipindah ke jembatan melengkung antara dua pusat gugus: padat di ujung,
+  // renggang di tengah. Ini yang bikin gugus terasa tersambung secara alami,
+  // bukan lewat garis geometris.
+  {
+    const posById = new Map(nodes.map((n) => [n.id, n]));
+    const MOVABLE = new Set(["vocab", "subbab", "motion", "roleskill", "bab"]);
+    // pasangan relasi nyata → berapa banyak node yang boleh dipindah ke filamen
+    const pairs: Record<string, { from: ClusterKey; to: ClusterKey; quota: number }> = {};
+    for (const e of edges) {
+      if (e.kind !== "link") continue;
+      const A = posById.get(e.a), B = posById.get(e.b);
+      if (!A || !B || A.cluster === B.cluster) continue;
+      const key = [A.cluster, B.cluster].sort().join("→");
+      pairs[key] ||= { from: A.cluster, to: B.cluster, quota: 0 };
+      pairs[key].quota++;
+    }
+    const rf = mulberry32(31337);
+    const moved = new Set<string>();
+    for (const e of edges) {
+      if (e.kind !== "link") continue;
+      const A = posById.get(e.a), B = posById.get(e.b);
+      if (!A || !B || A.cluster === B.cluster) continue;
+      const leaf = MOVABLE.has(A.kind) ? A : MOVABLE.has(B.kind) ? B : null;
+      if (!leaf || moved.has(leaf.id)) continue;
+      const other = leaf === A ? B : A;
+      const cA = clusterCenter[leaf.cluster as string];
+      const cB = clusterCenter[other.cluster as string];
+      if (!cA || !cB) continue;
+      // hanya sebagian kecil daun yang naik ke filamen → gugus tetap padat
+      if (rf() > 0.16) continue;
+      const mid = lerp(cA, cB, 0.5);
+      const seedv = normalize([
+        Math.sin(leaf.id.length * 3.1 + cA[0]) , Math.cos(cB[1] * 0.7 + leaf.id.length), Math.sin(cA[2] * 0.4 - cB[0] * 0.3),
+      ]);
+      const ctrl = add(mid, scale(seedv, dist(cA, cB) * (0.10 + rf() * 0.16)));
+      // t bias ke ujung asal (0.12–0.62) → kepadatan meluruh dari gugus asal
+      const t = 0.12 + Math.pow(rf(), 1.5) * 0.5;
+      const q = 1 - t;
+      const base: V3 = [
+        q * q * cA[0] + 2 * q * t * ctrl[0] + t * t * cB[0],
+        q * q * cA[1] + 2 * q * t * ctrl[1] + t * t * cB[1],
+        q * q * cA[2] + 2 * q * t * ctrl[2] + t * t * cB[2],
+      ];
+      const tube = dist(cA, cB) * 0.045 * (0.5 + Math.abs(t - 0.5) * 1.5);
+      const jn = normalize([rf() - 0.5, rf() - 0.5, rf() - 0.5]);
+      leaf.pos = add(base, scale(jn, tube * (0.3 + rf() * 1.2)));
+      leaf.importance = Math.min(0.45, (leaf.importance ?? 0.3) + 0.05);
+      moved.add(leaf.id);
+    }
+  }
+
   // ─── Cross-cluster collision push: jaga buffer >= 8 antara leaf cluster berbeda ───
   {
     const BUFFER = 6;
