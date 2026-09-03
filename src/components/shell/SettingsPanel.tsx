@@ -204,15 +204,30 @@ export function SettingsPanel() {
               Pilih bagaimana garis-garis penghubung ditampilkan saat menjelajah semesta.
             </div>
             {([
-              ["normal", "NORMAL", "Hover/klik satu bintang → tampil tautan-nya saja. Lain redup."],
-              ["tree",   "FULL TREE", "Klik domain/hub → highlight seluruh rantai turunan sampai leaf."],
-              ["all",    "SHOW ALL", "Semua garis tampil sekaligus. Berat — cocok untuk audit."],
+              ["stars",  "BINTANG SAJA", "Semua garis disembunyikan — murni sebaran bintang."],
+              ["normal", "HOVER SAJA", "Hover/klik satu bintang → tampil tautan-nya saja. Lain redup."],
+              ["tree",   "FULL TREE", "Klik domain/hub → highlight seluruh rantai root ↔ leaf dua arah."],
+              ["all",    "SEMUA GARIS", "Semua garis tampil permanen (redup). Berat — cocok untuk audit."],
             ] as const).map(([k, label, hint]) => (
               <Row key={k} label={label} hint={hint}>
                 <Pill active={s.linkMode === (k as LinkMode)} onClick={() => update({ linkMode: k as LinkMode })}>PILIH</Pill>
               </Row>
             ))}
           </Section>
+          <Section title="Tone Warna & Pencahayaan">
+            <div style={{ fontFamily: "DM Sans", fontSize: 11, color: "#8ba3c0", lineHeight: 1.6, marginBottom: 6 }}>
+              Mengatur warna cahaya, exposure, kekuatan bloom, opasitas nebula, dan warna garis.
+            </div>
+            {([
+              ["deepspace", "DEEP SPACE REALISTIS", "Latar hampir hitam, bintang putih-biru-amber, bloom rendah, kontras tinggi."],
+              ["neon",      "NEON TEAL–VIOLET", "Tone dingin sinematik, glow kuat, gaya tech dashboard."],
+            ] as const).map(([k, label, hint]) => (
+              <Row key={k} label={label} hint={hint}>
+                <Pill active={s.colorPreset === k} onClick={() => update({ colorPreset: k })}>PILIH</Pill>
+              </Row>
+            ))}
+          </Section>
+
           <Section title="Hover">
             <Row label="Tampilkan hover edges" hint="Matikan bila tidak ingin garis muncul saat hover">
               <Toggle value={s.showHoverEdges} onChange={(v) => update({ showHoverEdges: v })} />
