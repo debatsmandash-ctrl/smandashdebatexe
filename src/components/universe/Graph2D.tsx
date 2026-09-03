@@ -90,6 +90,7 @@ export function Graph2D() {
       .map((e) => ({ a: index.get(e.a)!, b: index.get(e.b)!, kind: e.kind }))
       .filter((l) => l.a !== undefined && l.b !== undefined);
 
+    const rankOf: number[] = graph.nodes.map((n) => RANK(n.kind));
     const nbr: number[][] = nodes.map(() => []);
     for (const l of links) { nbr[l.a].push(l.b); nbr[l.b].push(l.a); }
 
@@ -285,10 +286,22 @@ export function Graph2D() {
       if (active >= 0) {
         lit.add(active);
         if (c.linkMode === "tree") {
+          // turun ke seluruh keturunan…
           const q = [active];
           while (q.length) {
             const cur = q.shift()!;
-            for (const j of nbr[cur]) { if (!lit.has(j)) { lit.add(j); q.push(j); } }
+            for (const j of nbr[cur]) {
+              if (lit.has(j) || rankOf[j] <= rankOf[cur]) continue;
+              lit.add(j); q.push(j);
+            }
+          }
+          // …lalu naik ke induk sampai pusat
+          let cur = active;
+          for (let guard = 0; guard < 12; guard++) {
+            let best = -1;
+            for (const j of nbr[cur]) if (rankOf[j] < rankOf[cur] && (best < 0 || rankOf[j] < rankOf[best])) best = j;
+            if (best < 0) break;
+            lit.add(best); cur = best;
           }
         } else {
           for (const j of nbr[active]) lit.add(j);
