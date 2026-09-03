@@ -14,7 +14,10 @@ export type PlayMode = "shuffle" | "sequential";
  * - tree   : klik domain/hub = highlight seluruh rantai turunan sampai leaf
  * - all    : semua garis dan label ditampilkan (perf-heavy)
  */
-export type LinkMode = "normal" | "tree" | "all";
+export type LinkMode = "stars" | "normal" | "tree" | "all";
+
+/** Preset tone warna & pencahayaan universe */
+export type ColorPreset = "deepspace" | "neon";
 
 
 export interface Settings {
@@ -38,6 +41,7 @@ export interface Settings {
 
   // NEW: link/hover visibility modes
   linkMode: LinkMode;
+  colorPreset: ColorPreset;
   treeHoverEnabled: boolean;          // aktifkan hover-on-tree juga
   edgeThickness: number;              // 1..4 solid line width
 
@@ -89,6 +93,7 @@ export const DEFAULT_SETTINGS: Settings = {
   enabledTracks: {},
   playMode: "shuffle",
   linkMode: "normal",
+  colorPreset: "deepspace",
   treeHoverEnabled: true,
   edgeThickness: 1.8,
   fontPreset: "default",
@@ -200,7 +205,7 @@ export const useSettings = create<SettingsState>()(
       reset: () => set(DEFAULT_SETTINGS),
     }),
     {
-      name: "smandash-settings-v4",
+      name: "smandash-settings-v5",
       // merge persisted state onto defaults so new fields exist for old clients
       merge: (persisted, current) => ({ ...current, ...(persisted as object) }),
     }
