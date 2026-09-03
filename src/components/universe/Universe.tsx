@@ -485,11 +485,12 @@ function Scene({ profile }: { profile: DeviceProfile }) {
 
   const linkMode = settings.linkMode;
   const treeHoverEnabled = settings.treeHoverEnabled;
+  const tone = TONE_PRESETS[settings.colorPreset] ?? TONE_PRESETS.deepspace;
 
   const litSet = useMemo(() => {
     const s = new Set<string>();
     const activeId = selectedId ?? (linkMode !== "tree" || treeHoverEnabled ? hoveredId : null);
-    if (!activeId) return s;
+    if (!activeId || linkMode === "stars") return s;
     if (linkMode === "all") {
       // seluruh graph "lit" — tidak ada yang di-dim
       for (const n of graph.nodes) s.add(n.id);
@@ -547,33 +548,34 @@ function Scene({ profile }: { profile: DeviceProfile }) {
     return s;
   }, [selectedId, hoveredId, graph, linkMode, treeHoverEnabled]);
 
-  const anyActive = linkMode === "all" ? true : !!(selectedId ?? (linkMode !== "tree" || treeHoverEnabled ? hoveredId : null));
+  const anyActive = linkMode === "stars" ? false : linkMode === "all" ? true : !!(selectedId ?? (linkMode !== "tree" || treeHoverEnabled ? hoveredId : null));
 
   return (
     <>
       {/* Pencahayaan realistis: gelap tapi tetap terbaca — ambient lembut +
           key light hangat di pusat dan dua fill dingin untuk kedalaman. */}
-      <ambientLight intensity={quality === "ultra" ? 0.20 : quality === "high" ? 0.18 : 0.16} />
-      <hemisphereLight args={["#9fc4ff", "#12060a", 0.16]} />
-      <pointLight position={[0, 0, 0]} intensity={quality === "ultra" ? 0.85 : 0.6} color="#ffd9a8" distance={quality === "ultra" ? 900 : 520} />
-      <pointLight position={[140, 80, -80]} intensity={quality === "ultra" ? 0.42 : 0.3} color="#00ffc8" distance={quality === "ultra" ? 760 : 520} />
-      <pointLight position={[-140, -60, 100]} intensity={quality === "ultra" ? 0.38 : 0.26} color="#8aa6d8" distance={quality === "ultra" ? 720 : 480} />
-      <directionalLight position={[260, 180, 220]} intensity={0.22} color="#cfe2ff" />
+      <ambientLight intensity={(quality === "ultra" ? 0.20 : quality === "high" ? 0.18 : 0.16) * tone.ambient} color={tone.ambientColor} />
+      <hemisphereLight args={[tone.hemiSky, tone.hemiGround, 0.16 * tone.ambient]} />
+      <pointLight position={[0, 0, 0]} intensity={(quality === "ultra" ? 0.85 : 0.6) * tone.key} color={tone.keyColor} distance={quality === "ultra" ? 900 : 520} />
+      <pointLight position={[140, 80, -80]} intensity={(quality === "ultra" ? 0.42 : 0.3) * tone.fill} color={tone.fillA} distance={quality === "ultra" ? 760 : 520} />
+      <pointLight position={[-140, -60, 100]} intensity={(quality === "ultra" ? 0.38 : 0.26) * tone.fill} color={tone.fillB} distance={quality === "ultra" ? 720 : 480} />
+      <directionalLight position={[260, 180, 220]} intensity={0.22 * tone.ambient} color={tone.rim} />
 
       <StarField />
       {profile.tier === "desktop" && <Galaxies />}
       <StarClusters />
-      <MilkyWaySky opacity={settings.nebulaOpacity * 0.5} />
+      <MilkyWaySky opacity={settings.nebulaOpacity * 0.5 * tone.nebula} />
 
-      <FlowEdges
-        graph={graph}
-        litSet={litSet}
-        anyActive={anyActive}
-        showAll={linkMode === "all"}
-      />
+      {linkMode !== "stars" && (
+        <FlowEdges
+          graph={graph}
+          litSet={litSet}
+          anyActive={anyActive}
+          showAll={linkMode === "all"}
+        />
+      )}
 
-
-      {settings.showHoverEdges && linkMode !== "all" && (
+      {settings.showHoverEdges && linkMode !== "all" && linkMode !== "stars" && (
         <HoverEdges graph={graph} activeId={selectedId ?? (linkMode !== "tree" || treeHoverEnabled ? hoveredId : null)} />
       )}
 
@@ -609,7 +611,7 @@ function Scene({ profile }: { profile: DeviceProfile }) {
 
       {bloomEnabled && (
         <EffectComposer multisampling={quality === "ultra" ? 4 : 0}>
-          <Bloom intensity={profile.bloomIntensity * settings.bloomIntensity * qScale} luminanceThreshold={0.28} luminanceSmoothing={0.85} mipmapBlur radius={profile.bloomRadius} />
+          <Bloom intensity={profile.bloomIntensity * settings.bloomIntensity * qScale * tone.bloom} luminanceThreshold={0.28} luminanceSmoothing={0.85} mipmapBlur radius={profile.bloomRadius} />
           {profile.chromaticAberration && quality === "ultra" ? (
             <ChromaticAberration offset={[0.0008, 0.0008]} radialModulation={false} modulationOffset={0} blendFunction={BlendFunction.NORMAL} />
           ) : <></>}
@@ -660,6 +662,22 @@ function FpsCounter() {
     }}>{fps} FPS</div>
   );
 }
+
+/** Preset tone warna & pencahayaan universe (Settings → Tampilan). */
+export const TONE_PRESETS = {
+  deepspace: {
+    label: "Deep Space Realistis",
+    ambient: 1.0, key: 1.0, fill: 0.85, bloom: 0.85, nebula: 0.85,
+    ambientColor: "#c9d8f5", hemiSky: "#9fc4ff", hemiGround: "#12060a",
+    keyColor: "#ffd9a8", fillA: "#8fb6ff", fillB: "#8aa6d8", rim: "#cfe2ff",
+  },
+  neon: {
+    label: "Neon Teal–Violet",
+    ambient: 1.25, key: 1.15, fill: 1.35, bloom: 1.6, nebula: 1.15,
+    ambientColor: "#a5f3ff", hemiSky: "#5eead4", hemiGround: "#1a0b2e",
+    keyColor: "#7dd3fc", fillA: "#00ffc8", fillB: "#a855f7", rim: "#e9d5ff",
+  },
+} as const;
 
 export function Universe() {
   const profile = useDeviceProfile();
