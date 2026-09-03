@@ -42,6 +42,28 @@ export function Graph2D() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
+    // ─── hitung jumlah keturunan (hierarki) untuk ukuran node ───
+    const descCount = new Map<string, number>();
+    {
+      const memo = new Map<string, number>();
+      const visit = (id: string, seen: Set<string>): number => {
+        if (memo.has(id)) return memo.get(id)!;
+        const self = graph.byId.get(id);
+        if (!self) return 0;
+        let total = 0;
+        for (const nid of graph.neighbors.get(id) ?? []) {
+          const child = graph.byId.get(nid);
+          if (!child || seen.has(nid)) continue;
+          if (RANK(child.kind) <= RANK(self.kind)) continue;
+          seen.add(nid);
+          total += 1 + visit(nid, seen);
+        }
+        memo.set(id, total);
+        return total;
+      };
+      for (const n of graph.nodes) descCount.set(n.id, visit(n.id, new Set([n.id])));
+    }
+
     // ─── bangun partikel ───
     const pinned = cfg.current.g2dPinned || {};
     const nodes: P[] = graph.nodes.map((n, i) => {
@@ -55,7 +77,8 @@ export function Graph2D() {
         x: pin ? pin.x : Math.cos(golden) * rad,
         y: pin ? pin.y : Math.sin(golden) * rad,
         vx: 0, vy: 0,
-        r: rank === 0 ? 13 : rank === 1 ? 9 : rank === 2 ? 7 : rank === 3 ? 5.5 : 4,
+        // makin banyak percabangan/keturunan → makin besar bulatannya
+        r: Math.min(26, 3.2 * (1 + Math.log2(1 + (descCount.get(n.id) ?? 0)) * 0.62) + (rank === 0 ? 4 : 0)),
         color: n.color || "#8fb8ff",
         label: n.label,
         deg,
@@ -67,6 +90,7 @@ export function Graph2D() {
       .map((e) => ({ a: index.get(e.a)!, b: index.get(e.b)!, kind: e.kind }))
       .filter((l) => l.a !== undefined && l.b !== undefined);
 
+    const rankOf: number[] = graph.nodes.map((n) => RANK(n.kind));
     const nbr: number[][] = nodes.map(() => []);
     for (const l of links) { nbr[l.a].push(l.b); nbr[l.b].push(l.a); }
 
@@ -259,11 +283,38 @@ export function Graph2D() {
       const active = hoverIdx >= 0 && c.g2dHover ? hoverIdx
         : selRef.current ? (index.get(selRef.current) ?? -1) : -1;
       const lit = new Set<number>();
-      if (active >= 0) { lit.add(active); for (const j of nbr[active]) lit.add(j); }
+      if (active >= 0) {
+        lit.add(active);
+        if (c.linkMode === "tree") {
+          // turun ke seluruh keturunan…
+          const q = [active];
+          while (q.length) {
+            const cur = q.shift()!;
+            for (const j of nbr[cur]) {
+              if (lit.has(j) || rankOf[j] <= rankOf[cur]) continue;
+              lit.add(j); q.push(j);
+            }
+          }
+          // …lalu naik ke induk sampai pusat
+          let cur = active;
+          for (let guard = 0; guard < 12; guard++) {
+            let best = -1;
+            for (const j of nbr[cur]) if (rankOf[j] < rankOf[cur] && (best < 0 || rankOf[j] < rankOf[best])) best = j;
+            if (best < 0) break;
+            lit.add(best); cur = best;
+          }
+        } else {
+          for (const j of nbr[active]) lit.add(j);
+        }
+      }
 
+      const lv = c.linkMode;
       ctx.lineWidth = 1 / zoom;
-      for (const l of links) {
+      if (lv !== "stars") for (const l of links) {
+        if (lv === "normal" && active < 0) continue;
+        if (lv === "tree" && active < 0) continue;
         const on = active < 0 ? true : lit.has(l.a) && lit.has(l.b);
+        if ((lv === "normal" || lv === "tree") && !on) continue;
         ctx.globalAlpha = active < 0 ? 0.22 : on ? 0.9 : 0.06;
         ctx.strokeStyle = on && active >= 0 ? nodes[active].color : "#63788f";
         ctx.lineWidth = (on && active >= 0 ? 1.6 : 1) / zoom;

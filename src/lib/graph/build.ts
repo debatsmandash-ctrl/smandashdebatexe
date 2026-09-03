@@ -305,51 +305,69 @@ export function buildGraph(): Graph {
   const nodes: StarNode[] = [];
   const edges: StarEdge[] = [];
 
-  // ─── SUPERCLUSTER LAYOUT ───────────────────────────────────────────────
-  // Gugus tidak lagi disebar merata di bola. Domain yang berkerabat ditarik ke
-  // wilayah supercluster yang sama; wilayah yang tidak berkerabat dipisah void.
+  // ─── PENEMPATAN GUGUS — cosmic web tanpa zona tetap ────────────────────
+  // Tiap gugus berdiri sendiri (tidak dipaksa masuk wilayah supercluster).
+  // Jarak dari pusat = skor bobot (jumlah anggota/tautan) + jitter deterministik,
+  // jadi gugus besar cenderung menjauh tapi tidak berbaris rapi.
   const clusterCenter: Record<string, V3> = {};
   const colorOf: Record<string, string> = {};
-  const SUPERCLUSTERS: { id: string; dir: V3; dist: number; spread: number; members: ClusterKey[] }[] = [
-    // Supercluster besar & padat — inti pengetahuan
-    { id: "kurikulum", dir: normalize([0.92, 0.16, 0.36]),  dist: 78,  spread: 40, members: ["matter", "kamus", "motion"] },
-    // Supercluster kompetisi — di seberang, agak lebih jauh & lebih tinggi
-    { id: "arena",     dir: normalize([-0.66, 0.52, 0.54]), dist: 104, spread: 34, members: ["competitor", "active_member", "event"] },
-    // Supercluster teknik berbicara — di bawah, mendekat ke kamera
-    { id: "teknik",    dir: normalize([-0.18, -0.78, -0.60]), dist: 72, spread: 32, members: ["roles", "styles", "practice", "circuit"] },
-    // Pulau kecil terpencil — sistem & meta
-    { id: "sistem",    dir: normalize([0.34, 0.72, -0.88]), dist: 122, spread: 22, members: ["assistant", "editor", "meta"] },
-  ];
-  const scOf: Record<string, string> = {};
-  for (const sc of SUPERCLUSTERS) {
-    const anchor = scale(sc.dir, sc.dist);
-    const dirs = fibDirections(sc.members.length, 0.5);
-    const r0 = mulberry32(sc.id.length * 7919 + Math.round(sc.dist * 13));
-    sc.members.forEach((key, i) => {
-      const meta = CLUSTERS.find((c) => c.key === key);
-      if (!meta) return;
-      scOf[key] = sc.id;
-      // offset di dalam supercluster: variasi jarak & kedalaman → tidak simetris
-      const local = scale(normalize(dirs[i]), sc.spread * (0.45 + r0() * 0.9));
-      // dorong sepanjang sumbu radial supaya ada kedalaman Z antar gugus
-      const depth = scale(sc.dir, (r0() - 0.45) * sc.spread * 1.4);
-      const center = add(add(anchor, local), depth);
-      clusterCenter[key] = center;
-      colorOf[key] = meta.color;
-      nodes.push({ id: `cluster:${key}`, label: meta.label, kind: "cluster", cluster: key, color: meta.color, size: 0.7, pos: center });
-      edges.push({ a: "root", b: `cluster:${key}`, strength: "strong", color: meta.color });
+
+  const CLUSTER_WEIGHT: Record<string, number> = {
+    matter: Object.keys(MATTER).length * 6 + Object.values(MATTER).reduce((s, d: any) => s + (d.babs?.length ?? 0), 0),
+    motion: MOTIONS.length,
+    kamus: VOCAB.length,
+    jenis: JENIS_MOSI.length,
+    competitor: COMPETITORS.reduce((s, sc) => s + 1 + sc.teams.length * 4, 0),
+    active_member: ACTIVE_MEMBERS.reduce((s, sc) => s + 1 + sc.teams.length * 4, 0),
+    event: EVENTS.length * 8,
+    roles: ROLES.length + ROLES_AP.length + ROLES_BP.length,
+    styles: STYLES.length,
+    practice: PRACTICE_MODES.length,
+    circuit: CIRCUIT.length,
+    assistant: ASSISTANT_PROMPTS.length,
+    editor: EDITOR_NODES.length,
+    meta: META_NODES.length,
+  };
+  const maxW = Math.max(1, ...Object.values(CLUSTER_WEIGHT));
+
+  {
+    const rc = mulberry32(90210);
+    const dirs = fibDirections(CLUSTERS.length, 0.85);
+    const placed: V3[] = [];
+    CLUSTERS.forEach((c, i) => {
+      // bobot 0..1 (skala log supaya gugus raksasa tidak terlempar ekstrem)
+      const w = Math.log2(1 + (CLUSTER_WEIGHT[c.key] ?? 8)) / Math.log2(1 + maxW);
+      // jarak: campuran bobot + acak deterministik
+      const base = 52 + w * 96;
+      const jitter = (rc() - 0.5) * 46;
+      let radius = Math.max(44, base + jitter);
+
+      // arah acak-terdistribusi, lalu diputar sedikit agar tidak simetris
+      let dir = normalize([
+        dirs[i][0] + (rc() - 0.5) * 0.5,
+        dirs[i][1] * (0.55 + rc() * 0.9) + (rc() - 0.5) * 0.4,
+        dirs[i][2] + (rc() - 0.5) * 0.5,
+      ]);
+
+      // jaga void: dorong keluar kalau terlalu dekat dengan gugus yang sudah ada
+      for (let guard = 0; guard < 24; guard++) {
+        const cand = scale(dir, radius);
+        const tooClose = placed.some((p) => dist(p, cand) < 54);
+        if (!tooClose) break;
+        radius += 9;
+        dir = normalize([dir[0] + (rc() - 0.5) * 0.22, dir[1] + (rc() - 0.5) * 0.22, dir[2] + (rc() - 0.5) * 0.22]);
+      }
+
+      const center = scale(dir, radius);
+      placed.push(center);
+      clusterCenter[c.key] = center;
+      colorOf[c.key] = c.color;
+      nodes.push({ id: `cluster:${c.key}`, label: c.label, kind: "cluster", cluster: c.key, color: c.color, size: 0.7, pos: center });
+      // tautan root → gugus dikembalikan; panjangnya bervariasi mengikuti radius
+      edges.push({ a: "root", b: `cluster:${c.key}`, strength: "strong", color: c.color });
     });
   }
-  // Fallback: gugus yang belum masuk supercluster manapun
-  CLUSTERS.forEach((c, i) => {
-    if (clusterCenter[c.key]) return;
-    const d = fibDirections(CLUSTERS.length, 0.3)[i];
-    const center = scale(d, c.dist);
-    clusterCenter[c.key] = center;
-    colorOf[c.key] = c.color;
-    nodes.push({ id: `cluster:${c.key}`, label: c.label, kind: "cluster", cluster: c.key, color: c.color, size: 0.7, pos: center });
-    edges.push({ a: "root", b: `cluster:${c.key}`, strength: "strong", color: c.color });
-  });
+
 
   // ─── STYLES (cluster → HALAL / HARAM sub-hubs → style nodes) ───
   {
