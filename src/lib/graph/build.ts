@@ -567,6 +567,17 @@ export function buildGraph(): Graph {
     kebijakan: "jm1", pandangan: "jm2", aktor: "jm3",
     penyesalan: "jm4", prediksi: "jm5", dukungan: "jm6",
     memilih: "jm7", harapan: "jm2",
+    kelembagaan: "jm1", sosial: "jm2", kausalitas: "jm5",
+  };
+  /** Mosi hybrid ("kebijakan-aktor", "sosial-aktor", …) tertaut ke dua jenis induk. */
+  const jenisIdsOf = (type?: string): string[] => {
+    const parts = String(type ?? "").split("-").map((x) => x.trim()).filter(Boolean);
+    const ids: string[] = [];
+    for (const part of parts) {
+      const jid = typeToJenisId[part];
+      if (jid && !ids.includes(jid)) ids.push(jid);
+    }
+    return ids.length ? ids : ["jm1"];
   };
   {
     const motionCenter = clusterCenter.motion;
@@ -584,7 +595,7 @@ export function buildGraph(): Graph {
     // 2) Group motions by jenis (m.type)
     const byJenis: Record<string, typeof MOTIONS> = {};
     MOTIONS.forEach((m) => {
-      const jid = typeToJenisId[m.type] || "jm1";
+      const jid = jenisIdsOf(m.type)[0];
       (byJenis[jid] ||= []).push(m);
     });
     // Palet warm-neon untuk bintang motion (tidak pernah hitam/gelap)
@@ -602,6 +613,10 @@ export function buildGraph(): Graph {
         const useColor = MOTION_NEON[(motionColorIdx++) % MOTION_NEON.length];
         nodes.push({ id, label: m.title, kind: "motion", cluster: "motion", color: useColor, size: 0.085, pos: pos[i], refId: m.id, importance: 0.35 });
         edges.push({ a: `jenis:${jid}`, b: id, strength: "weak", color: useColor });
+        // hybrid → tautkan juga ke jenis mosi kedua
+        for (const extra of jenisIdsOf(m.type).slice(1)) {
+          edges.push({ a: `jenis:${extra}`, b: id, strength: "weak", color: "#ff5fb3", kind: "link" });
+        }
         const domainKey = motionCatToDomain[m.cat];
         if (domainKey && matterDomainIds[domainKey]) {
           edges.push({ a: id, b: matterDomainIds[domainKey], strength: "weak", color: "#ff8b3d", kind: "link" });
@@ -781,8 +796,9 @@ export function buildGraph(): Graph {
       const evNodeId = `event:${ev.id}`;
       nodes.push({ id: evNodeId, label: ev.nama, kind: "subhub", cluster: "event", color: "#fde047", size: 0.42, pos: evCenter, refId: ev.id });
       edges.push({ a: "cluster:event", b: evNodeId, strength: "strong", color: "#fde047" });
-      const bracketDirs = fibDirections(ev.brackets.length, 0.35);
-      ev.brackets.forEach((br, bi) => {
+      const evBrackets = ev.brackets ?? [];
+      const bracketDirs = fibDirections(evBrackets.length, 0.35);
+      evBrackets.forEach((br, bi) => {
         const brCenter = add(evCenter, scale(bracketDirs[bi], 13));
         const brId = `event:${ev.id}:${br.id}`;
         const brColor = br.id === "final" ? "#fbbf24" : br.id === "semi" ? "#a78bfa" : "#22d3ee";
@@ -795,14 +811,14 @@ export function buildGraph(): Graph {
           if (br.id === "final") {
             const realNode = nodes.find(n => n.id === realTeamId);
             if (realNode) {
-              if (ev.prestasi.j1.team === teamRawId) realNode.crown = "j1";
-              else if (ev.prestasi.j2.team === teamRawId) realNode.crown = "j2";
-              else if (ev.prestasi.j3.team === teamRawId) realNode.crown = "j3";
+              if (ev.prestasi?.j1?.team === teamRawId) realNode.crown = "j1";
+              else if (ev.prestasi?.j2?.team === teamRawId) realNode.crown = "j2";
+              else if (ev.prestasi?.j3?.team === teamRawId) realNode.crown = "j3";
             }
           }
         });
       });
-      ev.prestasi.best_speakers.forEach((bs) => {
+      (ev.prestasi?.best_speakers ?? []).forEach((bs) => {
         const spNode = nodes.find(n => n.refId === bs.speaker && n.kind === "speaker");
         if (spNode) {
           spNode.crown = "best-speaker";

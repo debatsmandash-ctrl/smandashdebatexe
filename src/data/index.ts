@@ -112,14 +112,23 @@ export const COMPETITORS = (competitorsRaw as any).schools as School[];
 export const ACTIVE_MEMBERS = (activeMemberRaw as any).schools as School[];
 
 export interface EventBracket { id: string; nama: string; teams: string[] }
+export interface EventRosterTeam { id: string; nama: string; anggota: string[] }
 export interface EventData {
   id: string; nama: string; desc: string;
-  brackets: EventBracket[];
-  prestasi: {
-    j1: { team: string; label: string };
-    j2: { team: string; label: string };
-    j3: { team: string; label: string };
-    best_speakers: { speaker: string; label: string }[];
+  cover?: string;
+  status?: "selesai" | "berjalan" | "mendatang";
+  penyelenggara?: string;
+  tanggal?: string;
+  tingkat?: string;
+  sistem?: string;
+  roster?: EventRosterTeam[];
+  milestones?: string[];
+  brackets?: EventBracket[];
+  prestasi?: {
+    j1?: { team: string; label: string };
+    j2?: { team: string; label: string };
+    j3?: { team: string; label: string };
+    best_speakers?: { speaker: string; label: string }[];
   };
 }
 export const EVENTS = (eventRaw as any).events as EventData[];

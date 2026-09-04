@@ -219,6 +219,8 @@ export function Graph2D() {
     let alpha = 1;
     const tick = () => {
       const c = cfg.current;
+      // Jeda total saat tab tidak aktif.
+      if (document.hidden) { raf = requestAnimationFrame(tick); return; }
       // gaya
       const repel = c.g2dRepel;
       const spring = c.g2dLinkForce;
@@ -350,9 +352,14 @@ export function Graph2D() {
         ctx.globalAlpha = 1;
         ctx.font = `${Math.max(8, 11 / zoom)}px "Space Mono", monospace`;
         ctx.textAlign = "center";
+        // Batasi jumlah label yang digambar supaya tetap lancar di graf padat.
+        let drawn = 0;
+        const LABEL_CAP = 320;
         for (let i = 0; i < n; i++) {
+          if (drawn >= LABEL_CAP) break;
           const p = nodes[i];
           if (p.r < 5.5 && zoom < 0.9) continue;
+          drawn++;
           const on = active < 0 || lit.has(i);
           ctx.globalAlpha = on ? 0.9 : 0.12;
           ctx.fillStyle = "#dbe7f5";

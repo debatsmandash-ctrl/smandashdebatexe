@@ -888,10 +888,58 @@ function SpeakerPanel({ refId }: { refId: string }) {
   );
 }
 
+function EventPanel({ refId }: { refId: string }) {
+  const ev = EVENTS.find((e) => e.id === refId);
+  if (!ev) return <p style={para}>—</p>;
+  const facts: [string, string | undefined][] = [
+    ["Penyelenggara", ev.penyelenggara],
+    ["Tanggal", ev.tanggal],
+    ["Tingkat", ev.tingkat],
+    ["Sistem", ev.sistem],
+  ];
+  return (
+    <div>
+      <Chip color="#fde047">{ev.status ? ev.status.toUpperCase() : "EVENT"}</Chip>
+      <p style={para}>{ev.desc}</p>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(140px,1fr))", gap: 8, margin: "12px 0" }}>
+        {facts.filter(([, v]) => !!v).map(([k, v]) => (
+          <div key={k} style={{ border: "1px solid rgba(253,224,71,0.18)", borderRadius: 6, padding: "8px 10px" }}>
+            <div style={{ ...muted, fontSize: 9, letterSpacing: "0.18em" }}>{k.toUpperCase()}</div>
+            <div style={{ fontSize: 11, color: "var(--au-text)", marginTop: 3, lineHeight: 1.5 }}>{v}</div>
+          </div>
+        ))}
+      </div>
+      {!!ev.milestones?.length && (
+        <>
+          <h3 style={heading}>Perjalanan</h3>
+          <ol style={{ margin: 0, paddingLeft: 16 }}>
+            {ev.milestones.map((m, i) => (
+              <li key={i} style={{ ...para, marginBottom: 6 }}>{m}</li>
+            ))}
+          </ol>
+        </>
+      )}
+      {!!ev.roster?.length && (
+        <>
+          <h3 style={heading}>Tim & Roster</h3>
+          {ev.roster.map((t) => (
+            <div key={t.id} style={{ border: "1px solid rgba(168,85,247,0.16)", borderRadius: 6, padding: "10px 12px", marginBottom: 8 }}>
+              <div style={{ fontSize: 12, color: "var(--au-text)", fontWeight: 600 }}>{t.nama}</div>
+              <ol style={{ margin: "6px 0 0", paddingLeft: 16 }}>
+                {t.anggota.map((a) => <li key={a} style={{ ...para, margin: 0 }}>{a}</li>)}
+              </ol>
+            </div>
+          ))}
+        </>
+      )}
+    </div>
+  );
+}
+
 function BracketPanel({ refId }: { refId: string }) {
   const [evId, brId] = refId.split("/");
   const ev = EVENTS.find((e) => e.id === evId); if (!ev) return null;
-  const br = ev.brackets.find((b) => b.id === brId); if (!br) return null;
+  const br = (ev.brackets ?? []).find((b) => b.id === brId); if (!br) return null;
   return (
     <div>
       <Chip color="#fde047">{ev.nama}</Chip>
@@ -920,8 +968,7 @@ export function PanelContent({ node }: { node: StarNode }) {
   if (node.kind === "cluster") body = <ClusterPanel node={node} />;
   else if (node.kind === "subhub" && node.cluster === "motion") body = <JenisPanel refId={node.refId!} />;
   else if (node.kind === "subhub" && node.cluster === "event") {
-    const ev = EVENTS.find((e) => e.id === node.refId);
-    body = ev ? <p style={para}>{ev.desc}</p> : <p style={para}>—</p>;
+    body = <EventPanel refId={node.refId!} />;
   }
   else if (node.kind === "style") body = <StylePanel refId={node.refId!} />;
   else if (node.kind === "role") body = <RolePanel refId={node.refId!} />;
