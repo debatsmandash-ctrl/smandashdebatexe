@@ -627,7 +627,8 @@ function FrameLimiter({ fpsCap }: { fpsCap: number }) {
   useEffect(() => {
     if (!fpsCap) return;
     const interval = 1000 / fpsCap;
-    const id = window.setInterval(() => invalidate(), interval);
+    // Jeda render saat tab tidak aktif → hemat baterai & CPU.
+    const id = window.setInterval(() => { if (!document.hidden) invalidate(); }, interval);
     return () => window.clearInterval(id);
   }, [fpsCap, invalidate]);
   return null;

@@ -17,6 +17,16 @@ const constellationImg = whirlpoolAsset.url;
 const stageImg = sombreroAsset.url;
 const controlImg = mocrAsset.url;
 const lexiconImg = hubbleAsset.url;
+import dprAsset from "@/assets/lobby/dpr-paripurna.jpg.asset.json";
+import unriAsset from "@/assets/events/unri-campus.jpg.asset.json";
+import bpAsset from "@/assets/events/bp-debate.jpg.asset.json";
+const EVENT_COVER: Record<string, string> = {
+  dpr: dprAsset.url,
+  unri: unriAsset.url,
+  bp: bpAsset.url,
+};
+/** Mosi yang direkomendasikan tampil di lobby. */
+const REKOMENDASI_MOSI = ["m042", "m216", "m250", "m025"];
 import { HeroSlider, buildSlides } from "./HeroSlider";
 
 
@@ -412,19 +422,63 @@ export function MissionControl({ onInitiate }: { onInitiate: () => void }) {
         </div>
       </section>
 
+      {/* ── REKOMENDASI MOSI ── */}
+      <section style={{ padding: `78px ${PAD}`, background: C.bg, borderTop: `1px solid ${C.lineSoft}` }}>
+        <Reveal>
+          <SectionHead kicker="Pilihan kurator" title="Rekomendasi Mosi Menarik"
+            right={<GhostButton onClick={() => go(() => select("cluster:motion"))}>Bank mosi</GhostButton>} />
+        </Reveal>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px,1fr))", gap: 1, background: C.lineSoft, border: `1px solid ${C.lineSoft}` }}>
+          {REKOMENDASI_MOSI.map((id) => MOTIONS.find((m: any) => m.id === id)).filter(Boolean).map((m: any) => {
+            const a = analyzeMotion(m);
+            return (
+              <button key={m.id} onClick={() => go(() => select(`motion:${m.id}`))}
+                style={{ background: C.bg2, padding: "24px 22px", textAlign: "left", border: "none", cursor: "pointer", color: C.text, display: "block" }}>
+                <div style={{ fontFamily: MONO, fontSize: 10, letterSpacing: "0.22em", color: C.accent, textTransform: "uppercase" }}>{String(m.cat ?? "mosi")}</div>
+                <div style={{ marginTop: 12, fontSize: 15, fontWeight: 500, lineHeight: 1.45 }}>{m.title}</div>
+                <div style={{ marginTop: 14, display: "flex", height: 4, background: "rgba(255,255,255,0.08)" }}>
+                  <div style={{ width: `${a.winProProb}%`, background: C.accent2 }} />
+                  <div style={{ width: `${100 - a.winProProb}%`, background: C.danger }} />
+                </div>
+                <div style={{ marginTop: 8, fontFamily: MONO, fontSize: 10, letterSpacing: "0.14em", color: C.faint }}>
+                  PRO {a.winProProb}% · KON {100 - a.winProProb}% · {a.stance}
+                </div>
+              </button>
+            );
+          })}
+        </div>
+      </section>
+
       {/* ── EVENTS ── */}
       <section style={{ padding: `78px ${PAD}`, background: C.bg2, borderTop: `1px solid ${C.lineSoft}` }}>
         <Reveal>
           <SectionHead kicker="Arsip kompetisi" title="Event Pilihan"
             right={<GhostButton onClick={() => go(() => select("cluster:event"))}>Semua event</GhostButton>} />
         </Reveal>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px,1fr))", gap: 12 }}>
-          {EVENTS.slice(0, 4).map((ev, i) => (
-            <Reveal key={ev.id} delay={i * 60}>
-              <ImageCard img={[controlImg, stageImg, constellationImg, nebulaImg][i % 4]} tag="Event" title={ev.nama}
-                meta={`${ev.brackets?.length ?? 0} bracket`} desc={ev.desc} onClick={() => go(() => select(`event:${ev.id}`))} short />
-            </Reveal>
-          ))}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px,1fr))", gap: 12 }}>
+          {EVENTS.slice(0, 4).map((ev: any, i) => {
+            const rosterCount = (ev.roster ?? []).reduce((n: number, t: any) => n + (t.anggota?.length ?? 0), 0);
+            const meta = [ev.tanggal, ev.sistem].filter(Boolean).join(" · ")
+              || `${ev.brackets?.length ?? 0} bracket`;
+            return (
+              <Reveal key={ev.id} delay={i * 60}>
+                <ImageCard
+                  img={EVENT_COVER[ev.cover] ?? [controlImg, stageImg, constellationImg, nebulaImg][i % 4]}
+                  tag={ev.status === "selesai" ? "Selesai" : ev.status === "berjalan" ? "Berjalan" : "Mendatang"}
+                  title={ev.nama}
+                  meta={meta}
+                  desc={ev.desc}
+                  onClick={() => go(() => select(`event:${ev.id}`))}
+                  short
+                />
+                <div style={{ marginTop: 8, fontFamily: MONO, fontSize: 10, letterSpacing: "0.16em", color: C.faint, textTransform: "uppercase" }}>
+                  {ev.penyelenggara ? `${ev.penyelenggara}` : ""}
+                  {rosterCount ? ` · ${rosterCount} pembicara` : ""}
+                  {ev.brackets?.length ? ` · ${ev.brackets.length} bracket` : ""}
+                </div>
+              </Reveal>
+            );
+          })}
         </div>
       </section>
 
