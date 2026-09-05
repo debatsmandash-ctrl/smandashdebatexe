@@ -120,11 +120,17 @@ function fbm3(x: number, y: number, z: number) {
  *  • VOID: knot dijaga berjarak sehingga ada rongga nyata di antaranya.
  * Titik pertama selalu paling dekat inti knot utama (dipakai untuk node penting).
  */
-function placeCloud(center: V3, radius: number, count: number, minSep?: number): V3[] {
+/** Pengali sebaran global: gugus → subgugus → daun dibuat lebih lega. */
+const SPREAD = 2.35;
+
+function placeCloud(center: V3, radiusIn: number, count: number, minSepIn?: number): V3[] {
   if (count === 0) return [];
+  const radius = radiusIn * SPREAD;
+  const minSep = minSepIn == null ? undefined : minSepIn * SPREAD;
   const seed = center[0] * 0.731 + center[1] * 1.319 + center[2] * 0.517;
   const { u, v, w } = discBasis(center, seed);
   const r0 = mulberry32(Math.abs(Math.round(seed * 1e4)) + 104729);
+
   const toWorld = (a: number, b: number, c: number): V3 => [
     u[0] * a + w[0] * b + v[0] * c,
     u[1] * a + w[1] * b + v[1] * c,
