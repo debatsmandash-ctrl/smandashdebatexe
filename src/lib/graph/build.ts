@@ -272,11 +272,15 @@ function placeBranch(center: V3, hubCenter: V3, count: number, distMin: number, 
       out[1]*forwardWeight + u[1]*sideU + v[1]*sideV,
       out[2]*forwardWeight + u[2]*sideU + v[2]*sideV,
     ]);
-    const r = distMin + rand() * (distMax - distMin);
+    // 20% cabang tetap dekat induknya, sisanya melebar jauh & acak
+    const near = rand() < 0.2;
+    const stretch = near ? 1.0 + rand() * 0.35 : SPREAD * (0.85 + rand() * 1.15);
+    const r = (distMin + rand() * (distMax - distMin)) * stretch;
     pts.push(add(center, scale(dir, r)));
   }
   // local repulsion pass to keep leaves from clumping
-  const minSep = Math.max(2.2, (distMin + distMax) * 0.18);
+  const minSep = Math.max(2.6, (distMin + distMax) * 0.18 * SPREAD * 0.8);
+
   for (let iter = 0; iter < 3; iter++) {
     for (let i = 0; i < pts.length; i++) {
       for (let j = i + 1; j < pts.length; j++) {
