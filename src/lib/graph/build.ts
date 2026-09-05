@@ -929,7 +929,7 @@ export function buildGraph(): Graph {
 
   // ─── Cross-cluster collision push: jaga buffer >= 8 antara leaf cluster berbeda ───
   {
-    const BUFFER = 6;
+    const BUFFER = 9;
     // only push small leaves (size < 0.2)
     const movable = nodes.filter((n) => n.kind !== "root" && n.kind !== "cluster" && n.kind !== "subhub");
     for (let iter = 0; iter < 2; iter++) {
