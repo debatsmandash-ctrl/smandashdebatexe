@@ -29,6 +29,8 @@ export type MatterData = Record<string, MatterDomain>;
 
 export interface Motion {
   id: string;
+  /** kode sumber/batch, mis. "mf001" — tampil berdampingan dengan id vault */
+  kode?: string;
   title: string;
   orig?: string;
   cat: string;
@@ -53,11 +55,12 @@ export interface Motion {
 }
 
 export interface MotionPoint {
-  tier: "S" | "A" | "B" | "C";
+  tier: "S" | "A" | "B" | "C" | "N";
   text: string;
   strength: number;
   risk: number;
 }
+
 
 export interface JenisMosi {
   id: string;
