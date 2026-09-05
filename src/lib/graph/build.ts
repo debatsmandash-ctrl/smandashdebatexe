@@ -330,17 +330,32 @@ export function buildGraph(): Graph {
   };
   const maxW = Math.max(1, ...Object.values(CLUSTER_WEIGHT));
 
+  // Pusat semesta: sengaja digeser dari titik nol supaya komposisi tidak simetris.
+  const ROOT_POS: V3 = [-26, 14, 19];
+  nodes.push({
+    id: "root", label: "DEBATE UNIVERSE", kind: "root", cluster: "root",
+    color: "#e8f4ff", size: 1, pos: ROOT_POS, importance: 1, pulse: true,
+  });
+
   {
     const rc = mulberry32(90210);
     const dirs = fibDirections(CLUSTERS.length, 0.85);
     const placed: V3[] = [];
+    // 20% gugus relatif dekat, sisanya jauh & acak
+    const nearSet = new Set<number>();
+    {
+      const nNear = Math.max(1, Math.round(CLUSTERS.length * 0.2));
+      const order = CLUSTERS.map((_, i) => i).sort((a, b) => (a * 2654435761 % 97) - (b * 2654435761 % 97));
+      order.slice(0, nNear).forEach((i) => nearSet.add(i));
+    }
     CLUSTERS.forEach((c, i) => {
       // bobot 0..1 (skala log supaya gugus raksasa tidak terlempar ekstrem)
       const w = Math.log2(1 + (CLUSTER_WEIGHT[c.key] ?? 8)) / Math.log2(1 + maxW);
-      // jarak: campuran bobot + acak deterministik
-      const base = 52 + w * 96;
-      const jitter = (rc() - 0.5) * 46;
-      let radius = Math.max(44, base + jitter);
+      const near = nearSet.has(i);
+      // jarak: pusat → gugus jauh; 20% gugus lebih dekat
+      const base = near ? 118 + w * 46 : 190 + w * 150;
+      const jitter = (rc() - 0.5) * (near ? 40 : 110);
+      let radius = Math.max(near ? 100 : 170, base + jitter);
 
       // arah acak-terdistribusi, lalu diputar sedikit agar tidak simetris
       let dir = normalize([
@@ -349,16 +364,17 @@ export function buildGraph(): Graph {
         dirs[i][2] + (rc() - 0.5) * 0.5,
       ]);
 
-      // jaga void: dorong keluar kalau terlalu dekat dengan gugus yang sudah ada
+      // jaga void: dorong keluar kalau terlalu dekat dengan gugus yang sudah ada,
+      // tapi batasi supaya void tidak jomplang
       for (let guard = 0; guard < 24; guard++) {
-        const cand = scale(dir, radius);
-        const tooClose = placed.some((p) => dist(p, cand) < 54);
+        const cand = add(ROOT_POS, scale(dir, radius));
+        const tooClose = placed.some((p) => dist(p, cand) < 108);
         if (!tooClose) break;
-        radius += 9;
+        radius += 12;
         dir = normalize([dir[0] + (rc() - 0.5) * 0.22, dir[1] + (rc() - 0.5) * 0.22, dir[2] + (rc() - 0.5) * 0.22]);
       }
 
-      const center = scale(dir, radius);
+      const center = add(ROOT_POS, scale(dir, radius));
       placed.push(center);
       clusterCenter[c.key] = center;
       colorOf[c.key] = c.color;
@@ -367,6 +383,7 @@ export function buildGraph(): Graph {
       edges.push({ a: "root", b: `cluster:${c.key}`, strength: "strong", color: c.color });
     });
   }
+
 
 
   // ─── STYLES (cluster → HALAL / HARAM sub-hubs → style nodes) ───
