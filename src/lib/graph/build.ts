@@ -120,11 +120,17 @@ function fbm3(x: number, y: number, z: number) {
  *  • VOID: knot dijaga berjarak sehingga ada rongga nyata di antaranya.
  * Titik pertama selalu paling dekat inti knot utama (dipakai untuk node penting).
  */
-function placeCloud(center: V3, radius: number, count: number, minSep?: number): V3[] {
+/** Pengali sebaran global: gugus → subgugus → daun dibuat lebih lega. */
+const SPREAD = 2.35;
+
+function placeCloud(center: V3, radiusIn: number, count: number, minSepIn?: number): V3[] {
   if (count === 0) return [];
+  const radius = radiusIn * SPREAD;
+  const minSep = minSepIn == null ? undefined : minSepIn * SPREAD;
   const seed = center[0] * 0.731 + center[1] * 1.319 + center[2] * 0.517;
   const { u, v, w } = discBasis(center, seed);
   const r0 = mulberry32(Math.abs(Math.round(seed * 1e4)) + 104729);
+
   const toWorld = (a: number, b: number, c: number): V3 => [
     u[0] * a + w[0] * b + v[0] * c,
     u[1] * a + w[1] * b + v[1] * c,
@@ -266,11 +272,15 @@ function placeBranch(center: V3, hubCenter: V3, count: number, distMin: number, 
       out[1]*forwardWeight + u[1]*sideU + v[1]*sideV,
       out[2]*forwardWeight + u[2]*sideU + v[2]*sideV,
     ]);
-    const r = distMin + rand() * (distMax - distMin);
+    // 20% cabang tetap dekat induknya, sisanya melebar jauh & acak
+    const near = rand() < 0.2;
+    const stretch = near ? 1.0 + rand() * 0.35 : SPREAD * (0.85 + rand() * 1.15);
+    const r = (distMin + rand() * (distMax - distMin)) * stretch;
     pts.push(add(center, scale(dir, r)));
   }
   // local repulsion pass to keep leaves from clumping
-  const minSep = Math.max(2.2, (distMin + distMax) * 0.18);
+  const minSep = Math.max(2.6, (distMin + distMax) * 0.18 * SPREAD * 0.8);
+
   for (let iter = 0; iter < 3; iter++) {
     for (let i = 0; i < pts.length; i++) {
       for (let j = i + 1; j < pts.length; j++) {
@@ -330,17 +340,32 @@ export function buildGraph(): Graph {
   };
   const maxW = Math.max(1, ...Object.values(CLUSTER_WEIGHT));
 
+  // Pusat semesta: sengaja digeser dari titik nol supaya komposisi tidak simetris.
+  const ROOT_POS: V3 = [-26, 14, 19];
+  nodes.push({
+    id: "root", label: "DEBATE UNIVERSE", kind: "root", cluster: "root",
+    color: "#e8f4ff", size: 1, pos: ROOT_POS, importance: 1, pulse: true,
+  });
+
   {
     const rc = mulberry32(90210);
     const dirs = fibDirections(CLUSTERS.length, 0.85);
     const placed: V3[] = [];
+    // 20% gugus relatif dekat, sisanya jauh & acak
+    const nearSet = new Set<number>();
+    {
+      const nNear = Math.max(1, Math.round(CLUSTERS.length * 0.2));
+      const order = CLUSTERS.map((_, i) => i).sort((a, b) => (a * 2654435761 % 97) - (b * 2654435761 % 97));
+      order.slice(0, nNear).forEach((i) => nearSet.add(i));
+    }
     CLUSTERS.forEach((c, i) => {
       // bobot 0..1 (skala log supaya gugus raksasa tidak terlempar ekstrem)
       const w = Math.log2(1 + (CLUSTER_WEIGHT[c.key] ?? 8)) / Math.log2(1 + maxW);
-      // jarak: campuran bobot + acak deterministik
-      const base = 52 + w * 96;
-      const jitter = (rc() - 0.5) * 46;
-      let radius = Math.max(44, base + jitter);
+      const near = nearSet.has(i);
+      // jarak: pusat → gugus jauh; 20% gugus lebih dekat
+      const base = near ? 118 + w * 46 : 190 + w * 150;
+      const jitter = (rc() - 0.5) * (near ? 40 : 110);
+      let radius = Math.max(near ? 100 : 170, base + jitter);
 
       // arah acak-terdistribusi, lalu diputar sedikit agar tidak simetris
       let dir = normalize([
@@ -349,16 +374,17 @@ export function buildGraph(): Graph {
         dirs[i][2] + (rc() - 0.5) * 0.5,
       ]);
 
-      // jaga void: dorong keluar kalau terlalu dekat dengan gugus yang sudah ada
+      // jaga void: dorong keluar kalau terlalu dekat dengan gugus yang sudah ada,
+      // tapi batasi supaya void tidak jomplang
       for (let guard = 0; guard < 24; guard++) {
-        const cand = scale(dir, radius);
-        const tooClose = placed.some((p) => dist(p, cand) < 54);
+        const cand = add(ROOT_POS, scale(dir, radius));
+        const tooClose = placed.some((p) => dist(p, cand) < 108);
         if (!tooClose) break;
-        radius += 9;
+        radius += 12;
         dir = normalize([dir[0] + (rc() - 0.5) * 0.22, dir[1] + (rc() - 0.5) * 0.22, dir[2] + (rc() - 0.5) * 0.22]);
       }
 
-      const center = scale(dir, radius);
+      const center = add(ROOT_POS, scale(dir, radius));
       placed.push(center);
       clusterCenter[c.key] = center;
       colorOf[c.key] = c.color;
@@ -367,6 +393,7 @@ export function buildGraph(): Graph {
       edges.push({ a: "root", b: `cluster:${c.key}`, strength: "strong", color: c.color });
     });
   }
+
 
 
   // ─── STYLES (cluster → HALAL / HARAM sub-hubs → style nodes) ───
@@ -650,7 +677,7 @@ export function buildGraph(): Graph {
     const kamusPalette = ["#38bdf8","#7dd3fc","#22d3ee","#06b6d4","#67e8f9","#a78bfa","#c084fc","#34d399","#5eead4","#fbbf24","#fb7185","#f472b6","#fdba74","#facc15","#86efac","#60a5fa","#ff8ad6","#ff5cf0","#a855f7","#8b5cf6","#fb923c","#94a3b8","#e8f4ff","#ffffff","#22c55e","#ef4444"];
     letters.forEach((L, li) => {
       const arr = byLetter[L];
-      const letterCenter = add(kamusCenter, scale(letterDirs[li], 18));
+      const letterCenter = add(kamusCenter, scale(letterDirs[li], 18 * SPREAD * (0.8 + (li % 5) * 0.14)));
       const letterId = `kamus:letter:${L}`;
       const letterColor = kamusPalette[li % kamusPalette.length];
       nodes.push({ id: letterId, label: L, kind: "letter", cluster: "kamus", color: letterColor, size: 0.22, pos: letterCenter, refId: L, importance: 0.55 });
@@ -902,7 +929,7 @@ export function buildGraph(): Graph {
 
   // ─── Cross-cluster collision push: jaga buffer >= 8 antara leaf cluster berbeda ───
   {
-    const BUFFER = 6;
+    const BUFFER = 9;
     // only push small leaves (size < 0.2)
     const movable = nodes.filter((n) => n.kind !== "root" && n.kind !== "cluster" && n.kind !== "subhub");
     for (let iter = 0; iter < 2; iter++) {
