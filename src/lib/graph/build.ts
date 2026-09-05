@@ -677,7 +677,7 @@ export function buildGraph(): Graph {
     const kamusPalette = ["#38bdf8","#7dd3fc","#22d3ee","#06b6d4","#67e8f9","#a78bfa","#c084fc","#34d399","#5eead4","#fbbf24","#fb7185","#f472b6","#fdba74","#facc15","#86efac","#60a5fa","#ff8ad6","#ff5cf0","#a855f7","#8b5cf6","#fb923c","#94a3b8","#e8f4ff","#ffffff","#22c55e","#ef4444"];
     letters.forEach((L, li) => {
       const arr = byLetter[L];
-      const letterCenter = add(kamusCenter, scale(letterDirs[li], 18));
+      const letterCenter = add(kamusCenter, scale(letterDirs[li], 18 * SPREAD * (0.8 + (li % 5) * 0.14)));
       const letterId = `kamus:letter:${L}`;
       const letterColor = kamusPalette[li % kamusPalette.length];
       nodes.push({ id: letterId, label: L, kind: "letter", cluster: "kamus", color: letterColor, size: 0.22, pos: letterCenter, refId: L, importance: 0.55 });
