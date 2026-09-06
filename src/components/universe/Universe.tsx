@@ -456,7 +456,7 @@ function CameraController({ targetId, profile, autoRotate, autoRotateSpeed, damp
       zoomSpeed={0.8 * sens.zoom}
       rotateSpeed={profile.rotateSpeed * sens.rotate}
       panSpeed={0.7 * sens.pan}
-      maxDistance={900}
+      maxDistance={1800}
       minDistance={3}
       autoRotate={autoRotate && !interacting && !targetId}
       autoRotateSpeed={autoRotateSpeed}
@@ -687,7 +687,7 @@ export function Universe() {
   return (
     <>
     <Canvas
-      camera={{ position: [0, 60, 360], fov: 58, near: 0.1, far: 2400 }}
+      camera={{ position: [-40, 120, 720], fov: 58, near: 0.1, far: 5200 }}
       dpr={profile.dpr}
       frameloop={fpsCap ? "demand" : "always"}
       gl={{
