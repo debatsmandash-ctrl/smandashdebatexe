@@ -654,6 +654,9 @@ function MotionPanel({ refId }: { refId: string }) {
       <div style={{ display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center" }}>
         <Chip color="var(--au-cyan)">{m.cat}</Chip>
         <Chip color="var(--au-purple)">{m.type}</Chip>
+        <Chip color="#94a3b8">{m.id.toUpperCase()}</Chip>
+        {m.kode && <Chip color="#fde047">KODE {m.kode.toUpperCase()}</Chip>}
+
         <Chip color={stanceColor}>◈ {analysis.stance}</Chip>
         {(m as any).typeAll?.slice(1).map((t: string) => <Chip key={t} color="var(--au-gold)">+{t}</Chip>)}
       </div>
