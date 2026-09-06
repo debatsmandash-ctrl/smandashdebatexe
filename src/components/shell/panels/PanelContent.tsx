@@ -405,24 +405,68 @@ function RoleSkillPanel({ refId }: { refId: string }) {
 
 function MatterDomainPanel({ refId }: { refId: string }) {
   const d = MATTER[refId];
+  const select = useUniverse((s) => s.select);
+  const [q, setQ] = useState("");
   if (!d) return null;
+  const totalSub = d.babs.reduce((s, b) => s + (b.subbabs?.length ?? 0), 0);
+  const needle = q.trim().toLowerCase();
+  const babs = d.babs.filter((b) =>
+    !needle || b.title.toLowerCase().includes(needle) ||
+    (b.subbabs || []).some((sb) => sb.title.toLowerCase().includes(needle)),
+  );
+  const accent = "#22d3ee";
   return (
-    <div>
-      <div style={{ ...muted, color: "var(--au-cyan)" }}>{d.icon} {d.label}</div>
-      <p style={{ ...para, marginTop: 12 }}>{d.desc}</p>
-      <h3 style={heading}>{d.babs.length} Bab</h3>
-      {d.babs.map((b) => (
-        <div key={b.id} style={{ borderLeft: "2px solid var(--au-cyan)", paddingLeft: 14, marginBottom: 14 }}>
-          <div style={{ fontFamily: "DM Sans", fontSize: 13, color: "var(--au-text)", fontWeight: 600 }}>
-            {b.num}. {b.title}
+    <div lang="id">
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(12, 1fr)", gap: 10 }}>
+        <BentoCard accent={accent} title={`${d.icon} ${d.label}`} span={12}>
+          <p style={para}>{d.desc}</p>
+          <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
+            {[["BAB", d.babs.length], ["SUB-BAB", totalSub], ["RATA-RATA", Math.round(totalSub / Math.max(1, d.babs.length))]].map(([l, v]) => (
+              <div key={String(l)} style={{ flex: 1, padding: "8px 10px", border: `1px solid ${accent}33`, borderRadius: 4, background: "rgba(255,255,255,0.02)" }}>
+                <div style={{ ...muted, fontSize: 8 }}>{l}</div>
+                <div style={{ fontFamily: "Bebas Neue", fontSize: 26, lineHeight: 1, color: accent }}>{v as number}</div>
+              </div>
+            ))}
           </div>
-          {b.meta && <div style={{ ...muted, fontSize: 9, marginTop: 3 }}>{b.meta}</div>}
-          <div style={{ ...muted, fontSize: 9, marginTop: 5, color: "var(--au-muted)" }}>{b.subbabs.length} sub-bab</div>
-        </div>
-      ))}
+        </BentoCard>
+
+        <BentoCard accent="#fde047" title="Cari Bab / Sub-bab" span={12}>
+          <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Ketik kata kunci materi…"
+            style={{ width: "100%", padding: "9px 12px", borderRadius: 4, background: "rgba(255,255,255,0.04)", border: "1px solid rgba(148,163,184,0.25)", color: "var(--au-text)", fontFamily: "DM Sans", fontSize: 13, outline: "none" }} />
+          <div style={{ ...muted, fontSize: 9, marginTop: 8 }}>{babs.length} bab cocok</div>
+        </BentoCard>
+
+        {babs.map((b) => (
+          <BentoCard key={b.id} accent={accent} title={`BAB ${b.num}`} span={12}>
+            <button onClick={() => select(`matter:${refId}:${b.id}`)} style={{
+              background: "transparent", border: "none", padding: 0, cursor: "pointer", textAlign: "left",
+              fontFamily: "Bebas Neue", fontSize: 19, letterSpacing: "0.06em", color: "var(--au-text)",
+            }}>{b.title}</button>
+            {b.meta && <div style={{ ...muted, fontSize: 9, marginTop: 4 }}>{b.meta}</div>}
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 7, marginTop: 10 }}>
+              {(b.subbabs || []).map((sb) => (
+                <button key={sb.id} onClick={() => select(`matter:${refId}:${b.id}:${sb.id}`)} style={{
+                  textAlign: "left", padding: "8px 10px", borderRadius: 3, cursor: "pointer",
+                  background: `${accent}0d`, border: `1px solid ${accent}30`, color: "var(--au-text)",
+                  fontFamily: "DM Sans", fontSize: 12,
+                }}>
+                  <div style={{ ...muted, fontSize: 8, color: accent }}>{sb.num}{sb.badge ? ` · ${sb.badge}` : ""}</div>
+                  <div style={{ marginTop: 3 }}>{sb.title}</div>
+                  {sb.penjelasan?.[0] && (
+                    <div style={{ ...para, fontSize: 11.5, marginTop: 5, color: "var(--au-muted)", display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
+                      {sb.penjelasan[0]}
+                    </div>
+                  )}
+                </button>
+              ))}
+            </div>
+          </BentoCard>
+        ))}
+      </div>
     </div>
   );
 }
+
 
 function MatterBabPanel({ refId }: { refId: string }) {
   const [dk, babId] = refId.split("/");
