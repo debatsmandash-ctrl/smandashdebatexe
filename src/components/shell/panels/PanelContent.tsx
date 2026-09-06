@@ -859,35 +859,122 @@ function MotionPanel({ refId }: { refId: string }) {
   );
 }
 
+const TYPE_TO_JENIS: Record<string, string> = {
+  kebijakan: "jm1", pandangan: "jm2", aktor: "jm3", penyesalan: "jm4",
+  prediksi: "jm5", dukungan: "jm6", memilih: "jm7", harapan: "jm2",
+  kelembagaan: "jm1", sosial: "jm2", kausalitas: "jm5",
+};
+const jenisIdsOfType = (type?: string): string[] => {
+  const ids: string[] = [];
+  for (const p of String(type ?? "").split("-")) {
+    const j = TYPE_TO_JENIS[p.trim()];
+    if (j && !ids.includes(j)) ids.push(j);
+  }
+  return ids.length ? ids : ["jm1"];
+};
+
 function JenisPanel({ refId }: { refId: string }) {
   const j = JENIS_MOSI.find((x) => x.id === refId);
+  const select = useUniverse((s) => s.select);
+  const [q, setQ] = useState("");
+  const mine = useMemo(() => MOTIONS.filter((m) => jenisIdsOfType(m.type).includes(refId)), [refId]);
+  const byCat = useMemo(() => {
+    const c: Record<string, number> = {};
+    for (const m of mine) c[m.cat] = (c[m.cat] ?? 0) + 1;
+    return Object.entries(c).sort((a, b) => b[1] - a[1]);
+  }, [mine]);
   if (!j) return null;
+  const accent = j.warna;
+  const needle = q.trim().toLowerCase();
+  const list = mine.filter((m) => !needle || m.title.toLowerCase().includes(needle) || (m.kode ?? "").includes(needle) || m.id.includes(needle));
+  const maxCat = Math.max(1, ...byCat.map((c) => c[1]));
+  const share = Math.round((mine.length / Math.max(1, MOTIONS.length)) * 100);
   return (
-    <div>
-      <div style={{ ...muted, color: j.warna }}>{j.icon} {j.prefix}</div>
-      <p style={{ ...para, marginTop: 12 }}>{j.definisi}</p>
-      <div style={{ background: "rgba(0,214,143,0.05)", border: "1px solid rgba(0,214,143,0.2)", padding: "10px 14px", marginTop: 12, borderRadius: 4 }}>
-        <span style={{ color: "var(--au-cyan)", fontSize: 12 }}>⚡ Kunci: </span>
-        <span style={para}>{j.penting}</span>
-      </div>
-      <h3 style={heading}>Tim Pro / Gov</h3>
-      {j.pro.map((p, i) => <p key={i} style={{ ...para, marginBottom: 4 }}>→ {p}</p>)}
-      <h3 style={heading}>Tim Kontra / Opp</h3>
-      {j.kon.map((p, i) => <p key={i} style={{ ...para, marginBottom: 4 }}>→ {p}</p>)}
-      {j.contoh && j.contoh.length > 0 && (
-        <>
-          <h3 style={heading}>Contoh Mosi</h3>
-          {j.contoh.map((c, i) => (
-            <div key={i} style={{ borderLeft: `3px solid ${j.warna}`, paddingLeft: 12, marginBottom: 10 }}>
-              <div style={{ fontFamily: "DM Sans", fontSize: 13, color: "var(--au-text)", fontWeight: 600 }}>"{c.mosi}"</div>
-              <div style={{ ...muted, marginTop: 4 }}>{c.konteks}</div>
+    <div lang="id">
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(12, 1fr)", gap: 10 }}>
+        <BentoCard accent={accent} title={`${j.icon} ${j.nama}`} span={12}>
+          <div style={{ ...muted, color: accent }}>{j.prefix}</div>
+          <p style={{ ...para, marginTop: 10 }}><VocabText text={j.definisi} style={para} /></p>
+          <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
+            {[["MOSI", mine.length], ["PORSI BANK", `${share}%`], ["KATEGORI", byCat.length]].map(([l, v]) => (
+              <div key={String(l)} style={{ flex: 1, padding: "8px 10px", border: `1px solid ${accent}33`, borderRadius: 4, background: "rgba(255,255,255,0.02)" }}>
+                <div style={{ ...muted, fontSize: 8 }}>{l}</div>
+                <div style={{ fontFamily: "Bebas Neue", fontSize: 26, lineHeight: 1, color: accent }}>{v as any}</div>
+              </div>
+            ))}
+          </div>
+        </BentoCard>
+
+        <BentoCard accent="#00ffc8" title="Kunci Beban Pembuktian" span={12}>
+          <p style={para}>{j.penting}</p>
+        </BentoCard>
+
+        <BentoCard accent="#ff6b6b" title="Tim Pro / Gov" span={6}>
+          {j.pro.map((p, i) => (
+            <div key={i} style={{ display: "flex", gap: 7, marginBottom: 7 }}>
+              <span style={{ color: "#ff6b6b", fontFamily: "Space Mono", fontSize: 10 }}>{String(i + 1).padStart(2, "0")}</span>
+              <span style={{ ...para, fontSize: 12.5 }}>{p}</span>
             </div>
           ))}
-        </>
-      )}
+        </BentoCard>
+        <BentoCard accent="#38bdf8" title="Tim Kontra / Opp" span={6}>
+          {j.kon.map((p, i) => (
+            <div key={i} style={{ display: "flex", gap: 7, marginBottom: 7 }}>
+              <span style={{ color: "#38bdf8", fontFamily: "Space Mono", fontSize: 10 }}>{String(i + 1).padStart(2, "0")}</span>
+              <span style={{ ...para, fontSize: 12.5 }}>{p}</span>
+            </div>
+          ))}
+        </BentoCard>
+
+        {byCat.length > 0 && (
+          <BentoCard accent="#fde047" title="Sebaran Kategori" span={12}>
+            {byCat.slice(0, 10).map(([c, v]) => (
+              <div key={c} style={{ marginBottom: 7 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", fontFamily: "Space Mono", fontSize: 9, letterSpacing: "0.16em", color: "var(--au-dim)", textTransform: "uppercase" }}>
+                  <span>{c}</span><span>{v}</span>
+                </div>
+                <div style={{ height: 5, background: "rgba(255,255,255,0.06)", borderRadius: 999, marginTop: 3, overflow: "hidden" }}>
+                  <div style={{ width: `${(v / maxCat) * 100}%`, height: "100%", background: `linear-gradient(90deg, ${accent}, #fde047)` }} />
+                </div>
+              </div>
+            ))}
+          </BentoCard>
+        )}
+
+        {j.contoh && j.contoh.length > 0 && (
+          <BentoCard accent={accent} title="Contoh Mosi Rujukan" span={12}>
+            {j.contoh.map((c, i) => (
+              <div key={i} style={{ borderLeft: `3px solid ${accent}`, paddingLeft: 12, marginBottom: 10 }}>
+                <div style={{ fontFamily: "DM Sans", fontSize: 13, color: "var(--au-text)", fontWeight: 600 }}>"{c.mosi}"</div>
+                <div style={{ ...muted, marginTop: 4, textTransform: "none", letterSpacing: "0.02em" }}>{c.konteks}</div>
+              </div>
+            ))}
+          </BentoCard>
+        )}
+
+        <BentoCard accent="#a855f7" title={`Bank Mosi · ${mine.length}`} span={12}>
+          <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Cari mosi / kode (mis. mf012)…"
+            style={{ width: "100%", padding: "9px 12px", borderRadius: 4, background: "rgba(255,255,255,0.04)", border: "1px solid rgba(148,163,184,0.25)", color: "var(--au-text)", fontFamily: "DM Sans", fontSize: 13, outline: "none" }} />
+          <div style={{ marginTop: 10, maxHeight: 460, overflowY: "auto", display: "grid", gap: 7 }}>
+            {list.slice(0, 80).map((m) => (
+              <button key={m.id} onClick={() => select(`motion:${m.id}`)} style={{
+                textAlign: "left", padding: "9px 11px", borderRadius: 3, cursor: "pointer",
+                background: "rgba(255,255,255,0.02)", border: `1px solid ${accent}2e`, borderLeft: `2px solid ${accent}`,
+                color: "var(--au-text)", fontFamily: "DM Sans", fontSize: 12.5,
+              }}>
+                <div style={{ ...muted, fontSize: 8, color: accent }}>
+                  {m.id.toUpperCase()}{m.kode ? ` · ${m.kode.toUpperCase()}` : ""} · {m.cat} · {m.type}
+                </div>
+                <div style={{ marginTop: 4 }}>{m.title}</div>
+              </button>
+            ))}
+          </div>
+        </BentoCard>
+      </div>
     </div>
   );
 }
+
 
 function VocabPanel({ refId }: { refId: string }) {
   const v = VOCAB[parseInt(refId, 10)];
