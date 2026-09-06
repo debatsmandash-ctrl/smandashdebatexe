@@ -114,38 +114,129 @@ function NeighborList({ id }: { id: string }) {
 function ClusterPanel({ node }: { node: StarNode }) {
   const graph = useMemo(() => buildGraph(), []);
   const select = useUniverse((s) => s.select);
-  const children = graph.nodes.filter((n) => n.cluster === node.cluster && n.id !== node.id && !n.id.startsWith("cluster:"));
+  const [q, setQ] = useState("");
+  const [kindFilter, setKindFilter] = useState<string>("all");
+
+  const children = useMemo(
+    () => graph.nodes.filter((n) => n.cluster === node.cluster && n.id !== node.id && !n.id.startsWith("cluster:")),
+    [graph, node.cluster, node.id],
+  );
+
+  const kinds = useMemo(() => {
+    const c: Record<string, number> = {};
+    for (const n of children) c[n.kind] = (c[n.kind] ?? 0) + 1;
+    return Object.entries(c).sort((a, b) => b[1] - a[1]);
+  }, [children]);
+
+  const hubs = useMemo(
+    () => children.filter((n) => n.kind === "domain" || n.kind === "subhub" || n.kind === "letter" || n.kind === "school"),
+    [children],
+  );
+
+  const filtered = useMemo(() => {
+    const needle = q.trim().toLowerCase();
+    return children.filter((n) =>
+      (kindFilter === "all" || n.kind === kindFilter) &&
+      (!needle || n.label.toLowerCase().includes(needle)),
+    );
+  }, [children, q, kindFilter]);
+
+  const maxKind = Math.max(1, ...kinds.map((k) => k[1]));
+
   return (
-    <div>
-      <p style={para}>
-        Cluster <span style={{ color: node.color }}>{node.label}</span> berisi {children.length} bintang. Klik bintang di lobby atau dari daftar di bawah untuk membuka.
-      </p>
-      <div style={{ marginTop: 18, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-        {children.slice(0, 60).map((c) => (
-          <button
-            key={c.id}
-            onClick={() => select(c.id)}
+    <div lang="id">
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(12, 1fr)", gap: 10 }}>
+        <BentoCard accent={node.color} title="Ringkasan Gugus" span={12}>
+          <p style={para}>
+            Gugus <span style={{ color: node.color }}>{node.label}</span> memuat{" "}
+            <strong style={{ color: "var(--au-text)" }}>{children.length}</strong> bintang yang terbagi ke{" "}
+            {kinds.length} jenis simpul{hubs.length ? ` dengan ${hubs.length} cabang utama` : ""}. Gunakan pencarian
+            di bawah untuk melompat langsung ke materi yang dicari, atau telusuri lewat cabang utama.
+          </p>
+          <div style={{ display: "flex", gap: 8, marginTop: 12, flexWrap: "wrap" }}>
+            {[["BINTANG", children.length], ["CABANG", hubs.length || kinds.length], ["JENIS", kinds.length]].map(([l, v]) => (
+              <div key={String(l)} style={{ flex: "1 1 90px", padding: "8px 10px", border: `1px solid ${node.color}33`, borderRadius: 4, background: "rgba(255,255,255,0.02)" }}>
+                <div style={{ ...muted, fontSize: 8 }}>{l}</div>
+                <div style={{ fontFamily: "Bebas Neue", fontSize: 26, lineHeight: 1, color: node.color }}>{v as number}</div>
+              </div>
+            ))}
+          </div>
+        </BentoCard>
+
+        <BentoCard accent="#38bdf8" title="Komposisi Isi" span={12}>
+          {kinds.map(([k, v]) => (
+            <div key={k} style={{ marginBottom: 7 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", fontFamily: "Space Mono", fontSize: 9, letterSpacing: "0.16em", color: "var(--au-dim)", textTransform: "uppercase" }}>
+                <span>{k}</span><span>{v} · {Math.round((v / children.length) * 100)}%</span>
+              </div>
+              <div style={{ height: 5, background: "rgba(255,255,255,0.06)", borderRadius: 999, marginTop: 3, overflow: "hidden" }}>
+                <div style={{ width: `${(v / maxKind) * 100}%`, height: "100%", background: `linear-gradient(90deg, ${node.color}, #38bdf8)` }} />
+              </div>
+            </div>
+          ))}
+        </BentoCard>
+
+        {hubs.length > 0 && (
+          <BentoCard accent={node.color} title="Cabang Utama" span={12}>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+              {hubs.map((h) => {
+                const kids = (graph.neighbors.get(h.id) || []).length;
+                return (
+                  <button key={h.id} onClick={() => select(h.id)} style={{
+                    textAlign: "left", padding: "9px 11px", cursor: "pointer", borderRadius: 4,
+                    background: `${h.color}0d`, border: `1px solid ${h.color}40`, color: "var(--au-text)",
+                    fontFamily: "DM Sans", fontSize: 12.5,
+                  }}>
+                    <div style={{ ...muted, fontSize: 8, color: h.color }}>{h.kind} · {kids} tautan</div>
+                    <div style={{ marginTop: 3 }}>{h.label}</div>
+                  </button>
+                );
+              })}
+            </div>
+          </BentoCard>
+        )}
+
+        <BentoCard accent="#fde047" title="Cari di Gugus Ini" span={12}>
+          <input
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder={`Cari di ${children.length} bintang…`}
             style={{
-              textAlign: "left",
-              padding: "10px 12px",
-              background: "rgba(255,255,255,0.02)",
-              border: `1px solid ${c.color}33`,
-              borderLeft: `2px solid ${c.color}`,
-              color: "var(--au-text)",
-              fontFamily: "DM Sans",
-              fontSize: 12,
-              cursor: "pointer",
-              borderRadius: 3,
+              width: "100%", padding: "9px 12px", borderRadius: 4,
+              background: "rgba(255,255,255,0.04)", border: "1px solid rgba(148,163,184,0.25)",
+              color: "var(--au-text)", fontFamily: "DM Sans", fontSize: 13, outline: "none",
             }}
-          >
-            <div style={{ ...muted, color: c.color, fontSize: 8 }}>{c.kind}</div>
-            <div style={{ marginTop: 4 }}>{c.label}</div>
-          </button>
-        ))}
+          />
+          <div style={{ display: "flex", gap: 5, flexWrap: "wrap", marginTop: 10 }}>
+            {(["all", ...kinds.map((k) => k[0])] as string[]).map((k) => (
+              <button key={k} onClick={() => setKindFilter(k)} style={{
+                padding: "3px 9px", borderRadius: 3, cursor: "pointer",
+                fontFamily: "Space Mono", fontSize: 9, letterSpacing: "0.16em", textTransform: "uppercase",
+                background: kindFilter === k ? `${node.color}22` : "transparent",
+                border: `1px solid ${kindFilter === k ? node.color : "rgba(148,163,184,0.25)"}`,
+                color: kindFilter === k ? node.color : "var(--au-muted)",
+              }}>{k === "all" ? "semua" : k}</button>
+            ))}
+          </div>
+          <div style={{ ...muted, fontSize: 9, marginTop: 10 }}>{filtered.length} hasil</div>
+          <div style={{ marginTop: 8, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, maxHeight: 420, overflowY: "auto" }}>
+            {filtered.slice(0, 120).map((c) => (
+              <button key={c.id} onClick={() => select(c.id)} style={{
+                textAlign: "left", padding: "9px 11px", background: "rgba(255,255,255,0.02)",
+                border: `1px solid ${c.color}2e`, borderLeft: `2px solid ${c.color}`,
+                color: "var(--au-text)", fontFamily: "DM Sans", fontSize: 12, cursor: "pointer", borderRadius: 3,
+              }}>
+                <div style={{ ...muted, color: c.color, fontSize: 8 }}>{c.kind}</div>
+                <div style={{ marginTop: 4 }}>{c.label}</div>
+              </button>
+            ))}
+          </div>
+        </BentoCard>
       </div>
     </div>
   );
 }
+
 
 function StylePanel({ refId }: { refId: string }) {
   const s = STYLES.find((x) => x.id === refId);
