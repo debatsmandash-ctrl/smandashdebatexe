@@ -387,14 +387,18 @@ export function buildGraph(): Graph {
       const order = CLUSTERS.map((_, i) => i).sort((a, b) => (a * 2654435761 % 97) - (b * 2654435761 % 97));
       order.slice(0, nNear).forEach((i) => nearSet.add(i));
     }
+    // gugus raksasa (mosi, kamus, matter) wajib berjauhan satu sama lain
+    const BIG = new Set(["motion", "kamus", "matter"]);
+    const placedBig: V3[] = [];
     CLUSTERS.forEach((c, i) => {
       // bobot 0..1 (skala log supaya gugus raksasa tidak terlempar ekstrem)
       const w = Math.log2(1 + (CLUSTER_WEIGHT[c.key] ?? 8)) / Math.log2(1 + maxW);
       const near = nearSet.has(i);
-      // jarak: pusat → gugus jauh; 20% gugus lebih dekat
-      const base = near ? 118 + w * 46 : 190 + w * 150;
-      const jitter = (rc() - 0.5) * (near ? 40 : 110);
-      let radius = Math.max(near ? 100 : 170, base + jitter);
+      const big = BIG.has(c.key);
+      // jarak: pusat → gugus jauh; 20% gugus lebih dekat; gugus raksasa didorong keluar
+      const base = near ? 128 + w * 60 : 235 + w * 215;
+      const jitter = (rc() - 0.5) * (near ? 50 : 150);
+      let radius = Math.max(near ? 110 : 205, base + jitter) * (big ? 1.25 : 1);
 
       // arah acak-terdistribusi, lalu diputar sedikit agar tidak simetris
       let dir = normalize([
@@ -405,22 +409,28 @@ export function buildGraph(): Graph {
 
       // jaga void: dorong keluar kalau terlalu dekat dengan gugus yang sudah ada,
       // tapi batasi supaya void tidak jomplang
-      for (let guard = 0; guard < 24; guard++) {
+      const GAP = 165;
+      const BIG_GAP = 430; // mosi ↔ kamus ↔ matter tidak boleh berdempetan
+      for (let guard = 0; guard < 48; guard++) {
         const cand = add(ROOT_POS, scale(dir, radius));
-        const tooClose = placed.some((p) => dist(p, cand) < 108);
+        const tooClose =
+          placed.some((p) => dist(p, cand) < GAP) ||
+          (big && placedBig.some((p) => dist(p, cand) < BIG_GAP));
         if (!tooClose) break;
-        radius += 12;
+        radius += 18;
         dir = normalize([dir[0] + (rc() - 0.5) * 0.22, dir[1] + (rc() - 0.5) * 0.22, dir[2] + (rc() - 0.5) * 0.22]);
       }
 
       const center = add(ROOT_POS, scale(dir, radius));
       placed.push(center);
+      if (big) placedBig.push(center);
       clusterCenter[c.key] = center;
       colorOf[c.key] = c.color;
       nodes.push({ id: `cluster:${c.key}`, label: c.label, kind: "cluster", cluster: c.key, color: c.color, size: 0.7, pos: center });
       // tautan root → gugus dikembalikan; panjangnya bervariasi mengikuti radius
       edges.push({ a: "root", b: `cluster:${c.key}`, strength: "strong", color: c.color });
     });
+
   }
 
 
