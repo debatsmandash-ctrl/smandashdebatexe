@@ -648,7 +648,7 @@ export function buildGraph(): Graph {
   {
     const motionCenter = clusterCenter.motion;
     // 1) Sub-hub per Jenis Mosi sebagai cabang Motion Bank — lebih rapat
-    const jenisPositions = placeCloud(motionCenter, 22, JENIS_MOSI.length, 9);
+    const jenisPositions = varyRadial(motionCenter, placeCloud(motionCenter, 30, JENIS_MOSI.length, 11), 7703, 30 * SPREAD * 0.5, 0.6, 2.0);
     const JENIS_NEON = ["#ff3d8b", "#ff8b3d", "#ffd53d", "#ff5fb3", "#ffb13d", "#ffe066", "#ff6b6b"];
     JENIS_MOSI.forEach((j, i) => {
       const id = `jenis:${j.id}`;
