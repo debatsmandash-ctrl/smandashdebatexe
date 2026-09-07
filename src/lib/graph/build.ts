@@ -121,7 +121,36 @@ function fbm3(x: number, y: number, z: number) {
  * Titik pertama selalu paling dekat inti knot utama (dipakai untuk node penting).
  */
 /** Pengali sebaran global: gugus → subgugus → daun dibuat lebih lega. */
-const SPREAD = 2.35;
+const SPREAD = 3.05;
+
+/**
+ * Variasikan jarak subgugus dari pusatnya: sebagian dekat, sebagian jauh,
+ * lalu dorong supaya tidak ada dua subgugus yang berjarak sama/menempel.
+ */
+function varyRadial(center: V3, pts: V3[], seedKey: number, minSep: number, lo = 0.62, hi = 1.85): V3[] {
+  const rr = mulberry32(Math.abs(Math.round(seedKey * 1e3)) + 7919);
+  const out = pts.map((p) => {
+    const d = sub(p, center);
+    const len = Math.hypot(d[0], d[1], d[2]) || 1;
+    const f = lo + rr() * (hi - lo);
+    return add(center, scale(scale(d, 1 / len), len * f));
+  });
+  for (let it = 0; it < 8; it++) {
+    for (let i = 0; i < out.length; i++) {
+      for (let j = i + 1; j < out.length; j++) {
+        const d = dist(out[i], out[j]);
+        if (d < minSep && d > 1e-4) {
+          const push = (minSep - d) * 0.5;
+          const dir = scale(normalize(sub(out[j], out[i])), push);
+          out[i] = sub(out[i], dir);
+          out[j] = add(out[j], dir);
+        }
+      }
+    }
+  }
+  return out;
+}
+
 
 function placeCloud(center: V3, radiusIn: number, count: number, minSepIn?: number): V3[] {
   if (count === 0) return [];
