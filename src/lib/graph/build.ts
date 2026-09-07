@@ -671,8 +671,10 @@ export function buildGraph(): Graph {
       const arr = byJenis[jid];
       const subHubPos = jenisPos[jid] ?? motionCenter;
       const subColor = JENIS_MOSI.find((x) => x.id === jid)?.warna || "#ff8b3d";
-      const branchRadius = Math.max(7, Math.min(20, 5 + Math.log2(arr.length + 1) * 2.8));
-      const pos = placeBranch(subHubPos, motionCenter, arr.length, branchRadius * 0.45, branchRadius * 1.15);
+      // cabang mosi padat → jarak antar daun diperlebar signifikan
+      const branchRadius = Math.max(11, Math.min(34, 7 + Math.log2(arr.length + 1) * 4.6));
+      const pos = placeBranch(subHubPos, motionCenter, arr.length, branchRadius * 0.5, branchRadius * 1.45);
+
       arr.forEach((m, i) => {
         const id = `motion:${m.id}`;
         // Bintang mosi SELALU warm-neon — deterministik per id
