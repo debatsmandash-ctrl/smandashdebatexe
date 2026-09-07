@@ -578,7 +578,7 @@ export function buildGraph(): Graph {
   {
     const center = clusterCenter.matter;
     const keys = Object.keys(MATTER);
-    const positions = placeCloud(center, 22, keys.length, 10);
+    const positions = varyRadial(center, placeCloud(center, 26, keys.length, 11), 5501, 26 * SPREAD * 0.42, 0.55, 1.9);
     // Palette berbeda per domain matter (sub-hub)
     const matterDomainColors: Record<string, string> = {
       ekonomi: "#34d399", politik: "#f472b6", hukum: "#fbbf24", filsafat: "#c084fc",
