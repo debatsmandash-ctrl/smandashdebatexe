@@ -713,18 +713,33 @@ export function buildGraph(): Graph {
       (byLetter[key] ||= []).push({ v, idx });
     });
     const letters = Object.keys(byLetter).sort();
-    const letterDirs = fibDirections(letters.length, 0.15);
+    // Kamus tidak lagi berbentuk cincin generik: jarak & arah tiap huruf diacak,
+    // lalu dipisahkan supaya tidak ada dua cabang yang berimpit.
+    const letterDirs = fibDirections(letters.length, 0.55);
+    const letterCenters = varyRadial(
+      kamusCenter,
+      letterDirs.map((d, li) => {
+        const jr = mulberry32(li * 9176 + 31);
+        const dir = normalize([d[0] + (jr() - 0.5) * 0.7, d[1] * (0.5 + jr()) + (jr() - 0.5) * 0.6, d[2] + (jr() - 0.5) * 0.7]);
+        return add(kamusCenter, scale(dir, 22 * SPREAD * (0.55 + jr() * 1.5)));
+      }),
+      4211,
+      22 * SPREAD * 0.6,
+      0.6,
+      2.1,
+    );
     // Palette unik per huruf — beda warna per cabang kamus
     const kamusPalette = ["#38bdf8","#7dd3fc","#22d3ee","#06b6d4","#67e8f9","#a78bfa","#c084fc","#34d399","#5eead4","#fbbf24","#fb7185","#f472b6","#fdba74","#facc15","#86efac","#60a5fa","#ff8ad6","#ff5cf0","#a855f7","#8b5cf6","#fb923c","#94a3b8","#e8f4ff","#ffffff","#22c55e","#ef4444"];
     letters.forEach((L, li) => {
       const arr = byLetter[L];
-      const letterCenter = add(kamusCenter, scale(letterDirs[li], 18 * SPREAD * (0.8 + (li % 5) * 0.14)));
+      const letterCenter = letterCenters[li];
       const letterId = `kamus:letter:${L}`;
       const letterColor = kamusPalette[li % kamusPalette.length];
       nodes.push({ id: letterId, label: L, kind: "letter", cluster: "kamus", color: letterColor, size: 0.22, pos: letterCenter, refId: L, importance: 0.55 });
       edges.push({ a: "cluster:kamus", b: letterId, strength: "strong", color: letterColor });
-      const subRadius = Math.max(5, Math.min(14, 4 + Math.log2(arr.length + 1) * 2.2));
-      const pos = placeBranch(letterCenter, kamusCenter, arr.length, subRadius * 0.45, subRadius * 1.15);
+      const subRadius = Math.max(8, Math.min(24, 5 + Math.log2(arr.length + 1) * 3.4));
+      const pos = placeBranch(letterCenter, kamusCenter, arr.length, subRadius * 0.5, subRadius * 1.4);
+
       arr.forEach(({ v, idx }, i) => {
         const id = `vocab:${idx}`;
         vocabIdByTerm[v.term.toLowerCase()] = id;
