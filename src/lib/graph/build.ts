@@ -121,7 +121,36 @@ function fbm3(x: number, y: number, z: number) {
  * Titik pertama selalu paling dekat inti knot utama (dipakai untuk node penting).
  */
 /** Pengali sebaran global: gugus → subgugus → daun dibuat lebih lega. */
-const SPREAD = 2.35;
+const SPREAD = 3.05;
+
+/**
+ * Variasikan jarak subgugus dari pusatnya: sebagian dekat, sebagian jauh,
+ * lalu dorong supaya tidak ada dua subgugus yang berjarak sama/menempel.
+ */
+function varyRadial(center: V3, pts: V3[], seedKey: number, minSep: number, lo = 0.62, hi = 1.85): V3[] {
+  const rr = mulberry32(Math.abs(Math.round(seedKey * 1e3)) + 7919);
+  const out = pts.map((p) => {
+    const d = sub(p, center);
+    const len = Math.hypot(d[0], d[1], d[2]) || 1;
+    const f = lo + rr() * (hi - lo);
+    return add(center, scale(scale(d, 1 / len), len * f));
+  });
+  for (let it = 0; it < 8; it++) {
+    for (let i = 0; i < out.length; i++) {
+      for (let j = i + 1; j < out.length; j++) {
+        const d = dist(out[i], out[j]);
+        if (d < minSep && d > 1e-4) {
+          const push = (minSep - d) * 0.5;
+          const dir = scale(normalize(sub(out[j], out[i])), push);
+          out[i] = sub(out[i], dir);
+          out[j] = add(out[j], dir);
+        }
+      }
+    }
+  }
+  return out;
+}
+
 
 function placeCloud(center: V3, radiusIn: number, count: number, minSepIn?: number): V3[] {
   if (count === 0) return [];
@@ -358,14 +387,18 @@ export function buildGraph(): Graph {
       const order = CLUSTERS.map((_, i) => i).sort((a, b) => (a * 2654435761 % 97) - (b * 2654435761 % 97));
       order.slice(0, nNear).forEach((i) => nearSet.add(i));
     }
+    // gugus raksasa (mosi, kamus, matter) wajib berjauhan satu sama lain
+    const BIG = new Set(["motion", "kamus", "matter"]);
+    const placedBig: V3[] = [];
     CLUSTERS.forEach((c, i) => {
       // bobot 0..1 (skala log supaya gugus raksasa tidak terlempar ekstrem)
       const w = Math.log2(1 + (CLUSTER_WEIGHT[c.key] ?? 8)) / Math.log2(1 + maxW);
       const near = nearSet.has(i);
-      // jarak: pusat → gugus jauh; 20% gugus lebih dekat
-      const base = near ? 118 + w * 46 : 190 + w * 150;
-      const jitter = (rc() - 0.5) * (near ? 40 : 110);
-      let radius = Math.max(near ? 100 : 170, base + jitter);
+      const big = BIG.has(c.key);
+      // jarak: pusat → gugus jauh; 20% gugus lebih dekat; gugus raksasa didorong keluar
+      const base = near ? 128 + w * 60 : 235 + w * 215;
+      const jitter = (rc() - 0.5) * (near ? 50 : 150);
+      let radius = Math.max(near ? 110 : 205, base + jitter) * (big ? 1.25 : 1);
 
       // arah acak-terdistribusi, lalu diputar sedikit agar tidak simetris
       let dir = normalize([
@@ -376,22 +409,28 @@ export function buildGraph(): Graph {
 
       // jaga void: dorong keluar kalau terlalu dekat dengan gugus yang sudah ada,
       // tapi batasi supaya void tidak jomplang
-      for (let guard = 0; guard < 24; guard++) {
+      const GAP = 165;
+      const BIG_GAP = 430; // mosi ↔ kamus ↔ matter tidak boleh berdempetan
+      for (let guard = 0; guard < 48; guard++) {
         const cand = add(ROOT_POS, scale(dir, radius));
-        const tooClose = placed.some((p) => dist(p, cand) < 108);
+        const tooClose =
+          placed.some((p) => dist(p, cand) < GAP) ||
+          (big && placedBig.some((p) => dist(p, cand) < BIG_GAP));
         if (!tooClose) break;
-        radius += 12;
+        radius += 18;
         dir = normalize([dir[0] + (rc() - 0.5) * 0.22, dir[1] + (rc() - 0.5) * 0.22, dir[2] + (rc() - 0.5) * 0.22]);
       }
 
       const center = add(ROOT_POS, scale(dir, radius));
       placed.push(center);
+      if (big) placedBig.push(center);
       clusterCenter[c.key] = center;
       colorOf[c.key] = c.color;
       nodes.push({ id: `cluster:${c.key}`, label: c.label, kind: "cluster", cluster: c.key, color: c.color, size: 0.7, pos: center });
       // tautan root → gugus dikembalikan; panjangnya bervariasi mengikuti radius
       edges.push({ a: "root", b: `cluster:${c.key}`, strength: "strong", color: c.color });
     });
+
   }
 
 
@@ -539,7 +578,7 @@ export function buildGraph(): Graph {
   {
     const center = clusterCenter.matter;
     const keys = Object.keys(MATTER);
-    const positions = placeCloud(center, 22, keys.length, 10);
+    const positions = varyRadial(center, placeCloud(center, 26, keys.length, 11), 5501, 26 * SPREAD * 0.42, 0.55, 1.9);
     // Palette berbeda per domain matter (sub-hub)
     const matterDomainColors: Record<string, string> = {
       ekonomi: "#34d399", politik: "#f472b6", hukum: "#fbbf24", filsafat: "#c084fc",
@@ -609,7 +648,7 @@ export function buildGraph(): Graph {
   {
     const motionCenter = clusterCenter.motion;
     // 1) Sub-hub per Jenis Mosi sebagai cabang Motion Bank — lebih rapat
-    const jenisPositions = placeCloud(motionCenter, 22, JENIS_MOSI.length, 9);
+    const jenisPositions = varyRadial(motionCenter, placeCloud(motionCenter, 30, JENIS_MOSI.length, 11), 7703, 30 * SPREAD * 0.5, 0.6, 2.0);
     const JENIS_NEON = ["#ff3d8b", "#ff8b3d", "#ffd53d", "#ff5fb3", "#ffb13d", "#ffe066", "#ff6b6b"];
     JENIS_MOSI.forEach((j, i) => {
       const id = `jenis:${j.id}`;
@@ -632,8 +671,10 @@ export function buildGraph(): Graph {
       const arr = byJenis[jid];
       const subHubPos = jenisPos[jid] ?? motionCenter;
       const subColor = JENIS_MOSI.find((x) => x.id === jid)?.warna || "#ff8b3d";
-      const branchRadius = Math.max(7, Math.min(20, 5 + Math.log2(arr.length + 1) * 2.8));
-      const pos = placeBranch(subHubPos, motionCenter, arr.length, branchRadius * 0.45, branchRadius * 1.15);
+      // cabang mosi padat → jarak antar daun diperlebar signifikan
+      const branchRadius = Math.max(11, Math.min(34, 7 + Math.log2(arr.length + 1) * 4.6));
+      const pos = placeBranch(subHubPos, motionCenter, arr.length, branchRadius * 0.5, branchRadius * 1.45);
+
       arr.forEach((m, i) => {
         const id = `motion:${m.id}`;
         // Bintang mosi SELALU warm-neon — deterministik per id
@@ -672,18 +713,33 @@ export function buildGraph(): Graph {
       (byLetter[key] ||= []).push({ v, idx });
     });
     const letters = Object.keys(byLetter).sort();
-    const letterDirs = fibDirections(letters.length, 0.15);
+    // Kamus tidak lagi berbentuk cincin generik: jarak & arah tiap huruf diacak,
+    // lalu dipisahkan supaya tidak ada dua cabang yang berimpit.
+    const letterDirs = fibDirections(letters.length, 0.55);
+    const letterCenters = varyRadial(
+      kamusCenter,
+      letterDirs.map((d, li) => {
+        const jr = mulberry32(li * 9176 + 31);
+        const dir = normalize([d[0] + (jr() - 0.5) * 0.7, d[1] * (0.5 + jr()) + (jr() - 0.5) * 0.6, d[2] + (jr() - 0.5) * 0.7]);
+        return add(kamusCenter, scale(dir, 22 * SPREAD * (0.55 + jr() * 1.5)));
+      }),
+      4211,
+      22 * SPREAD * 0.6,
+      0.6,
+      2.1,
+    );
     // Palette unik per huruf — beda warna per cabang kamus
     const kamusPalette = ["#38bdf8","#7dd3fc","#22d3ee","#06b6d4","#67e8f9","#a78bfa","#c084fc","#34d399","#5eead4","#fbbf24","#fb7185","#f472b6","#fdba74","#facc15","#86efac","#60a5fa","#ff8ad6","#ff5cf0","#a855f7","#8b5cf6","#fb923c","#94a3b8","#e8f4ff","#ffffff","#22c55e","#ef4444"];
     letters.forEach((L, li) => {
       const arr = byLetter[L];
-      const letterCenter = add(kamusCenter, scale(letterDirs[li], 18 * SPREAD * (0.8 + (li % 5) * 0.14)));
+      const letterCenter = letterCenters[li];
       const letterId = `kamus:letter:${L}`;
       const letterColor = kamusPalette[li % kamusPalette.length];
       nodes.push({ id: letterId, label: L, kind: "letter", cluster: "kamus", color: letterColor, size: 0.22, pos: letterCenter, refId: L, importance: 0.55 });
       edges.push({ a: "cluster:kamus", b: letterId, strength: "strong", color: letterColor });
-      const subRadius = Math.max(5, Math.min(14, 4 + Math.log2(arr.length + 1) * 2.2));
-      const pos = placeBranch(letterCenter, kamusCenter, arr.length, subRadius * 0.45, subRadius * 1.15);
+      const subRadius = Math.max(8, Math.min(24, 5 + Math.log2(arr.length + 1) * 3.4));
+      const pos = placeBranch(letterCenter, kamusCenter, arr.length, subRadius * 0.5, subRadius * 1.4);
+
       arr.forEach(({ v, idx }, i) => {
         const id = `vocab:${idx}`;
         vocabIdByTerm[v.term.toLowerCase()] = id;
