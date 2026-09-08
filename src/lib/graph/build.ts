@@ -1027,7 +1027,14 @@ export function buildGraph(): Graph {
       .map(([k]) => k)
   );
   const finalNodes = nodes.filter((n) => !deletedIds.has(n.id));
-  const finalEdges = edges.filter((e) => !deletedIds.has(e.a) && !deletedIds.has(e.b));
+  const seenEdge = new Set<string>();
+  const finalEdges = edges.filter((e) => {
+    if (deletedIds.has(e.a) || deletedIds.has(e.b) || e.a === e.b) return false;
+    const key = e.a < e.b ? `${e.a}|${e.b}` : `${e.b}|${e.a}`;
+    if (seenEdge.has(key)) return false;
+    seenEdge.add(key);
+    return true;
+  });
 
   // ─── Stellar color variety pool (semua terang, mix stellar+nebula+hubble+aurora) ───
   // Diterapkan hanya ke bintang leaf kecil supaya hub/cluster tetap identik.
