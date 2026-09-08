@@ -44,6 +44,8 @@ export interface Settings {
   colorPreset: ColorPreset;
   treeHoverEnabled: boolean;          // aktifkan hover-on-tree juga
   edgeThickness: number;              // 1..4 solid line width
+  dimStrength: number;                // 0.02..0.6 — seberapa redup bintang tak tertaut
+  hideAktorInTree: boolean;           // mode full tree: sembunyikan cabang mosi aktor
 
   // NEW: font preset
   fontPreset: FontPreset;
@@ -95,7 +97,9 @@ export const DEFAULT_SETTINGS: Settings = {
   linkMode: "normal",
   colorPreset: "deepspace",
   treeHoverEnabled: true,
-  edgeThickness: 1.8,
+  edgeThickness: 1.1,
+  dimStrength: 0.12,
+  hideAktorInTree: true,
   fontPreset: "default",
   lobbySeen: false,
   introSeen: false,
@@ -205,7 +209,7 @@ export const useSettings = create<SettingsState>()(
       reset: () => set(DEFAULT_SETTINGS),
     }),
     {
-      name: "smandash-settings-v5",
+      name: "smandash-settings-v6",
       // merge persisted state onto defaults so new fields exist for old clients
       merge: (persisted, current) => ({ ...current, ...(persisted as object) }),
     }

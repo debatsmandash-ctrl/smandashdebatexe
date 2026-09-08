@@ -111,61 +111,6 @@ function StarField() {
 }
 
 // ─── Distant galaxies — gradient sprites di area sangat jauh ───
-function Galaxies() {
-  const tex = useMemo(() => {
-    const size = 512;
-    const c = document.createElement("canvas");
-    c.width = c.height = size;
-    const ctx = c.getContext("2d")!;
-    // spiral-ish elliptical glow
-    const g = ctx.createRadialGradient(size/2, size/2, 0, size/2, size/2, size/2);
-    g.addColorStop(0.00, "rgba(255,240,220,0.85)");
-    g.addColorStop(0.12, "rgba(255,210,180,0.55)");
-    g.addColorStop(0.35, "rgba(180,120,200,0.28)");
-    g.addColorStop(0.65, "rgba(80,90,180,0.12)");
-    g.addColorStop(1.00, "rgba(0,0,0,0)");
-    ctx.fillStyle = g;
-    ctx.fillRect(0, 0, size, size);
-    // streak debu (band) untuk efek spiral
-    ctx.globalAlpha = 0.35;
-    ctx.fillStyle = "rgba(40,20,60,0.6)";
-    ctx.beginPath();
-    ctx.ellipse(size/2, size/2, size*0.42, size*0.05, 0, 0, Math.PI*2);
-    ctx.fill();
-    const t = new THREE.CanvasTexture(c);
-    t.colorSpace = THREE.SRGBColorSpace;
-    return t;
-  }, []);
-
-  const galaxies = useMemo(() => [
-    { pos: [ -880,  340, -1100], scale: 380, rot: 0.6,  color: "#c9a6ff", opacity: 0.42 },
-    { pos: [  920, -220, -1200], scale: 520, rot: -0.3, color: "#ffd9a8", opacity: 0.36 },
-    { pos: [ -200, -640,  1250], scale: 320, rot: 1.2,  color: "#a8d4ff", opacity: 0.30 },
-  ] as const, []);
-
-  const refs = useRef<(THREE.Sprite | null)[]>([]);
-  useFrame((_, dt) => {
-    refs.current.forEach((s) => { if (s) s.material.rotation += dt * 0.005; });
-  });
-
-  return (
-    <>
-      {galaxies.map((g, i) => (
-        <sprite key={i} ref={(el) => { refs.current[i] = el; }} position={g.pos as any} scale={[g.scale, g.scale * 0.55, 1]}>
-          <spriteMaterial
-            map={tex}
-            color={g.color}
-            transparent
-            opacity={g.opacity}
-            blending={THREE.AdditiveBlending}
-            depthWrite={false}
-            rotation={g.rot}
-          />
-        </sprite>
-      ))}
-    </>
-  );
-}
 
 // ─── Globular star clusters (gugusan bintang) — small dense Points blobs ───
 function StarClusters() {
@@ -301,7 +246,7 @@ function StarNodeMesh({ node, isSelected, isHovered, isLit, isDim, haloTex, prof
   });
 
   const emissive = node.color;
-  const opacity = isDim ? 0.38 : 1;
+  const opacity = isDim ? dimK : 1;
   const isHub = node.kind === "root" || node.kind === "cluster" || node.kind === "subhub";
   const haloBoost = 1 + imp * 0.6;
 
@@ -336,12 +281,12 @@ function StarNodeMesh({ node, isSelected, isHovered, isLit, isDim, haloTex, prof
       )}
       {/* inner sharp halo */}
       <sprite scale={[baseSize * 6 * haloBoost, baseSize * 6 * haloBoost, 1]}>
-        <spriteMaterial map={haloTex} color={emissive} transparent opacity={isDim ? 0.12 : 0.5 + imp * 0.22} blending={THREE.AdditiveBlending} depthWrite={false} />
+        <spriteMaterial map={haloTex} color={emissive} transparent opacity={isDim ? dimK * 0.5 : 0.5 + imp * 0.22} blending={THREE.AdditiveBlending} depthWrite={false} />
       </sprite>
       {/* outer soft glow (desktop only) */}
       {profile.haloLayers > 1 && (
         <sprite scale={[baseSize * 16 * haloBoost, baseSize * 16 * haloBoost, 1]}>
-          <spriteMaterial map={haloTex} color={emissive} transparent opacity={isDim ? 0.06 : 0.18 + imp * 0.12} blending={THREE.AdditiveBlending} depthWrite={false} />
+          <spriteMaterial map={haloTex} color={emissive} transparent opacity={isDim ? dimK * 0.25 : 0.18 + imp * 0.12} blending={THREE.AdditiveBlending} depthWrite={false} />
         </sprite>
       )}
       {labelVisible && (
@@ -367,7 +312,7 @@ function StarNodeMesh({ node, isSelected, isHovered, isLit, isDim, haloTex, prof
               background: highContrast ? "rgba(0,0,0,0.85)" : "rgba(5,8,15,0.6)",
               border: `1px solid ${emissive}44`,
               transform: `translateY(${baseSize * 28}px)`,
-              opacity: isDim ? 0.4 : 1,
+              opacity: isDim ? Math.max(0.08, dimK) : 1,
               transition: "opacity 180ms",
             }}
           >
@@ -562,7 +507,7 @@ function Scene({ profile }: { profile: DeviceProfile }) {
       <directionalLight position={[260, 180, 220]} intensity={0.22 * tone.ambient} color={tone.rim} />
 
       <StarField />
-      {profile.tier === "desktop" && <Galaxies />}
+      {/* v1.2.2 — objek galaksi jauh di luar peta dihapus agar tidak mengganggu orientasi */}
       <StarClusters />
       <MilkyWaySky opacity={settings.nebulaOpacity * 0.5 * tone.nebula} />
 
