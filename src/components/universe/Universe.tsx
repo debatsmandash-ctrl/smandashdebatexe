@@ -111,61 +111,6 @@ function StarField() {
 }
 
 // ─── Distant galaxies — gradient sprites di area sangat jauh ───
-function Galaxies() {
-  const tex = useMemo(() => {
-    const size = 512;
-    const c = document.createElement("canvas");
-    c.width = c.height = size;
-    const ctx = c.getContext("2d")!;
-    // spiral-ish elliptical glow
-    const g = ctx.createRadialGradient(size/2, size/2, 0, size/2, size/2, size/2);
-    g.addColorStop(0.00, "rgba(255,240,220,0.85)");
-    g.addColorStop(0.12, "rgba(255,210,180,0.55)");
-    g.addColorStop(0.35, "rgba(180,120,200,0.28)");
-    g.addColorStop(0.65, "rgba(80,90,180,0.12)");
-    g.addColorStop(1.00, "rgba(0,0,0,0)");
-    ctx.fillStyle = g;
-    ctx.fillRect(0, 0, size, size);
-    // streak debu (band) untuk efek spiral
-    ctx.globalAlpha = 0.35;
-    ctx.fillStyle = "rgba(40,20,60,0.6)";
-    ctx.beginPath();
-    ctx.ellipse(size/2, size/2, size*0.42, size*0.05, 0, 0, Math.PI*2);
-    ctx.fill();
-    const t = new THREE.CanvasTexture(c);
-    t.colorSpace = THREE.SRGBColorSpace;
-    return t;
-  }, []);
-
-  const galaxies = useMemo(() => [
-    { pos: [ -880,  340, -1100], scale: 380, rot: 0.6,  color: "#c9a6ff", opacity: 0.42 },
-    { pos: [  920, -220, -1200], scale: 520, rot: -0.3, color: "#ffd9a8", opacity: 0.36 },
-    { pos: [ -200, -640,  1250], scale: 320, rot: 1.2,  color: "#a8d4ff", opacity: 0.30 },
-  ] as const, []);
-
-  const refs = useRef<(THREE.Sprite | null)[]>([]);
-  useFrame((_, dt) => {
-    refs.current.forEach((s) => { if (s) s.material.rotation += dt * 0.005; });
-  });
-
-  return (
-    <>
-      {galaxies.map((g, i) => (
-        <sprite key={i} ref={(el) => { refs.current[i] = el; }} position={g.pos as any} scale={[g.scale, g.scale * 0.55, 1]}>
-          <spriteMaterial
-            map={tex}
-            color={g.color}
-            transparent
-            opacity={g.opacity}
-            blending={THREE.AdditiveBlending}
-            depthWrite={false}
-            rotation={g.rot}
-          />
-        </sprite>
-      ))}
-    </>
-  );
-}
 
 // ─── Globular star clusters (gugusan bintang) — small dense Points blobs ───
 function StarClusters() {
