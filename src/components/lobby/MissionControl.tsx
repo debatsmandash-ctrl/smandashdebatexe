@@ -26,7 +26,7 @@ const EVENT_COVER: Record<string, string> = {
   bp: bpAsset.url,
 };
 /** Mosi yang direkomendasikan tampil di lobby. */
-const REKOMENDASI_MOSI = ["m042", "m216", "m250", "m025"];
+const REKOMENDASI_MOSI = ["m042", "m216", "m366", "m367", "m368", "m377", "m375", "m373", "m371", "m250", "m025"];
 import { HeroSlider, buildSlides } from "./HeroSlider";
 
 
