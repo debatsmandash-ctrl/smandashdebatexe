@@ -246,7 +246,7 @@ function StarNodeMesh({ node, isSelected, isHovered, isLit, isDim, haloTex, prof
   });
 
   const emissive = node.color;
-  const opacity = isDim ? 0.38 : 1;
+  const opacity = isDim ? dimK : 1;
   const isHub = node.kind === "root" || node.kind === "cluster" || node.kind === "subhub";
   const haloBoost = 1 + imp * 0.6;
 
@@ -281,12 +281,12 @@ function StarNodeMesh({ node, isSelected, isHovered, isLit, isDim, haloTex, prof
       )}
       {/* inner sharp halo */}
       <sprite scale={[baseSize * 6 * haloBoost, baseSize * 6 * haloBoost, 1]}>
-        <spriteMaterial map={haloTex} color={emissive} transparent opacity={isDim ? 0.12 : 0.5 + imp * 0.22} blending={THREE.AdditiveBlending} depthWrite={false} />
+        <spriteMaterial map={haloTex} color={emissive} transparent opacity={isDim ? dimK * 0.5 : 0.5 + imp * 0.22} blending={THREE.AdditiveBlending} depthWrite={false} />
       </sprite>
       {/* outer soft glow (desktop only) */}
       {profile.haloLayers > 1 && (
         <sprite scale={[baseSize * 16 * haloBoost, baseSize * 16 * haloBoost, 1]}>
-          <spriteMaterial map={haloTex} color={emissive} transparent opacity={isDim ? 0.06 : 0.18 + imp * 0.12} blending={THREE.AdditiveBlending} depthWrite={false} />
+          <spriteMaterial map={haloTex} color={emissive} transparent opacity={isDim ? dimK * 0.25 : 0.18 + imp * 0.12} blending={THREE.AdditiveBlending} depthWrite={false} />
         </sprite>
       )}
       {labelVisible && (
@@ -312,7 +312,7 @@ function StarNodeMesh({ node, isSelected, isHovered, isLit, isDim, haloTex, prof
               background: highContrast ? "rgba(0,0,0,0.85)" : "rgba(5,8,15,0.6)",
               border: `1px solid ${emissive}44`,
               transform: `translateY(${baseSize * 28}px)`,
-              opacity: isDim ? 0.4 : 1,
+              opacity: isDim ? Math.max(0.08, dimK) : 1,
               transition: "opacity 180ms",
             }}
           >
