@@ -762,12 +762,20 @@ export function buildGraph(): Graph {
       }
     });
     // hover-only link motion.title (lowercase) ↔ vocab term (>=5 huruf)
+    const normTerm = (s: string) => s.toLowerCase().replace(/[^a-z0-9 ]/g, " ").replace(/\s+/g, " ").trim();
+    const vocabByNorm: Record<string, string> = {};
+    for (const [term, vid] of Object.entries(vocabIdByTerm)) vocabByNorm[normTerm(term)] = vid;
     MOTIONS.forEach((m) => {
-      const title = m.title.toLowerCase();
-      for (const term of Object.keys(vocabIdByTerm)) {
+      const title = normTerm(m.title);
+      for (const term of Object.keys(vocabByNorm)) {
         if (term.length >= 5 && title.includes(term)) {
-          edges.push({ a: `motion:${m.id}`, b: vocabIdByTerm[term], strength: "weak", color: "#7dd3fc", kind: "link" });
+          edges.push({ a: `motion:${m.id}`, b: vocabByNorm[term], strength: "weak", color: "#7dd3fc", kind: "link" });
         }
+      }
+      // istilah kunci mosi yang belum sama persis → cocokkan versi ternormalisasi
+      for (const t of m.terms ?? []) {
+        const vid = vocabByNorm[normTerm(t)];
+        if (vid) edges.push({ a: `motion:${m.id}`, b: vid, strength: "weak", color: "#38bdf8", kind: "link" });
       }
     });
   }
