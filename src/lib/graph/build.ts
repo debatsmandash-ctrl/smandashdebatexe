@@ -578,7 +578,7 @@ export function buildGraph(): Graph {
   {
     const center = clusterCenter.matter;
     const keys = Object.keys(MATTER);
-    const positions = varyRadial(center, placeCloud(center, 26, keys.length, 11), 5501, 26 * SPREAD * 0.42, 0.55, 1.9);
+    const positions = varyRadial(center, placeCloud(center, 44, keys.length, 19), 5501, 44 * SPREAD * 0.5, 0.62, 2.2);
     // Palette berbeda per domain matter (sub-hub)
     const matterDomainColors: Record<string, string> = {
       ekonomi: "#34d399", politik: "#f472b6", hukum: "#fbbf24", filsafat: "#c084fc",
@@ -599,8 +599,8 @@ export function buildGraph(): Graph {
       nodes.push({ id: dId, label: d.label.toUpperCase(), kind: "domain", cluster: "matter", color: dColor, size: 0.32, pos: positions[i], refId: dk, importance: 0.7 });
       edges.push({ a: "cluster:matter", b: dId, strength: "strong", color: dColor });
 
-      const babRadius = Math.max(10, 6 + Math.log2(d.babs.length + 1) * 3.6);
-      const babPos = placeCloud(positions[i], babRadius, d.babs.length, 5.0);
+      const babRadius = Math.max(14, 8 + Math.log2(d.babs.length + 1) * 5.2);
+      const babPos = placeCloud(positions[i], babRadius, d.babs.length, 7.5);
       d.babs.forEach((bab, j) => {
         const bId = `matter:${dk}:${bab.id}`;
         nodes.push({ id: bId, label: bab.title, kind: "bab", cluster: "matter", color: babColor, size: 0.14, pos: babPos[j], refId: `${dk}/${bab.id}`, importance: 0.5 });
@@ -648,7 +648,8 @@ export function buildGraph(): Graph {
   {
     const motionCenter = clusterCenter.motion;
     // 1) Sub-hub per Jenis Mosi sebagai cabang Motion Bank — lebih rapat
-    const jenisPositions = varyRadial(motionCenter, placeCloud(motionCenter, 30, JENIS_MOSI.length, 11), 7703, 30 * SPREAD * 0.5, 0.6, 2.0);
+    // Tiap jenis mosi dijauhkan satu sama lain (kebijakan ↔ aktor dst.)
+    const jenisPositions = varyRadial(motionCenter, placeCloud(motionCenter, 58, JENIS_MOSI.length, 26), 7703, 58 * SPREAD * 0.62, 0.7, 2.4);
     const JENIS_NEON = ["#ff3d8b", "#ff8b3d", "#ffd53d", "#ff5fb3", "#ffb13d", "#ffe066", "#ff6b6b"];
     JENIS_MOSI.forEach((j, i) => {
       const id = `jenis:${j.id}`;
@@ -721,12 +722,12 @@ export function buildGraph(): Graph {
       letterDirs.map((d, li) => {
         const jr = mulberry32(li * 9176 + 31);
         const dir = normalize([d[0] + (jr() - 0.5) * 0.7, d[1] * (0.5 + jr()) + (jr() - 0.5) * 0.6, d[2] + (jr() - 0.5) * 0.7]);
-        return add(kamusCenter, scale(dir, 22 * SPREAD * (0.55 + jr() * 1.5)));
+        return add(kamusCenter, scale(dir, 34 * SPREAD * (0.6 + jr() * 1.7)));
       }),
       4211,
-      22 * SPREAD * 0.6,
-      0.6,
-      2.1,
+      34 * SPREAD * 0.66,
+      0.68,
+      2.35,
     );
     // Palette unik per huruf — beda warna per cabang kamus
     const kamusPalette = ["#38bdf8","#7dd3fc","#22d3ee","#06b6d4","#67e8f9","#a78bfa","#c084fc","#34d399","#5eead4","#fbbf24","#fb7185","#f472b6","#fdba74","#facc15","#86efac","#60a5fa","#ff8ad6","#ff5cf0","#a855f7","#8b5cf6","#fb923c","#94a3b8","#e8f4ff","#ffffff","#22c55e","#ef4444"];
