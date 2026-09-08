@@ -562,7 +562,7 @@ function Scene({ profile }: { profile: DeviceProfile }) {
       <directionalLight position={[260, 180, 220]} intensity={0.22 * tone.ambient} color={tone.rim} />
 
       <StarField />
-      {profile.tier === "desktop" && <Galaxies />}
+      {/* v1.2.2 — objek galaksi jauh di luar peta dihapus agar tidak mengganggu orientasi */}
       <StarClusters />
       <MilkyWaySky opacity={settings.nebulaOpacity * 0.5 * tone.nebula} />
 
