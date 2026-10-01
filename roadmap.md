@@ -6,3 +6,10 @@
 - [ ] Lobby lebih menarik: animasi, ikon, pembagian seksi, pencarian mosi
 - [ ] Kartu rekomendasi: 7 mosi aktor/tokoh baru
 - [ ] Data & visual LDI/NSDC 2025 & 2026 (bagan gugur ala bagan sepak bola + statistik SMAN 2 Siak Hulu)
+
+## v1.2.2 (lanjutan)
+- [ ] Tiga tampilan: 3D, 2D, dan bacaan berselancar; navigasi Android
+- [ ] Peredupan 3D, tautan penuh dan aktor hybrid, pastel untuk mosi lengkap, neon untuk mosi lama
+- [ ] Lobby animasi/ikon, pencarian mosi, rekomendasi geser
+- [ ] Dapat dipasang di Android serta konten lokal dapat dibuka luring sesudah kunjungan daring
+- [ ] Optimalisasi performa dan verifikasi tampilan/perpindahan mode
