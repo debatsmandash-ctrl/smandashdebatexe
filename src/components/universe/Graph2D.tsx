@@ -79,7 +79,7 @@ export function Graph2D() {
          y: pin ? pin.y : n.pos[1] * 0.85 + n.pos[2] * 0.27 + Math.sin(golden) * 10,
         vx: 0, vy: 0,
         // makin banyak percabangan/keturunan → makin besar bulatannya
-        r: Math.min(26, 3.2 * (1 + Math.log2(1 + (descCount.get(n.id) ?? 0)) * 0.62) + (rank === 0 ? 4 : 0)),
+         r: Math.min(26, 3.2 * (1 + Math.log2(1 + (descCount.get(n.id) ?? 0)) * 0.62) + (RANK(n.kind) === 0 ? 4 : 0)),
         color: n.color || "#8fb8ff",
         label: n.label,
         deg,

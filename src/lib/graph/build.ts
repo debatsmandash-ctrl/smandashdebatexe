@@ -663,7 +663,7 @@ export function buildGraph(): Graph {
     // 2) Group motions by jenis (m.type)
     const byJenis: Record<string, typeof MOTIONS> = {};
     MOTIONS.forEach((m) => {
-      const jid = jenisIdsOf([m.type, ...(Array.isArray((m as MotionHybrid).typeAll) ? (m as MotionHybrid).typeAll : [])].join("-"))[0];
+      const jid = jenisIdsOf([m.type, ...((m as MotionHybrid).typeAll ?? [])].join("-"))[0];
       (byJenis[jid] ||= []).push(m);
     });
     // Palet warm-neon untuk bintang motion (tidak pernah hitam/gelap)
@@ -686,7 +686,7 @@ export function buildGraph(): Graph {
         nodes.push({ id, label: m.title, kind: "motion", cluster: "motion", color: useColor, size: 0.085, pos: pos[i], refId: m.id, importance: 0.35 });
         edges.push({ a: `jenis:${jid}`, b: id, strength: "weak", color: useColor });
         // hybrid → tautkan juga ke jenis mosi kedua
-        for (const extra of jenisIdsOf([m.type, ...(Array.isArray((m as MotionHybrid).typeAll) ? (m as MotionHybrid).typeAll : [])].join("-")).filter((x) => x !== jid)) {
+        for (const extra of jenisIdsOf([m.type, ...((m as MotionHybrid).typeAll ?? [])].join("-")).filter((x) => x !== jid)) {
           edges.push({ a: `jenis:${extra}`, b: id, strength: "weak", color: "#ff5fb3", kind: "link" });
         }
         const domainKey = motionCatToDomain[m.cat];
