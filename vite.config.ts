@@ -23,6 +23,7 @@ export default defineConfig({
         runtimeCaching: [
           { urlPattern: ({ request, url }) => request.mode === "navigate" && url.origin === self.location.origin && !url.pathname.startsWith("/~oauth"), handler: "NetworkFirst", options: { cacheName: "debate-pages-v122", networkTimeoutSeconds: 4, expiration: { maxEntries: 24 } } },
           { urlPattern: ({ url }) => url.origin === self.location.origin && /\/assets\/[^/]+-[a-zA-Z0-9_-]+\.(?:js|css|png|jpg|webp|woff2)$/.test(url.pathname), handler: "CacheFirst", options: { cacheName: "debate-assets-v122", expiration: { maxEntries: 180, maxAgeSeconds: 60 * 60 * 24 * 30 } } },
+          { urlPattern: ({ url, request }) => url.origin === self.location.origin && url.pathname.startsWith("/__l5e/assets-v1/") && (request.destination === "image" || request.destination === "audio"), handler: "CacheFirst", options: { cacheName: "debate-media-v122", expiration: { maxEntries: 65, maxAgeSeconds: 60 * 60 * 24 * 30 } } },
         ],
       },
     })],
