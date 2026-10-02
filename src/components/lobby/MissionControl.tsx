@@ -28,7 +28,7 @@ const EVENT_COVER: Record<string, string> = {
 /** Mosi yang direkomendasikan tampil di lobby. */
 const REKOMENDASI_MOSI = ["m042", "m216", "m366", "m367", "m368", "m377", "m375", "m373", "m371", "m250", "m025"];
 import { HeroSlider, buildSlides } from "./HeroSlider";
-import { ChevronLeft, ChevronRight, Search, Orbit, BookOpen, UsersRound, Library, Download } from "lucide-react";
+import { ChevronLeft, ChevronRight, Search, Orbit, BookOpen, UsersRound, Library } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 
@@ -273,7 +273,7 @@ export function MissionControl({ onInitiate }: { onInitiate: () => void }) {
             right={<GhostButton onClick={() => go()}>Peta penuh</GhostButton>}
           />
         </Reveal>
-         <div className="lobby-gugus-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(230px, 1fr))", gap: 14 }}>
+        <div className="lobby-gugus-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(230px, 1fr))", gap: 14 }}>
           <ImageCard img={nebulaImg} tag="Matter" title="Amunisi Argumen" meta={`${stats.domains} domain · ${stats.babs} bab`}
             desc="Ekonomi, politik, hukum, filsafat, sains, hingga filosofi cinta — lengkap dengan contoh dan bantahan."
             onClick={() => go(() => select("cluster:matter"))} delay={0} />

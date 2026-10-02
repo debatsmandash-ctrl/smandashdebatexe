@@ -54,8 +54,8 @@ function Index() {
     <main style={{ position: "fixed", inset: 0, overflow: "hidden", background: "#05080f" }}>
       <FontPresetApplier />
       <div className="aurora-bg" />
-      {graphMode === "read" ? <ReadingView /> : graphMode === "2d" ? <Graph2D /> : <Universe />}
-      {graphMode !== "read" && (isMobile ? (
+      {!loading && !introOpen && !lobbyOpen && (graphMode === "read" ? <ReadingView /> : graphMode === "2d" ? <Graph2D /> : <Universe />)}
+      {!loading && !introOpen && !lobbyOpen && graphMode !== "read" && (isMobile ? (
         <MobileShell />
       ) : (
         <>
@@ -66,11 +66,7 @@ function Index() {
       {!loading && !introOpen && !lobbyOpen && <nav aria-label="Pilih tampilan" className="view-switch fixed bottom-4 left-1/2 z-40 flex -translate-x-1/2 gap-1 border border-border bg-card p-1 shadow-lg">
         {([ ["3d", "3D"], ["2d", "2D"], ["read", "Bacaan"] ] as const).map(([mode, label]) => <Button key={mode} size="sm" variant={graphMode === mode ? "default" : "ghost"} onClick={() => update({ graphMode: mode })} aria-current={graphMode === mode ? "page" : undefined}>{label}</Button>)}
       </nav>}
-      <SearchOverlay />
-      <EditorUnlockModal />
-      <SettingsPanel />
-      <AmbientAudio />
-      <AssistantPanel />
+      {!loading && !introOpen && !lobbyOpen && <><SearchOverlay /><EditorUnlockModal /><SettingsPanel /><AmbientAudio /><AssistantPanel /></>}
       {!loading && !introOpen && !lobbyOpen && (
         <button
           onClick={() => setLobbyOpen(true)}
