@@ -4,6 +4,7 @@ import {
   COMPETITORS, ACTIVE_MEMBERS, EVENTS, paletteColor,
 } from "@/data";
 import type { StarNode, StarEdge, ClusterKey } from "@/data/types";
+type MotionHybrid = { typeAll?: string[] };
 import { loadOverrides } from "@/lib/editor/overrides";
 
 // ─── Deterministic PRNG ───

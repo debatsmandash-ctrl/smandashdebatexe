@@ -204,8 +204,8 @@ const LABEL_THRESHOLDS: Record<NodeKind, number> = {
 };
 
 // ─── Star node ───
-function StarNodeMesh({ node, isSelected, isHovered, isLit, isDim, haloTex, profile, starSize, highContrast }: {
-  node: StarNode; isSelected: boolean; isHovered: boolean; isLit: boolean; isDim: boolean; haloTex: THREE.Texture; profile: DeviceProfile; starSize: number; highContrast: boolean;
+function StarNodeMesh({ node, isSelected, isHovered, isLit, isDim, dimK, haloTex, profile, starSize, highContrast }: {
+  node: StarNode; isSelected: boolean; isHovered: boolean; isLit: boolean; isDim: boolean; dimK: number; haloTex: THREE.Texture; profile: DeviceProfile; starSize: number; highContrast: boolean;
 }) {
   const meshRef = useRef<THREE.Mesh>(null);
   const lightRef = useRef<THREE.PointLight>(null);
@@ -270,7 +270,7 @@ function StarNodeMesh({ node, isSelected, isHovered, isLit, isDim, haloTex, prof
           clearcoatRoughness={0.25}
         />
       </mesh>
-      {hasOwnLight && (
+       {hasOwnLight && !isDim && (
         <pointLight
           ref={lightRef}
           color={emissive}
@@ -430,6 +430,7 @@ function Scene({ profile }: { profile: DeviceProfile }) {
 
   const linkMode = settings.linkMode;
   const treeHoverEnabled = settings.treeHoverEnabled;
+  const actorNodes = useMemo(() => new Set(graph.nodes.filter((n) => n.kind === "motion" && /aktor/i.test(MOTIONS_BY_ID.get(n.refId ?? "")?.type ?? "")).map((n) => n.id)), [graph]);
   const tone = TONE_PRESETS[settings.colorPreset] ?? TONE_PRESETS.deepspace;
 
   const litSet = useMemo(() => {
@@ -459,7 +460,7 @@ function Scene({ profile }: { profile: DeviceProfile }) {
           if (s.has(n)) continue;
           const child = graph.byId.get(n);
           const parent = graph.byId.get(cur);
-          if (!child || !parent) continue;
+           if (!child || !parent || (settings.hideAktorInTree && actorNodes.has(n) && n !== activeId)) continue;
           if (rank(child.kind) <= rank(parent.kind)) continue;
           s.add(n);
           queue.push(n);
@@ -491,7 +492,7 @@ function Scene({ profile }: { profile: DeviceProfile }) {
     const ns = graph.neighbors.get(activeId);
     if (ns) for (const n of ns) s.add(n);
     return s;
-  }, [selectedId, hoveredId, graph, linkMode, treeHoverEnabled]);
+  }, [selectedId, hoveredId, graph, linkMode, treeHoverEnabled, settings.hideAktorInTree, actorNodes]);
 
   const anyActive = linkMode === "stars" ? false : linkMode === "all" ? true : !!(selectedId ?? (linkMode !== "tree" || treeHoverEnabled ? hoveredId : null));
 
@@ -506,10 +507,10 @@ function Scene({ profile }: { profile: DeviceProfile }) {
       <pointLight position={[-140, -60, 100]} intensity={(quality === "ultra" ? 0.38 : 0.26) * tone.fill} color={tone.fillB} distance={quality === "ultra" ? 720 : 480} />
       <directionalLight position={[260, 180, 220]} intensity={0.22 * tone.ambient} color={tone.rim} />
 
-      <StarField />
+       {quality !== "low" && <StarField />}
       {/* v1.2.2 — objek galaksi jauh di luar peta dihapus agar tidak mengganggu orientasi */}
-      <StarClusters />
-      <MilkyWaySky opacity={settings.nebulaOpacity * 0.5 * tone.nebula} />
+       {quality !== "low" && <StarClusters />}
+       {quality !== "low" && <MilkyWaySky opacity={settings.nebulaOpacity * 0.5 * tone.nebula} />}
 
       {linkMode !== "stars" && (
         <FlowEdges
@@ -533,6 +534,7 @@ function Scene({ profile }: { profile: DeviceProfile }) {
             isHovered={hoveredId === n.id}
             isLit={litSet.has(n.id)}
             isDim={anyActive && !litSet.has(n.id)}
+            dimK={settings.dimStrength}
             haloTex={haloTex}
             profile={profile}
             starSize={settings.starSize}
