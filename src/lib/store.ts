@@ -60,7 +60,7 @@ export interface Settings {
   panSens: number;     // 0.2 .. 3
 
   // v1.0.2 — mode graf & opsi 2D ala Obsidian
-  graphMode: "3d" | "2d";
+  graphMode: "3d" | "2d" | "read";
   g2dHover: boolean;         // sorot tetangga saat hover
   g2dChainDrag: boolean;     // tetangga ikut tertarik saat node digeser
   g2dLabels: boolean;        // tampilkan label

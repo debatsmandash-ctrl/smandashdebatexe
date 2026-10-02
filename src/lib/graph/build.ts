@@ -633,7 +633,7 @@ export function buildGraph(): Graph {
     kebijakan: "jm1", pandangan: "jm2", aktor: "jm3",
     penyesalan: "jm4", prediksi: "jm5", dukungan: "jm6",
     memilih: "jm7", harapan: "jm2",
-    kelembagaan: "jm1", sosial: "jm2", kausalitas: "jm5",
+    kelembagaan: "jm1", sosial: "jm2", kausalitas: "jm5", berpandangan: "jm2", pandanganaktor: "jm2",
   };
   /** Mosi hybrid ("kebijakan-aktor", "sosial-aktor", …) tertaut ke dua jenis induk. */
   const jenisIdsOf = (type?: string): string[] => {
@@ -662,11 +662,12 @@ export function buildGraph(): Graph {
     // 2) Group motions by jenis (m.type)
     const byJenis: Record<string, typeof MOTIONS> = {};
     MOTIONS.forEach((m) => {
-      const jid = jenisIdsOf(m.type)[0];
+      const jid = jenisIdsOf([m.type, ...(Array.isArray((m as MotionHybrid).typeAll) ? (m as MotionHybrid).typeAll : [])].join("-"))[0];
       (byJenis[jid] ||= []).push(m);
     });
     // Palet warm-neon untuk bintang motion (tidak pernah hitam/gelap)
     const MOTION_NEON = ["#ff3d8b", "#ff8b3d", "#ffd53d", "#ff3df5", "#ffb13d", "#ff5fb3", "#ffe066"];
+    const MOTION_PASTEL = ["#f9b7cf", "#b4e8dd", "#d3c7ff", "#ffe0a8", "#a9d9f6", "#f5c8ae"];
     let motionColorIdx = 0;
     for (const jid of Object.keys(byJenis)) {
       const arr = byJenis[jid];
@@ -679,11 +680,12 @@ export function buildGraph(): Graph {
       arr.forEach((m, i) => {
         const id = `motion:${m.id}`;
         // Bintang mosi SELALU warm-neon — deterministik per id
-        const useColor = MOTION_NEON[(motionColorIdx++) % MOTION_NEON.length];
+        const complete = !!(m.tiersPro?.length && m.tiersKon?.length && m.cases && m.rotation && m.research);
+        const useColor = complete ? MOTION_PASTEL[motionColorIdx++ % MOTION_PASTEL.length] : MOTION_NEON[motionColorIdx++ % MOTION_NEON.length];
         nodes.push({ id, label: m.title, kind: "motion", cluster: "motion", color: useColor, size: 0.085, pos: pos[i], refId: m.id, importance: 0.35 });
         edges.push({ a: `jenis:${jid}`, b: id, strength: "weak", color: useColor });
         // hybrid → tautkan juga ke jenis mosi kedua
-        for (const extra of jenisIdsOf(m.type).slice(1)) {
+        for (const extra of jenisIdsOf([m.type, ...(Array.isArray((m as MotionHybrid).typeAll) ? (m as MotionHybrid).typeAll : [])].join("-")).filter((x) => x !== jid)) {
           edges.push({ a: `jenis:${extra}`, b: id, strength: "weak", color: "#ff5fb3", kind: "link" });
         }
         const domainKey = motionCatToDomain[m.cat];
@@ -1044,7 +1046,7 @@ export function buildGraph(): Graph {
     "#67e8f9", "#a5f3fc", "#fef3c7", "#fdba74", "#fca5a5",           // hubble
     "#00ffc8", "#a855f7", "#38bdf8", "#fbbf24", "#f472b6",           // aurora mix
   ];
-  const LEAF_KINDS = new Set(["motion", "vocab", "subbab", "roleskill", "speaker", "bab", "style", "section"]);
+  const LEAF_KINDS = new Set(["vocab", "subbab", "roleskill", "speaker", "bab", "style", "section"]);
   for (const n of finalNodes) {
     // preserve crown/pulse specials
     if (n.pulse || n.crown) continue;
