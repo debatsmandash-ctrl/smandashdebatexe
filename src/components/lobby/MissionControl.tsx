@@ -28,6 +28,8 @@ const EVENT_COVER: Record<string, string> = {
 /** Mosi yang direkomendasikan tampil di lobby. */
 const REKOMENDASI_MOSI = ["m042", "m216", "m366", "m367", "m368", "m377", "m375", "m373", "m371", "m250", "m025"];
 import { HeroSlider, buildSlides } from "./HeroSlider";
+import { ChevronLeft, ChevronRight, Search, Orbit, BookOpen, UsersRound, Library, Download } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 
 /* ────────────────────────────────────────────────────────────
@@ -132,7 +134,11 @@ export function MissionControl({ onInitiate }: { onInitiate: () => void }) {
   const [scrollY, setScrollY] = useState(0);
   const [query, setQuery] = useState("");
   const [cat, setCat] = useState("SEMUA");
+  const [recommendation, setRecommendation] = useState(0);
   const scrollRef = useRef<HTMLDivElement | null>(null);
+  const swipeStart = useRef<number | null>(null);
+  const recommended = useMemo(() => REKOMENDASI_MOSI.map((id) => MOTIONS.find((m) => m.id === id)).filter((m): m is typeof MOTIONS[number] => Boolean(m)), []);
+  const nextRecommendation = (step: number) => setRecommendation((i) => (i + step + recommended.length) % recommended.length);
 
   useEffect(() => { const id = window.setTimeout(() => setMounted(true), 30); return () => window.clearTimeout(id); }, []);
   useEffect(() => {
@@ -208,7 +214,7 @@ export function MissionControl({ onInitiate }: { onInitiate: () => void }) {
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     return MOTIONS.filter((m: any) =>
-      (cat === "SEMUA" || String(m.cat) === cat) && (!q || String(m.title).toLowerCase().includes(q))
+      (cat === "SEMUA" || String(m.cat) === cat) && (!q || `${m.title} ${m.type} ${m.cat} ${m.kode ?? ""} ${m.id}`.toLocaleLowerCase("id").includes(q))
     ).slice(0, 8);
   }, [query, cat]);
 
@@ -244,7 +250,7 @@ export function MissionControl({ onInitiate }: { onInitiate: () => void }) {
           <span className="hide-sm" style={{ fontFamily: MONO, fontSize: 10, letterSpacing: "0.2em", color: C.accent2, border: `1px solid rgba(79,209,197,0.35)`, padding: "3px 8px", borderRadius: 999 }}>◉ LIVE</span>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 20, fontFamily: MONO, fontSize: 10.5, color: C.dim, letterSpacing: "0.14em" }}>
-          <a href="#universe" style={{ color: C.dim, textDecoration: "none" }}>UNIVERSE</a>
+           <a href="#universe" style={{ color: C.dim, textDecoration: "none" }}>UNIVERSE</a>
           <a href="#telemetry" style={{ color: C.dim, textDecoration: "none" }}>DATA</a>
           <a href="#motions" style={{ color: C.dim, textDecoration: "none" }}>MOSI</a>
           <span className="hide-sm">{clock} WIB</span>
@@ -267,7 +273,7 @@ export function MissionControl({ onInitiate }: { onInitiate: () => void }) {
             right={<GhostButton onClick={() => go()}>Peta penuh</GhostButton>}
           />
         </Reveal>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(230px, 1fr))", gap: 14 }}>
+         <div className="lobby-gugus-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(230px, 1fr))", gap: 14 }}>
           <ImageCard img={nebulaImg} tag="Matter" title="Amunisi Argumen" meta={`${stats.domains} domain · ${stats.babs} bab`}
             desc="Ekonomi, politik, hukum, filsafat, sains, hingga filosofi cinta — lengkap dengan contoh dan bantahan."
             onClick={() => go(() => select("cluster:matter"))} delay={0} />
@@ -401,8 +407,9 @@ export function MissionControl({ onInitiate }: { onInitiate: () => void }) {
           <SectionHead kicker="Motion bank" title="Telusuri Mosi"
             sub="Ketik kata kunci atau saring berdasarkan kategori. Persentase menunjukkan peluang menang sisi pemerintah menurut analisis heuristik." />
         </Reveal>
-        <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Cari mosi… mis. 'THW ban'"
+         <label className="lobby-search"><Search size={18} aria-hidden /><input value={query} onChange={(e) => setQuery(e.target.value)} aria-label="Cari mosi" placeholder="Cari judul, jenis, kategori, atau kode mosi…"
           style={{ width: "100%", padding: "14px 16px", background: "rgba(255,255,255,0.03)", border: `1px solid ${C.line}`, borderRadius: 2, color: C.text, fontSize: 14, outline: "none", fontFamily: "inherit", marginBottom: 14 }} />
+         </label>
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 18 }}>
           {cats.map((c) => (
             <button key={c} onClick={() => setCat(c)} style={{
@@ -428,13 +435,14 @@ export function MissionControl({ onInitiate }: { onInitiate: () => void }) {
           <SectionHead kicker="Pilihan kurator" title="Rekomendasi Mosi Menarik"
             right={<GhostButton onClick={() => go(() => select("cluster:motion"))}>Bank mosi</GhostButton>} />
         </Reveal>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px,1fr))", gap: 1, background: C.lineSoft, border: `1px solid ${C.lineSoft}` }}>
-          {REKOMENDASI_MOSI.map((id) => MOTIONS.find((m: any) => m.id === id)).filter(Boolean).map((m: any) => {
+         <div className="recommendation-controls"><span>{String(recommendation + 1).padStart(2, "0")} / {String(recommended.length).padStart(2, "0")}</span><div><Button variant="outline" size="icon" aria-label="Mosi sebelumnya" onClick={() => nextRecommendation(-1)}><ChevronLeft /></Button><Button variant="outline" size="icon" aria-label="Mosi berikutnya" onClick={() => nextRecommendation(1)}><ChevronRight /></Button></div></div>
+         <div className="recommendation-slider" onTouchStart={(e) => { swipeStart.current = e.touches[0].clientX; }} onTouchEnd={(e) => { if (swipeStart.current !== null && Math.abs(e.changedTouches[0].clientX - swipeStart.current) > 45) nextRecommendation(e.changedTouches[0].clientX < swipeStart.current ? 1 : -1); swipeStart.current = null; }}>
+           {[0, 1, 2].map((offset) => {
+             const m = recommended[(recommendation + offset) % recommended.length];
             const a = analyzeMotion(m);
             return (
-              <button key={m.id} onClick={() => go(() => select(`motion:${m.id}`))}
-                style={{ background: C.bg2, padding: "24px 22px", textAlign: "left", border: "none", cursor: "pointer", color: C.text, display: "block" }}>
-                <div style={{ fontFamily: MONO, fontSize: 10, letterSpacing: "0.22em", color: C.accent, textTransform: "uppercase" }}>{String(m.cat ?? "mosi")}</div>
+               <Button variant="outline" key={`${recommendation}-${m.id}`} onClick={() => go(() => select(`motion:${m.id}`))} className="recommendation-card">
+                 <div style={{ fontFamily: MONO, fontSize: 10, letterSpacing: "0.22em", color: C.accent, textTransform: "uppercase" }}>{String(m.cat ?? "mosi")} · {m.type}</div>
                 <div style={{ marginTop: 12, fontSize: 15, fontWeight: 500, lineHeight: 1.45 }}>{m.title}</div>
                 <div style={{ marginTop: 14, display: "flex", height: 4, background: "rgba(255,255,255,0.08)" }}>
                   <div style={{ width: `${a.winProProb}%`, background: C.accent2 }} />
@@ -443,10 +451,11 @@ export function MissionControl({ onInitiate }: { onInitiate: () => void }) {
                 <div style={{ marginTop: 8, fontFamily: MONO, fontSize: 10, letterSpacing: "0.14em", color: C.faint }}>
                   PRO {a.winProProb}% · KON {100 - a.winProProb}% · {a.stance}
                 </div>
-              </button>
+               </Button>
             );
           })}
         </div>
+         <div className="recommendation-dots">{recommended.map((m, i) => <Button variant="ghost" size="icon" key={m.id} aria-label={`Rekomendasi ${i + 1}`} aria-current={i === recommendation ? "true" : undefined} onClick={() => setRecommendation(i)}><span /></Button>)}</div>
       </section>
 
       {/* ── EVENTS ── */}
@@ -515,7 +524,7 @@ export function MissionControl({ onInitiate }: { onInitiate: () => void }) {
       </section>
 
       <footer style={{ background: C.bg, color: C.faint, padding: `26px ${PAD}`, fontSize: 10.5, display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 12, borderTop: `1px solid ${C.lineSoft}`, fontFamily: MONO, letterSpacing: "0.12em" }}>
-        <span>© 2026 SMANDASH DEBATE CLUB × ROJAAKS</span>
+         <span>© 2026 SMANDASH DEBATE CLUB × ROJAAKS · v1.2.2</span>
         <Link to="/information" style={{ color: C.faint, textDecoration: "none" }}>LEGACY INFORMATION →</Link>
       </footer>
     </div>
