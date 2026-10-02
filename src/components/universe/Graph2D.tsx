@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useRef } from "react";
 import { buildGraph } from "@/lib/graph/build";
 import { useSettings, useUniverse } from "@/lib/store";
+import { MOTIONS } from "@/data";
+const motionTypes = new Map(MOTIONS.map((m) => [m.id, m.type]));
 
 /**
  * Graph2D — tampilan graf 2D ala Obsidian.
@@ -68,10 +70,8 @@ export function Graph2D() {
     const pinned = cfg.current.g2dPinned || {};
     const nodes: P[] = graph.nodes.map((n, i) => {
       const deg = graph.neighbors.get(n.id)?.length ?? 0;
-      const rank = RANK(n.kind);
       const golden = i * 2.399963;
        // Pertahankan kedekatan relatif antarbintang seperti atlas 3D, tanpa lingkaran berlapis.
-       const rad = 0;
       const pin = pinned[n.id];
       return {
         id: n.id,
