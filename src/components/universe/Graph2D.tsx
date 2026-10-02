@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useRef } from "react";
 import { buildGraph } from "@/lib/graph/build";
 import { useSettings, useUniverse } from "@/lib/store";
+import { MOTIONS } from "@/data";
+const motionTypes = new Map(MOTIONS.map((m) => [m.id, m.type]));
 
 /**
  * Graph2D — tampilan graf 2D ala Obsidian.
@@ -68,17 +70,16 @@ export function Graph2D() {
     const pinned = cfg.current.g2dPinned || {};
     const nodes: P[] = graph.nodes.map((n, i) => {
       const deg = graph.neighbors.get(n.id)?.length ?? 0;
-      const rank = RANK(n.kind);
       const golden = i * 2.399963;
-      const rad = 60 + rank * 220 + (i % 37) * 4;
+       // Pertahankan kedekatan relatif antarbintang seperti atlas 3D, tanpa lingkaran berlapis.
       const pin = pinned[n.id];
       return {
         id: n.id,
-        x: pin ? pin.x : Math.cos(golden) * rad,
-        y: pin ? pin.y : Math.sin(golden) * rad,
+         x: pin ? pin.x : n.pos[0] * 0.85 + n.pos[2] * 0.16 + Math.cos(golden) * 10,
+         y: pin ? pin.y : n.pos[1] * 0.85 + n.pos[2] * 0.27 + Math.sin(golden) * 10,
         vx: 0, vy: 0,
         // makin banyak percabangan/keturunan → makin besar bulatannya
-        r: Math.min(26, 3.2 * (1 + Math.log2(1 + (descCount.get(n.id) ?? 0)) * 0.62) + (rank === 0 ? 4 : 0)),
+         r: Math.min(26, 3.2 * (1 + Math.log2(1 + (descCount.get(n.id) ?? 0)) * 0.62) + (RANK(n.kind) === 0 ? 4 : 0)),
         color: n.color || "#8fb8ff",
         label: n.label,
         deg,
@@ -310,12 +311,13 @@ export function Graph2D() {
         }
       }
 
-      const lv = c.linkMode;
+       const lv = c.linkMode;
+       const actorHidden = (i: number) => c.hideAktorInTree && graph.nodes[i].kind === "motion" && /aktor/i.test(String((graph.nodes[i].refId && motionTypes.get(graph.nodes[i].refId)) ?? "")) && i !== active;
       ctx.lineWidth = 1 / zoom;
       if (lv !== "stars") for (const l of links) {
         if (lv === "normal" && active < 0) continue;
         if (lv === "tree" && active < 0) continue;
-        const on = active < 0 ? true : lit.has(l.a) && lit.has(l.b);
+         const on = active < 0 ? true : lit.has(l.a) && lit.has(l.b) && !(lv === "tree" && (actorHidden(l.a) || actorHidden(l.b)));
         if ((lv === "normal" || lv === "tree") && !on) continue;
         ctx.globalAlpha = active < 0 ? 0.22 : on ? 0.9 : 0.06;
         ctx.strokeStyle = on && active >= 0 ? nodes[active].color : "#63788f";
@@ -328,8 +330,8 @@ export function Graph2D() {
 
       for (let i = 0; i < n; i++) {
         const p = nodes[i];
-        const on = active < 0 || lit.has(i);
-        ctx.globalAlpha = on ? 1 : 0.22;
+         const on = active < 0 || (lit.has(i) && !(lv === "tree" && actorHidden(i)));
+         ctx.globalAlpha = on ? 1 : c.dimStrength;
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
         ctx.fillStyle = p.color;

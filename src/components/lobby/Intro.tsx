@@ -85,7 +85,7 @@ export function Intro({ onDone }: { onDone: () => void }) {
           Debate Coach Toolkit
         </div>
         <div style={{ marginTop: 10, fontSize: 12, letterSpacing: "0.24em", color: "#3B82F6", textTransform: "uppercase" }}>
-          SMANDASH × Rojaaks · v1.1
+           SMANDASH × Rojaaks · v1.2.2
         </div>
       </div>
 

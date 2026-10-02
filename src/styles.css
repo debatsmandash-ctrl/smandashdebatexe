@@ -13,6 +13,34 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* Reading atlas and touch-friendly recommendation rail. */
+.reading-view { scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
+.reading-item { transition: transform .22s ease, border-color .22s ease; }
+.reading-item:hover { border-color: var(--primary); }
+.reading-detail { scroll-margin-top: 6rem; }
+.reading-detail p { text-align: justify; hyphens: auto; overflow-wrap: anywhere; }
+.view-switch { border-radius: 7px; padding-bottom: max(.25rem, env(safe-area-inset-bottom)); box-shadow: 0 16px 42px color-mix(in oklch, var(--background), transparent 25%); }
+.lobby-search { display: flex; align-items: center; gap: 10px; color: var(--primary); }
+.lobby-search input { min-width: 0; }
+.recommendation-controls { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; font: 12px "Space Mono", monospace; color: var(--muted-foreground); }
+.recommendation-controls > div { display: flex; gap: 6px; }
+.recommendation-slider { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; touch-action: pan-y; }
+.recommendation-card { display: flex; min-height: 205px; height: auto; flex-direction: column; align-items: stretch; justify-content: flex-start; white-space: normal; border-radius: 3px; padding: 24px; text-align: left; background: var(--card); animation: recommendation-enter .35s ease both; }
+.recommendation-card:hover { border-color: var(--primary); transform: translateY(-3px); }
+.recommendation-dots { display: flex; justify-content: center; margin-top: 14px; gap: 1px; }
+.recommendation-dots button { width: 26px; height: 32px; padding: 0; }
+.recommendation-dots span { width: 5px; height: 5px; border-radius: 50%; background: var(--muted-foreground); }
+.recommendation-dots [aria-current="true"] span { width: 16px; border-radius: 3px; background: var(--primary); }
+@keyframes recommendation-enter { from { opacity: 0; transform: translateY(9px); } to { opacity: 1; transform: translateY(0); } }
+@media (max-width: 700px) {
+  .recommendation-slider { grid-template-columns: minmax(0, 1fr); }
+  .recommendation-card:not(:first-child) { display: none; }
+  .recommendation-card { min-height: 230px; }
+  .view-switch { bottom: max(12px, env(safe-area-inset-bottom)); }
+  .reading-view .reading-detail { padding: 14px; }
+}
+@media (prefers-reduced-motion: reduce) { .recommendation-card, .reading-item { animation: none; transition: none; } }
+
 /*
  * Design system definition.
  *
