@@ -71,7 +71,7 @@ export function Sidebar() {
               DEBATE COACH
             </div>
             <div style={{ fontFamily: "Space Mono", fontSize: 8, letterSpacing: "0.3em", color: "#3d5a7a" }}>
-              v0.9 · STAR UNIVERSE
+               v1.2.2 · STAR UNIVERSE
             </div>
           </div>
         )}

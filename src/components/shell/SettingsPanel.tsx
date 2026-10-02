@@ -134,6 +134,7 @@ export function SettingsPanel() {
               <div style={{ display: "flex", gap: 4 }}>
                 <Pill active={s.graphMode === "3d"} onClick={() => update({ graphMode: "3d" })}>3D</Pill>
                 <Pill active={s.graphMode === "2d"} onClick={() => update({ graphMode: "2d" })}>2D</Pill>
+                <Pill active={s.graphMode === "read"} onClick={() => update({ graphMode: "read" })}>BACAAN</Pill>
               </div>
             </Row>
           </Section>
@@ -229,6 +230,10 @@ export function SettingsPanel() {
           </Section>
 
           <Section title="Hover">
+            <Row label={`Redupkan bintang ${Math.round((1 - s.dimStrength) * 100)}%`} hint="Bintang yang tidak tertaut tetap terlihat samar">
+              <Slider value={s.dimStrength} min={0.03} max={0.6} step={0.01} onChange={(v) => update({ dimStrength: v })} />
+            </Row>
+            <Row label="Sembunyikan mosi aktor di pohon penuh" hint="Mosi aktor tetap muncul saat dipilih langsung"><Toggle value={s.hideAktorInTree} onChange={(v) => update({ hideAktorInTree: v })} /></Row>
             <Row label="Tampilkan hover edges" hint="Matikan bila tidak ingin garis muncul saat hover">
               <Toggle value={s.showHoverEdges} onChange={(v) => update({ showHoverEdges: v })} />
             </Row>

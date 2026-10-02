@@ -11,6 +11,8 @@ export const Route = createFileRoute("/information")({
       { name: "description", content: "Dashboard NASA-style lengkap: statistik dataset, distribusi mosi, heatmap tautan antar-domain, dan fakta menarik tentang universe debat." },
       { property: "og:title", content: "Debate Coach Toolkit · Information Dashboard" },
       { property: "og:description", content: "Bento HUD, telemetry, distribution charts & mission decks untuk seluruh knowledge graph." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: InformationPage,

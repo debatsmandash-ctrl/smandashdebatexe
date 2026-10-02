@@ -102,7 +102,7 @@ function BottomSheetShell() {
             >
               <div style={{ padding: "8px 12px 18px", borderBottom: "1px solid rgba(168,85,247,0.15)" }}>
                 <div style={{ fontFamily: "Bebas Neue", letterSpacing: "0.14em", fontSize: 16, color: "#e8f4ff" }}>NAVIGASI</div>
-                <div style={{ fontFamily: "Space Mono", fontSize: 8, letterSpacing: "0.3em", color: "#3d5a7a", marginTop: 2 }}>v0.9 · MOBILE</div>
+                 <div style={{ fontFamily: "Space Mono", fontSize: 8, letterSpacing: "0.3em", color: "#3d5a7a", marginTop: 2 }}>v1.2.2 · MOBILE</div>
               </div>
               <div style={{ flex: 1, overflowY: "auto", padding: "8px 0" }}>
                 {CLUSTER_META.map((c) => (

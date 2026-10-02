@@ -2,6 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { Universe } from "@/components/universe/Universe";
 import { Graph2D } from "@/components/universe/Graph2D";
+import { ReadingView } from "@/components/shell/ReadingView";
+import { Button } from "@/components/ui/button";
 import { Loader } from "@/components/shell/Loader";
 import { Sidebar } from "@/components/shell/Sidebar";
 import { SidePanel } from "@/components/shell/SidePanel";
@@ -23,6 +25,8 @@ export const Route = createFileRoute("/")({
       { name: "description", content: "NASA-style mission control lobby + 3D star universe untuk seluruh kurikulum debat: matter, motion bank, roles, kamus — semua bintang saling terhubung." },
       { property: "og:title", content: "Debate Coach Toolkit · Mission Control" },
       { property: "og:description", content: "3D knowledge graph SMANDASH Debate Club — dengan Mission Control lobby ala NASA." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: Index,
@@ -50,15 +54,18 @@ function Index() {
     <main style={{ position: "fixed", inset: 0, overflow: "hidden", background: "#05080f" }}>
       <FontPresetApplier />
       <div className="aurora-bg" />
-      {graphMode === "2d" ? <Graph2D /> : <Universe />}
-      {isMobile ? (
+      {graphMode === "read" ? <ReadingView /> : graphMode === "2d" ? <Graph2D /> : <Universe />}
+      {graphMode !== "read" && (isMobile ? (
         <MobileShell />
       ) : (
         <>
           <Sidebar />
           <SidePanel />
         </>
-      )}
+      ))}
+      {!loading && !introOpen && !lobbyOpen && <nav aria-label="Pilih tampilan" className="view-switch fixed bottom-4 left-1/2 z-40 flex -translate-x-1/2 gap-1 border border-border bg-card p-1 shadow-lg">
+        {([ ["3d", "3D"], ["2d", "2D"], ["read", "Bacaan"] ] as const).map(([mode, label]) => <Button key={mode} size="sm" variant={graphMode === mode ? "default" : "ghost"} onClick={() => update({ graphMode: mode })} aria-current={graphMode === mode ? "page" : undefined}>{label}</Button>)}
+      </nav>}
       <SearchOverlay />
       <EditorUnlockModal />
       <SettingsPanel />
@@ -94,7 +101,7 @@ function Index() {
           color: "rgba(168,85,247,0.55)", textTransform: "uppercase", pointerEvents: "none",
         }}
       >
-        v1.0.2 · {graphMode === "2d" ? "OBSIDIAN 2D" : "UNIVERSE 3D"}
+         v1.2.2 · {graphMode === "2d" ? "OBSIDIAN 2D" : graphMode === "read" ? "BACAAN" : "UNIVERSE 3D"}
       </div>
     </main>
   );
