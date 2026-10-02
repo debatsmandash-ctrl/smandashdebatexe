@@ -5,12 +5,14 @@ import { BlendFunction } from "postprocessing";
 import { useMemo, useRef, useEffect, useState, Suspense } from "react";
 import * as THREE from "three";
 import { buildGraph } from "@/lib/graph/build";
+import { MOTIONS } from "@/data";
 import { useUniverse, useSettings, type QualityPreset } from "@/lib/store";
 import type { StarNode, StarEdge, NodeKind } from "@/data/types";
 import { MilkyWaySky } from "./MilkyWaySky";
 import { HoverEdges } from "./HoverEdges";
 import { FlowEdges } from "./FlowEdges";
 import { useDeviceProfile, type DeviceProfile } from "@/hooks/useDeviceProfile";
+const MOTIONS_BY_ID = new Map(MOTIONS.map((m) => [m.id, m]));
 
 // ─── Halo texture (shared canvas radial gradient) ───
 function makeHaloTexture(): THREE.CanvasTexture {
