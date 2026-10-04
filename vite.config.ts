@@ -17,6 +17,7 @@ export default defineConfig({
       manifest: false,
       workbox: {
         swDest: "sw.js",
+        maximumFileSizeToCacheInBytes: 8 * 1024 * 1024,
         globPatterns: ["**/*.{js,css,html,png,svg,webp,woff2,json}"],
         navigateFallback: null,
         navigateFallbackDenylist: [/^\/~oauth(?:\/|$)/],
