@@ -1,0 +1,16 @@
+# Pembaruan SMANDASH: seleksi 26/27, bacaan, dan Android
+
+## Hasil yang akan dibuat
+1. **Anggota dan rekam seleksi.** Masukkan peserta serta posisi pembicara sementara berdasarkan PDF “Seleksi Debat Club Vol.1”, dikelompokkan menurut kelas/angkatan 26/27. Simpan hasil ronde, skor, dan penghargaan yang tercantum sebagai arsip uji coba, bukan peringkat permanen. Tandai ketidakkonsistenan sumber (misalnya nomor ronde atau nama pada tabel penghargaan) tanpa menebak pembetulannya. Pelatih tetap ditampilkan sebagai pelatih, tanpa peran P1/P2/P3 atau uraian tugas pembicara.
+2. **Styles.** Sisakan dua cabang **Halal** dan **Haram** saja; sembunyikan turunan gaya saat ini, termasuk tautan yang mengarah ke gaya yang dihapus. Kedua cabang tetap dapat dibuka untuk melihat keterangan ringkas.
+3. **Bacaan dan mosi favorit.** Beri mode Bacaan tema gelap minimalis senada slider lobi, latar foto HD dengan gerak berulang yang halus, dan kartu materi bercabang/bertingkat yang membuka uraian lengkap saat diketuk. Rekomendasi mosi tetap berupa slider, tetapi tampil gelap dan konsisten.
+4. **LDI.** Tampilkan bagan perjalanan kabupaten → provinsi → nasional untuk 2026 sesuai catatan yang sudah ada, serta panel 2025 terpisah yang menautkan arsip resmi tanpa mengarang hasil atau keterlibatan SMANDASH. Bagan dibedakan dari bracket pertandingan; pertandingan nasional hanya diberi hasil bila sumber memuatnya. Sertakan tautan arsip 2025 dan 2026 yang diberikan.
+5. **Editor lintas perangkat.** Ganti kunci editor yang tertanam di aplikasi dengan akses akun yang diverifikasi di sisi layanan. Simpan suntingan node secara terpusat, tampilkan hasilnya pada 3D, 2D, dan Bacaan, serta beri aksi simpan, pulihkan, dan ekspor. Batasi penulisan pada pengguna yang diberi izin editor; jangan memindahkan semua data publik ke penyimpanan baru.
+6. **Android dan luring.** Masuk dari lobi ke Bacaan secara bawaan pada Android; desktop tetap ke 3D, namun pilihan tampilan pengguna yang sengaja diubah tetap dihormati. Tambahkan status kesiapan konten luring yang sungguh memeriksa kendali aplikasi, dan petunjuk instalasi Android. Perbaiki area aman, tombol, dan panel pada layar kecil. Pertahankan cache hanya pada aplikasi terbit, bukan pratinjau, lalu uji buka kembali tanpa jaringan.
+7. **Visual 3D.** Gunakan panorama nebula HD yang sudah tersedia pada desktop, tingkatkan kejernihan/pencahayaan secukupnya, dan pertahankan preset ringan tanpa efek berat di Android.
+
+## Detail teknis
+- Sumber data seleksi: PDF unggahan; pisahkan arsip hasil uji coba dari daftar anggota agar data historis tidak dianggap jabatan tetap.
+- Editor: autentikasi akun, tabel izin terpisah, aturan akses baca/tulis yang ketat, dan penyimpanan suntingan bersama; hapus kredensial editor bawaan di sisi browser. Fungsi aplikasi internal menggunakan TanStack Start.
+- Pertahankan manifest dan konfigurasi luring yang sudah ada; hindari cache aplikasi pada pratinjau. Ukur kesiapan dari aset/kendali yang benar-benar tersedia, bukan sekadar status internet.
+- Uji alur di desktop dan layar Android: masuk dari lobi, buka bacaan dan detail, navigasi tiga tampilan, akses editor yang berizin, dan indikator luring. Verifikasi tampilan serta kesalahan terbaru sebelum selesai.
