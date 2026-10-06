@@ -1,0 +1,57 @@
+{
+  "id": "seleksi-2627-vol1",
+  "nama": "Seleksi Uji Coba Angkatan 26/27 · Vol. 1",
+  "status": "arsip uji coba",
+  "catatan": [
+    "Posisi pembicara bersifat sementara dan dapat berubah mengikuti perkembangan latihan.",
+    "Nomor ronde dan pasangan pada bagian penghargaan sumber tidak sepenuhnya konsisten; data ditampilkan sebagaimana tertulis tanpa menebak koreksi."
+  ],
+  "kelas": [
+    { "label": "Kelas 12", "anggota": [
+      { "nama": "Valentino Alexandros Saragih", "posisi": ["P1", "P2", "P3", "Reply"] },
+      { "nama": "Syifa Aurelia Qalbina", "posisi": ["P1", "P3"] },
+      { "nama": "Pramudya Fathur Roza", "posisi": ["P1", "P2", "Reply"] },
+      { "nama": "Eny Iryany Sangjia Putri", "posisi": ["P1", "P2", "P3"] },
+      { "nama": "Hatta Pandya Bumi Ath", "posisi": ["P2", "P3"] },
+      { "nama": "Kevan Joni Aldi", "posisi": ["P3"] },
+      { "nama": "Ismat Habibi Akmal", "posisi": ["P3"] }
+    ]},
+    { "label": "Kelas 11", "anggota": [
+      { "nama": "Nabila Meysun Nur F", "posisi": ["P1"] },
+      { "nama": "Nakeisha Putri Adinda", "posisi": ["P1", "P3"] },
+      { "nama": "Thalita", "posisi": ["P1"] },
+      { "nama": "Selfya Ramadanis", "posisi": ["P1"] },
+      { "nama": "Raudha Eca Azwita", "posisi": ["P1"] },
+      { "nama": "Nur Amirah Syahnas N", "posisi": ["P2", "P3"] },
+      { "nama": "Aditya Padlan", "posisi": ["P2"] },
+      { "nama": "Nikita Salsabila", "posisi": ["P2"] },
+      { "nama": "Marsha Millano", "posisi": ["P2"] },
+      { "nama": "Kezia", "posisi": ["P3"] },
+      { "nama": "Raysa Rahmania", "posisi": ["P3"] }
+    ]},
+    { "label": "Kelas 10", "anggota": [
+      { "nama": "Bagas", "posisi": ["P2"] }, { "nama": "Silvia", "posisi": ["P2"] },
+      { "nama": "Zastari", "posisi": ["P2"] }, { "nama": "Anindya", "posisi": ["P2"] },
+      { "nama": "Aira", "posisi": ["P3"] }, { "nama": "Tria", "posisi": ["P3"] },
+      { "nama": "Amelia", "posisi": ["P3"] }, { "nama": "Lutfya", "posisi": ["P1"] },
+      { "nama": "Khairunnissa", "posisi": ["P1"] }, { "nama": "Natasya", "posisi": ["P1"] },
+      { "nama": "Joshua", "posisi": ["P1"] }
+    ]}
+  ],
+  "hasil": [
+    { "round": "1", "pro": "Zastari", "kontra": "Amelia Royse Putri", "proPoin": 208, "kontraPoin": 212, "total": 420 },
+    { "round": "2", "pro": "Natasya", "kontra": "Khairunnisa", "proPoin": 213, "kontraPoin": 212, "total": 425 },
+    { "round": "3", "pro": "Qamara", "kontra": "Bagas Alfarabi", "proPoin": 216, "kontraPoin": 218, "total": 434 },
+    { "round": "4", "pro": "Joshua", "kontra": "Pramudya Fathur Roza", "proPoin": 215, "kontraPoin": 218, "total": 433 },
+    { "round": "5", "pro": "Silvia", "kontra": "Lutfya", "proPoin": 219, "kontraPoin": 211, "total": 430 },
+    { "round": "6", "pro": "Raudha Eca", "kontra": "Aira", "proPoin": 216, "kontraPoin": 207, "total": 424 },
+    { "round": "7", "pro": "Nabila Meysun", "kontra": "Nikita", "proPoin": 217, "kontraPoin": 213, "total": 430 },
+    { "round": "8", "pro": "Aditya Padlan", "kontra": "Nur Amirah", "proPoin": 217, "kontraPoin": 219, "total": 436 }
+  ],
+  "penghargaan": {
+    "bestTeam": "Aditya vs Amirah · 436 poin",
+    "bestSpeaker1": "Silvia dan Amirah · 219 poin",
+    "bestSpeaker2": "Pramudya Fathur Roza dan Bagas Alfarabi · 218 poin",
+    "bestSpeaker3": "Rasya Rahmania dan Aditya · 217 poin"
+  }
+}

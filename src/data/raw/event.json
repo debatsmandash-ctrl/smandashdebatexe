@@ -63,6 +63,10 @@
         "Delegasi Kabupaten Kampar — menang pada seleksi berikutnya.",
         "Delegasi Provinsi Riau — tiga pembicara utuh maju ke tingkat nasional."
       ],
+      "sources": [
+        { "label": "Arsip Indonesia 2025", "url": "https://nsdc-ldbi.au-tab.app/indonesia2025/" },
+        { "label": "Arsip Indonesia 2026", "url": "https://nsdc-ldbi.au-tab.app/id2026/" }
+      ],
       "brackets": [],
       "prestasi": { "best_speakers": [] }
     }

@@ -6,6 +6,7 @@ import competitorsRaw from "./raw/competitors.json";
 import activeMemberRaw from "./raw/active-member.json";
 import eventRaw from "./raw/event.json";
 import rolesRaw from "./raw/roles.json";
+import selectionRaw from "./raw/selection-2627.json";
 import type { Motion, JenisMosi, Vocab, MatterData } from "./types";
 
 export const MOTIONS = motionsRaw as unknown as Motion[];
@@ -110,6 +111,14 @@ export interface Team { id: string; label: string; speakers: Speaker[] }
 export interface School { id: string; nama: string; short: string; tag?: string; home?: boolean; teams: Team[] }
 export const COMPETITORS = (competitorsRaw as any).schools as School[];
 export const ACTIVE_MEMBERS = (activeMemberRaw as any).schools as School[];
+export interface SelectionMember { nama: string; posisi: string[] }
+export interface SelectionRecord {
+  id: string; nama: string; status: string; catatan: string[];
+  kelas: { label: string; anggota: SelectionMember[] }[];
+  hasil: { round: string; pro: string; kontra: string; proPoin: number; kontraPoin: number; total: number }[];
+  penghargaan: Record<string, string>;
+}
+export const SELECTION_2627 = selectionRaw as SelectionRecord;
 
 export interface EventBracket { id: string; nama: string; teams: string[] }
 export interface EventRosterTeam { id: string; nama: string; anggota: string[] }
@@ -123,6 +132,7 @@ export interface EventData {
   sistem?: string;
   roster?: EventRosterTeam[];
   milestones?: string[];
+  sources?: { label: string; url: string }[];
   brackets?: EventBracket[];
   prestasi?: {
     j1?: { team: string; label: string };
@@ -168,58 +178,18 @@ export const STYLES = [
     color: "#00ffc8",
     tag: "Standar Asia / WSDC",
     side: "halal",
-    desc: "Format default kompetisi. Bersih, terstruktur, fokus weighing. Default semua speaker.",
-    detail: "Ikuti struktur kausalistik, gunakan POI normal, weighing eksplisit, signposting bersih. Aman untuk debat formal.",
-  },
-  {
-    id: "chaos",
-    nama: "CHAOS",
-    icon: "⚡",
-    color: "#a855f7",
-    tag: "Disruptive / Aggressive",
-    side: "halal",
-    desc: "Pecah ritme lawan dengan framing tak terduga, kontradiksi internal, dan POI berlapis.",
-    detail: "Cocok ketika lawan punya case yang rapi tapi rigid. Risiko: chaos di tim sendiri kalau eksekusi miskoordinasi.",
-  },
-  {
-    id: "simeone",
-    nama: "SIMEONE",
-    icon: "🛡",
-    color: "#38bdf8",
-    tag: "Defensive / Reactive",
-    side: "haram",
-    desc: "Park the bus. Sedikit serangan, banyak defense, menang via dropped + weighing minimalis.",
-    detail: "Tahan satu axioma utama, biarkan lawan over-extend. Tutup dengan crystallize defensive yang clean.",
-  },
-  {
-    id: "konstan",
-    nama: "KONSTAN",
-    icon: "○",
-    color: "#f0c040",
-    tag: "Principle / Anchored",
-    side: "halal",
-    desc: "Satu prinsip moral berat dijatuhkan dari awal — semua argumen tertaut ke principle itu.",
-    detail: "Bagus untuk mosi penyesalan, moral, dan filosofis. Risiko: principle yang lemah = case ambruk.",
+    desc: "Cabang pendekatan yang bersih, terstruktur, dan patuh pada format kompetisi.",
+    detail: "Gunakan struktur kausalistik, POI normal, penimbangan eksplisit, serta penanda alur yang jelas.",
   },
   {
     id: "haramdebate",
-    nama: "HARAMDEBATE",
+    nama: "HARAM",
     icon: "☠",
     color: "#ff2d8a",
-    tag: "Forbidden / High-Risk",
+    tag: "Eksperimental / Risiko Tinggi",
     side: "haram",
     desc: "Playbook agresif: force deadlock, exploit weighing, frame ulang clash agar lawan kehilangan ground.",
     detail: "Manfaatkan deadlock dan clash kosong: bangun weighing terlebih dahulu, baru jatuhkan argumen. Risiko tinggi — kalau juri tidak nangkep weighing, kasusnya dianggap kosong.",
-  },
-  {
-    id: "tembok",
-    nama: "TEMBOK KONSTANTINOPEL",
-    icon: "🧱",
-    color: "#9333ea",
-    tag: "Wall / Unbreakable Defense",
-    side: "haram",
-    desc: "Bangun tembok argumen yang mustahil ditembus: stacked defensive layers, framing pre-empt, weighing dari awal speech.",
-    detail: "Dipakai saat tim Opp lemah dan butuh bertahan total. Layer: definisi tight → exclusion clauses → defensive weighing → preempt counter-models. Risiko: kalau tembok jebol di satu titik, seluruh case runtuh.",
   },
 ] as const;
 
