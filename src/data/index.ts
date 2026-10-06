@@ -106,7 +106,7 @@ const FILOSOFIS_CINTA: MatterData = {
 };
 export const MATTER: MatterData = { ...(matterRaw as unknown as MatterData), ...FILOSOFIS_CINTA };
 
-export interface Speaker { id: string; nama: string; fullname?: string; role: "p1"|"p2"|"p3"; replyOf?: "p1"|"p2"|"p3"; crown?: "best-speaker" }
+export interface Speaker { id: string; nama: string; fullname?: string; role?: "p1"|"p2"|"p3"; positions?: string[]; replyOf?: "p1"|"p2"|"p3"; crown?: "best-speaker" }
 export interface Team { id: string; label: string; speakers: Speaker[] }
 export interface School { id: string; nama: string; short: string; tag?: string; home?: boolean; teams: Team[] }
 export const COMPETITORS = (competitorsRaw as any).schools as School[];
