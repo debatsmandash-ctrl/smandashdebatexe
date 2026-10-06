@@ -13,3 +13,12 @@
 - [ ] Lobby animasi/ikon, pencarian mosi, rekomendasi geser
 - [ ] Dapat dipasang di Android serta konten lokal dapat dibuka luring sesudah kunjungan daring
 - [ ] Optimalisasi performa dan verifikasi tampilan/perpindahan mode
+
+## Seleksi 26/27 dan penyempurnaan Android
+- [ ] Catat anggota/rekam seleksi uji coba dari dokumen dan hilangkan peran pembicara dari pelatih
+- [ ] Sederhanakan Styles menjadi dua cabang Halal dan Haram tanpa turunan
+- [ ] Bacaan gelap dengan latar bergerak, kartu materi yang membuka detail, serta mosi favorit gelap
+- [ ] Indikator kesiapan luring dan petunjuk pemasangan Android
+- [ ] Visual kemajuan LDI 2025–2026 berdasarkan bukti, tanpa hasil yang direka
+- [ ] Editor lintas perangkat dapat dipakai pada bacaan, 2D, dan 3D
+- [ ] Nebula desktop lebih tajam, 3D Android ringan dan tidak terpotong; Android masuk bacaan, desktop masuk 3D
