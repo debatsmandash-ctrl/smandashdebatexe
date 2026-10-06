@@ -1,26 +1,36 @@
 import { useState } from "react";
 import { useUniverse } from "@/lib/store";
-import { validateEditorKey } from "@/lib/editor/overrides";
+import { userCanEdit } from "@/lib/editor/overrides";
+import { lovable } from "@/integrations/lovable";
+import { supabase } from "@/integrations/supabase/client";
+import { Button } from "@/components/ui/button";
 
 export function EditorUnlockModal() {
   const open = useUniverse((s) => s.editorUnlockOpen);
   const setOpen = useUniverse((s) => s.setEditorUnlockOpen);
   const setEditorMode = useUniverse((s) => s.setEditorMode);
   const editorMode = useUniverse((s) => s.editorMode);
-  const [key, setKey] = useState("");
   const [err, setErr] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
 
   if (!open) return null;
 
-  const submit = () => {
-    if (validateEditorKey(key)) {
+  const submit = async () => {
+    setBusy(true); setErr(null);
+    const { data } = await supabase.auth.getUser();
+    if (!data.user) {
+      await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin });
+      setBusy(false);
+      return;
+    }
+    if (await userCanEdit()) {
       setEditorMode(true);
       setOpen(false);
-      setKey("");
       setErr(null);
     } else {
-      setErr("Kunci salah. Coba lagi.");
+      setErr("Akun ini belum diberi izin editor.");
     }
+    setBusy(false);
   };
 
   return (
@@ -48,47 +58,32 @@ export function EditorUnlockModal() {
         <p style={{ fontFamily: "DM Sans", fontSize: 13, lineHeight: 1.6, color: "#8ba3c0", marginTop: 8 }}>
           {editorMode
             ? "Editor sudah aktif. Tutup modal ini untuk mengubah node dari panel kanan."
-            : "Masukkan kunci editor untuk mengaktifkan mode edit pada node universe."}
+            : "Masuk dengan akun Google yang telah diberi izin editor."}
         </p>
         {!editorMode && (
           <>
-            <input
-              autoFocus
-              type="password"
-              value={key}
-              onChange={(e) => { setKey(e.target.value); setErr(null); }}
-              onKeyDown={(e) => { if (e.key === "Enter") submit(); }}
-              placeholder="Editor key…"
-              style={{
-                width: "100%", marginTop: 16, padding: "12px 14px",
-                background: "rgba(5,8,15,0.6)", border: "1px solid rgba(168,85,247,0.35)",
-                color: "#e8f4ff", fontFamily: "Space Mono", fontSize: 13, letterSpacing: "0.15em",
-                borderRadius: 4, outline: "none",
-              }}
-            />
             {err && <div style={{ marginTop: 8, color: "#ff5c5c", fontFamily: "Space Mono", fontSize: 11 }}>{err}</div>}
             <div style={{ display: "flex", gap: 8, marginTop: 18 }}>
-              <button
+              <Button variant="outline"
                 onClick={() => setOpen(false)}
-                style={{ flex: 1, padding: "10px", background: "transparent", border: "1px solid rgba(168,85,247,0.25)", color: "#8ba3c0", cursor: "pointer", borderRadius: 4, fontFamily: "Space Mono", fontSize: 11, letterSpacing: "0.2em" }}
-              >BATAL</button>
-              <button
-                onClick={submit}
-                style={{ flex: 1, padding: "10px", background: "rgba(168,85,247,0.18)", border: "1px solid rgba(168,85,247,0.5)", color: "#e8f4ff", cursor: "pointer", borderRadius: 4, fontFamily: "Space Mono", fontSize: 11, letterSpacing: "0.2em" }}
-              >BUKA</button>
+                className="flex-1"
+              >Batal</Button>
+              <Button onClick={() => void submit()} disabled={busy} className="flex-1">
+                {busy ? "Memeriksa…" : "Masuk & buka"}
+              </Button>
             </div>
           </>
         )}
         {editorMode && (
           <div style={{ display: "flex", gap: 8, marginTop: 18 }}>
-            <button
+            <Button variant="outline"
               onClick={() => { setEditorMode(false); setOpen(false); }}
-              style={{ flex: 1, padding: "10px", background: "transparent", border: "1px solid rgba(255,92,92,0.4)", color: "#ff5c5c", cursor: "pointer", borderRadius: 4, fontFamily: "Space Mono", fontSize: 11, letterSpacing: "0.2em" }}
-            >MATIKAN</button>
-            <button
+              className="flex-1"
+            >Matikan</Button>
+            <Button
               onClick={() => setOpen(false)}
-              style={{ flex: 1, padding: "10px", background: "rgba(168,85,247,0.18)", border: "1px solid rgba(168,85,247,0.5)", color: "#e8f4ff", cursor: "pointer", borderRadius: 4, fontFamily: "Space Mono", fontSize: 11, letterSpacing: "0.2em" }}
-            >TUTUP</button>
+              className="flex-1"
+            >Tutup</Button>
           </div>
         )}
       </div>
