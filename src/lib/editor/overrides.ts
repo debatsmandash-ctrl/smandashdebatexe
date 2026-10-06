@@ -22,6 +22,51 @@ export function loadOverrides(): Overrides {
   return cache!;
 }
 
+export async function syncOverridesFromCloud(): Promise<Overrides> {
+  const { supabase } = await import("@/integrations/supabase/client");
+  const { data, error } = await supabase.from("node_overrides").select("node_id,label,description,deleted");
+  if (error) throw error;
+  const overrides: Overrides = {};
+  for (const row of data ?? []) overrides[row.node_id] = {
+    label: row.label ?? undefined,
+    desc: row.description ?? undefined,
+    deleted: row.deleted,
+  };
+  saveOverrides(overrides);
+  return overrides;
+}
+
+export async function userCanEdit(): Promise<boolean> {
+  const { supabase } = await import("@/integrations/supabase/client");
+  const { data: auth } = await supabase.auth.getUser();
+  if (!auth.user) return false;
+  const { data } = await supabase.from("user_roles").select("role").eq("user_id", auth.user.id);
+  return (data ?? []).some((row) => row.role === "editor" || row.role === "admin");
+}
+
+export async function saveCloudOverride(id: string, patch: Partial<NodeOverride>) {
+  const { supabase } = await import("@/integrations/supabase/client");
+  const { data: auth } = await supabase.auth.getUser();
+  if (!auth.user) throw new Error("Masuk diperlukan untuk menyimpan.");
+  const { error } = await supabase.from("node_overrides").upsert({
+    node_id: id,
+    label: patch.label ?? null,
+    description: patch.desc ?? null,
+    deleted: patch.deleted ?? false,
+    updated_by: auth.user.id,
+    updated_at: new Date().toISOString(),
+  });
+  if (error) throw error;
+  setOverride(id, patch);
+}
+
+export async function clearCloudOverrides() {
+  const { supabase } = await import("@/integrations/supabase/client");
+  const { error } = await supabase.from("node_overrides").delete().not("node_id", "is", null);
+  if (error) throw error;
+  clearOverrides();
+}
+
 export function saveOverrides(o: Overrides) {
   cache = o;
   if (typeof window !== "undefined") {
@@ -41,9 +86,4 @@ export function clearOverrides() {
 
 export function exportOverrides(): string {
   return JSON.stringify(loadOverrides(), null, 2);
-}
-
-export function validateEditorKey(input: string): boolean {
-  const envKey = (import.meta.env.VITE_EDITOR_KEY as string | undefined) || "smandash2026";
-  return input.trim() === envKey;
 }

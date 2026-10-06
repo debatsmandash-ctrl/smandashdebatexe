@@ -436,7 +436,7 @@ export function buildGraph(): Graph {
 
 
 
-  // ─── STYLES (cluster → HALAL / HARAM sub-hubs → style nodes) ───
+  // ─── STYLES (dua cabang saja, tanpa turunan) ───
   {
     const center = clusterCenter.styles;
     const radial = normalize(center);
@@ -450,25 +450,12 @@ export function buildGraph(): Graph {
     const halalCenter = add(center, scale(perp, -offset));
     const haramCenter = add(center, scale(perp,  offset));
 
-    nodes.push({ id: "subhub:styles:halal", label: "HALALDEBATE", kind: "subhub", cluster: "styles", color: "#00ffc8", size: 0.36, pos: halalCenter });
-    nodes.push({ id: "subhub:styles:haram", label: "HARAMDEBATE", kind: "subhub", cluster: "styles", color: "#ff2d8a", size: 0.36, pos: haramCenter });
-    edges.push({ a: "cluster:styles", b: "subhub:styles:halal", strength: "strong", color: "#00ffc8" });
-    edges.push({ a: "cluster:styles", b: "subhub:styles:haram", strength: "strong", color: "#ff2d8a" });
-
-    const halalStyles = STYLES.filter((s) => (s as any).side === "halal");
-    const haramStyles = STYLES.filter((s) => (s as any).side === "haram");
-    const hp = placeCloud(halalCenter, 9, halalStyles.length, 4);
-    const rp = placeCloud(haramCenter, 9, haramStyles.length, 4);
-    halalStyles.forEach((s, i) => {
-      const id = `style:${s.id}`;
-      nodes.push({ id, label: s.nama, kind: "style", cluster: "styles", color: s.color, size: 0.24, pos: hp[i], refId: s.id });
-      edges.push({ a: "subhub:styles:halal", b: id, strength: "strong", color: s.color });
-    });
-    haramStyles.forEach((s, i) => {
-      const id = `style:${s.id}`;
-      nodes.push({ id, label: s.nama, kind: "style", cluster: "styles", color: s.color, size: 0.24, pos: rp[i], refId: s.id });
-      edges.push({ a: "subhub:styles:haram", b: id, strength: "strong", color: s.color });
-    });
+    const halal = STYLES.find((s) => s.id === "halal");
+    const haram = STYLES.find((s) => s.id === "haramdebate");
+    if (halal) nodes.push({ id: "style:halal", label: halal.nama, kind: "style", cluster: "styles", color: halal.color, size: 0.34, pos: halalCenter, refId: halal.id });
+    if (haram) nodes.push({ id: "style:haramdebate", label: haram.nama, kind: "style", cluster: "styles", color: haram.color, size: 0.34, pos: haramCenter, refId: haram.id });
+    edges.push({ a: "cluster:styles", b: "style:halal", strength: "strong", color: "#00ffc8" });
+    edges.push({ a: "cluster:styles", b: "style:haramdebate", strength: "strong", color: "#ff2d8a" });
   }
 
   // ─── ROLES (cluster → AP / BP sub-hubs → side-hubs → role nodes → sub-skill leaves) ───
@@ -828,11 +815,11 @@ export function buildGraph(): Graph {
           const spImp = sp.crown === "best-speaker" ? 0.85 : 0.4;
           const label = isCoach
             ? `${sp.nama}${teamTag}`
-            : `${sp.nama} · ${sp.role.toUpperCase()}${(sp as any).replyOf ? "·REPLY" : ""}${teamTag}`;
+            : `${sp.nama} · ${(sp.positions?.join("/") ?? sp.role?.toUpperCase() ?? "ANGGOTA")}${(sp as any).replyOf ? "·REPLY" : ""}${teamTag}`;
           nodes.push({ id: spNodeId, label, kind: "speaker", cluster, color: spColor, size: 0.09, pos: speakerPositions[spi], refId: sp.id, tag: s.tag, crown: sp.crown, importance: spImp });
           edges.push({ a: parentId, b: spNodeId, strength: "weak", color: spColor });
           if (!isCoach) {
-            const pair = roleSideMap[sp.role];
+            const pair = sp.role ? roleSideMap[sp.role] : undefined;
             if (pair) {
               edges.push({ a: spNodeId, b: pair[0], strength: "weak", color: "#ff6b6b", kind: "link" });
               edges.push({ a: spNodeId, b: pair[1], strength: "weak", color: "#38bdf8", kind: "link" });

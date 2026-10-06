@@ -4,7 +4,7 @@ import { buildGraph } from "@/lib/graph/build";
 import { invalidateGraphCache } from "@/lib/graph/build";
 import { useMemo, useState, useEffect } from "react";
 import { PanelContent } from "./panels/PanelContent";
-import { setOverride, loadOverrides, clearOverrides, exportOverrides } from "@/lib/editor/overrides";
+import { saveCloudOverride, loadOverrides, clearCloudOverrides, exportOverrides } from "@/lib/editor/overrides";
 import { usePointerDrag } from "@/hooks/usePointerDrag";
 
 const KIND_GLYPH: Record<string, string> = {
@@ -158,11 +158,11 @@ export function SidePanel() {
                 />
                 <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 12 }}>
                   <button
-                    onClick={() => { setOverride(node.id, { label: labelDraft }); invalidateGraphCache(); location.reload(); }}
+                    onClick={async () => { await saveCloudOverride(node.id, { label: labelDraft }); invalidateGraphCache(); location.reload(); }}
                     style={{ padding: "6px 12px", background: "rgba(0,255,200,0.15)", border: "1px solid rgba(0,255,200,0.45)", color: "#00ffc8", cursor: "pointer", borderRadius: 3, fontFamily: "Space Mono", fontSize: 10, letterSpacing: "0.15em" }}
                   >SIMPAN</button>
                   <button
-                    onClick={() => { setOverride(node.id, { deleted: true }); invalidateGraphCache(); select(null); location.reload(); }}
+                    onClick={async () => { await saveCloudOverride(node.id, { deleted: true }); invalidateGraphCache(); select(null); location.reload(); }}
                     style={{ padding: "6px 12px", background: "rgba(255,92,92,0.1)", border: "1px solid rgba(255,92,92,0.4)", color: "#ff5c5c", cursor: "pointer", borderRadius: 3, fontFamily: "Space Mono", fontSize: 10, letterSpacing: "0.15em" }}
                   >HAPUS</button>
                   <button
@@ -174,12 +174,12 @@ export function SidePanel() {
                     style={{ padding: "6px 12px", background: "transparent", border: "1px solid rgba(168,85,247,0.35)", color: "#a855f7", cursor: "pointer", borderRadius: 3, fontFamily: "Space Mono", fontSize: 10, letterSpacing: "0.15em" }}
                   >EXPORT</button>
                   <button
-                    onClick={() => { if (confirm("Reset semua perubahan editor?")) { clearOverrides(); invalidateGraphCache(); location.reload(); } }}
+                    onClick={async () => { if (confirm("Pulihkan semua perubahan editor?")) { await clearCloudOverrides(); invalidateGraphCache(); location.reload(); } }}
                     style={{ padding: "6px 12px", background: "transparent", border: "1px solid rgba(168,85,247,0.25)", color: "#8ba3c0", cursor: "pointer", borderRadius: 3, fontFamily: "Space Mono", fontSize: 10, letterSpacing: "0.15em" }}
                   >RESET</button>
                 </div>
                 <div style={{ marginTop: 10, fontFamily: "Space Mono", fontSize: 9, color: "#5a6f8a", lineHeight: 1.5 }}>
-                  Override disimpan di localStorage browser. {Object.keys(loadOverrides()).length} node ditimpa.
+                  Perubahan tersimpan lintas perangkat. {Object.keys(loadOverrides()).length} node ditimpa.
                 </div>
               </div>
             )}
