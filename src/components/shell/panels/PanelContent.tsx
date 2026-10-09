@@ -1144,6 +1144,14 @@ function EventPanel({ refId }: { refId: string }) {
           </ol>
         </>
       )}
+      {ev.id === "ldi" && <div style={{ margin: "14px 0 18px", display: "grid", gridTemplateColumns: "repeat(3,minmax(0,1fr))", gap: 6 }}>
+        {["Kabupaten", "Provinsi", "Nasional"].map((stage, index) => <div key={stage} style={{ position: "relative", border: "1px solid rgba(56,189,248,.35)", background: "rgba(56,189,248,.07)", borderRadius: 6, padding: "12px 6px", textAlign: "center", color: "var(--au-text)", fontSize: 10 }}>
+          <b style={{ display: "block", color: "#38bdf8", marginBottom: 4 }}>0{index + 1}</b>{stage}
+        </div>)}
+      </div>}
+      {!!ev.sources?.length && <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 16 }}>
+        {ev.sources.map((source) => <a key={source.url} href={source.url} target="_blank" rel="noreferrer" style={{ color: "#38bdf8", fontSize: 11, textDecoration: "underline" }}>{source.label}</a>)}
+      </div>}
       {!!ev.roster?.length && (
         <>
           <h3 style={heading}>Tim & Roster</h3>
