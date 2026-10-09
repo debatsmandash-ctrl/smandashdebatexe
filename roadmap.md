@@ -20,5 +20,5 @@
 - [x] Bacaan gelap dengan latar bergerak, kartu materi yang membuka detail, serta mosi favorit gelap
 - [x] Indikator kesiapan luring dan petunjuk pemasangan Android
 - [x] Visual kemajuan LDI 2025–2026 berdasarkan bukti, tanpa hasil yang direka
-- [x] Editor lintas perangkat dapat dipakai pada bacaan, 2D, dan 3D
+- [ ] Editor lintas perangkat dapat dipakai pada bacaan, 2D, dan 3D — menunggu akun Google yang akan diberi izin editor
 - [x] Nebula desktop lebih tajam, 3D Android ringan dan tidak terpotong; Android masuk bacaan, desktop masuk 3D
