@@ -1,4 +1,8 @@
 
+## Logo aplikasi dan performa Android
+- [ ] Ganti ikon aplikasi dengan lambang SMANDASH, termasuk ikon instalasi dan favicon
+- [ ] Kurangi unduhan awal dan beban gambar/efek Android; verifikasi perpindahan tampilan
+
 ## v1.7 (permintaan 8 Sep)
 - [ ] Regangkan jarak antar subgugus jenis mosi (kebijakan vs aktor dst.) + rapikan tautan yang belum selesai
 - [ ] Optimalisasi setelan (settings versi baru)
