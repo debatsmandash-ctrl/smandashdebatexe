@@ -26,7 +26,7 @@ export function ReadingView() {
   const pageCount = Math.max(1, Math.ceil(filtered.length / 8));
   const shown = filtered.slice(Math.min(page, pageCount - 1) * 8, (Math.min(page, pageCount - 1) + 1) * 8);
 
-  return <div className="reading-view fixed inset-0 overflow-y-auto bg-background text-foreground">
+  return <div className="reading-view dark fixed inset-0 overflow-y-auto bg-background text-foreground">
     <div className="reading-sky" style={{ backgroundImage: `linear-gradient(to bottom, rgb(5 8 15 / 0.74), rgb(5 8 15 / 0.96)), url(${nebulaAsset.url})` }} aria-hidden />
     <div className="mx-auto max-w-6xl px-4 pb-28 pt-20 md:px-10 md:pt-24">
       <header className="mb-9 border-b border-border pb-7">
