@@ -1057,7 +1057,7 @@ function SchoolPanel({ refId }: { refId: string }) {
           <div style={{ fontFamily: "DM Sans", fontSize: 13, color: "var(--au-text)", fontWeight: 600 }}>{t.label}</div>
           {t.speakers.map((sp) => (
             <div key={sp.id} style={{ ...muted, fontSize: 10, color: "var(--au-muted)", marginTop: 4 }}>
-              {sp.role.toUpperCase()} · {sp.fullname || sp.nama}{sp.crown ? "  👑" : ""}
+              {(sp.positions?.join(" / ") ?? sp.role?.toUpperCase() ?? "PELATIH")} · {sp.fullname || sp.nama}{sp.crown ? "  👑" : ""}
             </div>
           ))}
         </div>
@@ -1075,7 +1075,7 @@ function TeamPanel({ refId }: { refId: string }) {
       <h3 style={heading}>Pembicara</h3>
       {team.speakers.map((sp) => (
         <div key={sp.id} style={{ marginBottom: 10, borderLeft: "2px solid #a78bfa", paddingLeft: 12 }}>
-          <div style={{ ...muted, color: "#a78bfa", fontSize: 9 }}>{sp.role.toUpperCase()}</div>
+          <div style={{ ...muted, color: "#a78bfa", fontSize: 9 }}>{sp.positions?.join(" / ") ?? sp.role?.toUpperCase() ?? "PELATIH"}</div>
           <div style={{ fontFamily: "DM Sans", fontSize: 13, color: "var(--au-text)", fontWeight: 600 }}>{sp.fullname || sp.nama}{sp.crown ? "  👑" : ""}</div>
         </div>
       ))}
@@ -1092,7 +1092,7 @@ function SpeakerPanel({ refId }: { refId: string }) {
       <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
         <Chip color="#fb7185">{school.short}</Chip>
         <Chip color="#a78bfa">{team.label}</Chip>
-        <Chip color="#fde047">{speaker.role.toUpperCase()}</Chip>
+        <Chip color="#fde047">{speaker.positions?.join(" / ") ?? speaker.role?.toUpperCase() ?? "PELATIH"}</Chip>
         {speaker.crown === "best-speaker" && <Chip color="#fde047">👑 BEST SPEAKER</Chip>}
       </div>
       <h3 style={heading}>{speaker.fullname || speaker.nama}</h3>
@@ -1104,7 +1104,8 @@ function SpeakerPanel({ refId }: { refId: string }) {
       <p style={para}>
         {speaker.role === "p1" ? "First Speaker — definisi, framing, dan case opening." :
          speaker.role === "p2" ? "Second Speaker — rebut + extension." :
-         "Third Speaker — closing speech, weighing, crystallize."}
+         speaker.role === "p3" ? "Third Speaker — closing speech, weighing, crystallize." :
+         "Pelatih — mendampingi latihan, evaluasi, dan perkembangan tim tanpa peran pembicara khusus."}
       </p>
       {speaker.replyOf && (
         <p style={{ ...para, marginTop: 8, color: "#fde047" }}>+ Reply Speech 4:20 — sintesis dan narasi penutup dari sisi tim.</p>
