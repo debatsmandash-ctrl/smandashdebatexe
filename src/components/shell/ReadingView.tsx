@@ -5,6 +5,7 @@ import { MOTIONS, MATTER, ROLES, VOCAB } from "@/data";
 import { buildGraph } from "@/lib/graph/build";
 import { useUniverse } from "@/lib/store";
 import { PanelContent } from "./panels/PanelContent";
+import nebulaAsset from "@/assets/lobby/nasa-carina.jpg.asset.json";
 
 type Shelf = "mosi" | "matter" | "roles" | "kamus";
 export function ReadingView() {
@@ -25,7 +26,8 @@ export function ReadingView() {
   const pageCount = Math.max(1, Math.ceil(filtered.length / 8));
   const shown = filtered.slice(Math.min(page, pageCount - 1) * 8, (Math.min(page, pageCount - 1) + 1) * 8);
 
-  return <div className="reading-view fixed inset-0 overflow-y-auto bg-background text-foreground">
+  return <div className="reading-view dark fixed inset-0 overflow-y-auto bg-background text-foreground">
+    <div className="reading-sky" style={{ backgroundImage: `linear-gradient(to bottom, rgb(5 8 15 / 0.74), rgb(5 8 15 / 0.96)), url(${nebulaAsset.url})` }} aria-hidden />
     <div className="mx-auto max-w-6xl px-4 pb-28 pt-20 md:px-10 md:pt-24">
       <header className="mb-9 border-b border-border pb-7">
         <div className="mb-3 flex items-center gap-2 text-xs uppercase text-primary"><BookOpen size={16} /> SMANDASH · v1.2.2</div>
@@ -42,7 +44,7 @@ export function ReadingView() {
         <div className="mb-5 flex items-center justify-between gap-4"><h2 className="text-xl font-semibold">{node.label}</h2><Button variant="ghost" size="sm" onClick={() => select(null)} aria-label="Tutup bacaan">✕</Button></div>
         <PanelContent node={node} />
       </section>}
-      <div className="grid gap-3 md:grid-cols-2">
+      <div className="reading-branches grid gap-3 md:grid-cols-2">
         {shown.map((entry, i) => <Button key={entry.id} variant="outline" onClick={() => { select(entry.id); document.querySelector(".reading-view")?.scrollTo({ top: 0, behavior: "smooth" }); }} className="reading-item h-auto min-h-44 w-full flex-col items-start justify-start whitespace-normal rounded-sm p-5 text-left transition-transform hover:-translate-y-1">
           <span className="flex w-full items-center justify-between text-xs uppercase text-primary"><span>{entry.meta}</span><span>{String(page * 8 + i + 1).padStart(2, "0")}</span></span>
           <strong className="mt-4 text-lg leading-snug text-foreground">{entry.title}</strong><span className="mt-3 line-clamp-3 text-sm leading-6 text-muted-foreground">{entry.body}</span><Network className="mt-auto self-end text-primary" size={17} />

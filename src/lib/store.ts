@@ -61,6 +61,7 @@ export interface Settings {
 
   // v1.0.2 — mode graf & opsi 2D ala Obsidian
   graphMode: "3d" | "2d" | "read";
+  graphModeChosen: boolean;
   g2dHover: boolean;         // sorot tetangga saat hover
   g2dChainDrag: boolean;     // tetangga ikut tertarik saat node digeser
   g2dLabels: boolean;        // tampilkan label
@@ -107,6 +108,7 @@ export const DEFAULT_SETTINGS: Settings = {
   rotateSens: 1.0,
   panSens: 1.0,
   graphMode: "3d",
+  graphModeChosen: false,
   g2dHover: true,
   g2dChainDrag: true,
   g2dLabels: true,

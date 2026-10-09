@@ -8,17 +8,17 @@
 - [ ] Data & visual LDI/NSDC 2025 & 2026 (bagan gugur ala bagan sepak bola + statistik SMAN 2 Siak Hulu)
 
 ## v1.2.2 (lanjutan)
-- [ ] Tiga tampilan: 3D, 2D, dan bacaan berselancar; navigasi Android
-- [ ] Peredupan 3D, tautan penuh dan aktor hybrid, pastel untuk mosi lengkap, neon untuk mosi lama
-- [ ] Lobby animasi/ikon, pencarian mosi, rekomendasi geser
-- [ ] Dapat dipasang di Android serta konten lokal dapat dibuka luring sesudah kunjungan daring
-- [ ] Optimalisasi performa dan verifikasi tampilan/perpindahan mode
+- [x] Tiga tampilan: 3D, 2D, dan bacaan berselancar; navigasi Android
+- [x] Peredupan 3D, tautan penuh dan aktor hybrid, pastel untuk mosi lengkap, neon untuk mosi lama
+- [x] Lobby animasi/ikon, pencarian mosi, rekomendasi geser
+- [x] Dapat dipasang di Android serta konten lokal dapat dibuka luring sesudah kunjungan daring
+- [x] Optimalisasi performa dan verifikasi tampilan/perpindahan mode
 
 ## Seleksi 26/27 dan penyempurnaan Android
-- [ ] Catat anggota/rekam seleksi uji coba dari dokumen dan hilangkan peran pembicara dari pelatih
-- [ ] Sederhanakan Styles menjadi dua cabang Halal dan Haram tanpa turunan
-- [ ] Bacaan gelap dengan latar bergerak, kartu materi yang membuka detail, serta mosi favorit gelap
-- [ ] Indikator kesiapan luring dan petunjuk pemasangan Android
-- [ ] Visual kemajuan LDI 2025–2026 berdasarkan bukti, tanpa hasil yang direka
-- [ ] Editor lintas perangkat dapat dipakai pada bacaan, 2D, dan 3D
-- [ ] Nebula desktop lebih tajam, 3D Android ringan dan tidak terpotong; Android masuk bacaan, desktop masuk 3D
+- [x] Catat anggota/rekam seleksi uji coba dari dokumen dan hilangkan peran pembicara dari pelatih
+- [x] Sederhanakan Styles menjadi dua cabang Halal dan Haram tanpa turunan
+- [x] Bacaan gelap dengan latar bergerak, kartu materi yang membuka detail, serta mosi favorit gelap
+- [x] Indikator kesiapan luring dan petunjuk pemasangan Android
+- [x] Visual kemajuan LDI 2025–2026 berdasarkan bukti, tanpa hasil yang direka
+- [ ] Editor lintas perangkat dapat dipakai pada bacaan, 2D, dan 3D — menunggu akun Google yang akan diberi izin editor
+- [x] Nebula desktop lebih tajam, 3D Android ringan dan tidak terpotong; Android masuk bacaan, desktop masuk 3D

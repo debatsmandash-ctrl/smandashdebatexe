@@ -14,6 +14,7 @@ import { SettingsPanel } from "@/components/shell/SettingsPanel";
 import { AmbientAudio } from "@/components/shell/AmbientAudio";
 import { AssistantPanel } from "@/components/shell/AssistantPanel";
 import { FontPresetApplier } from "@/components/shell/FontPresetApplier";
+import { OfflineStatus } from "@/components/shell/OfflineStatus";
 import { MissionControl } from "@/components/lobby/MissionControl";
 import { Intro } from "@/components/lobby/Intro";
 import { useSettings } from "@/lib/store";
@@ -41,6 +42,7 @@ function Index() {
   const [lobbyOpen, setLobbyOpen] = useState(!lobbySeen);
   const [introOpen, setIntroOpen] = useState(!introSeen);
   const graphMode = useSettings((s) => s.graphMode);
+  const graphModeChosen = useSettings((s) => s.graphModeChosen);
 
   useEffect(() => {
     const mq = window.matchMedia("(pointer: coarse), (max-width: 900px)");
@@ -64,7 +66,7 @@ function Index() {
         </>
       ))}
       {!loading && !introOpen && !lobbyOpen && <nav aria-label="Pilih tampilan" className="view-switch fixed bottom-4 left-1/2 z-40 flex -translate-x-1/2 gap-1 border border-border bg-card p-1 shadow-lg">
-        {([ ["3d", "3D"], ["2d", "2D"], ["read", "Bacaan"] ] as const).map(([mode, label]) => <Button key={mode} size="sm" variant={graphMode === mode ? "default" : "ghost"} onClick={() => update({ graphMode: mode })} aria-current={graphMode === mode ? "page" : undefined}>{label}</Button>)}
+        {([ ["3d", "3D"], ["2d", "2D"], ["read", "Bacaan"] ] as const).map(([mode, label]) => <Button key={mode} size="sm" variant={graphMode === mode ? "default" : "ghost"} onClick={() => update({ graphMode: mode, graphModeChosen: true })} aria-current={graphMode === mode ? "page" : undefined}>{label}</Button>)}
       </nav>}
       {!loading && !introOpen && !lobbyOpen && <><SearchOverlay /><EditorUnlockModal /><SettingsPanel /><AmbientAudio /><AssistantPanel /></>}
       {!loading && !introOpen && !lobbyOpen && (
@@ -88,8 +90,9 @@ function Index() {
         <Intro onDone={() => { update({ introSeen: true }); setIntroOpen(false); }} />
       )}
       {!loading && !introOpen && lobbyOpen && (
-        <MissionControl onInitiate={() => setLobbyOpen(false)} />
+        <MissionControl onInitiate={() => { if (isMobile && !graphModeChosen) update({ graphMode: "read" }); setLobbyOpen(false); }} />
       )}
+      {!loading && !introOpen && <OfflineStatus />}
       <div
         style={{
           position: "fixed", top: 18, right: 22, zIndex: 20,
