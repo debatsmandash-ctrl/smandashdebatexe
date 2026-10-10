@@ -1,7 +1,7 @@
 import {
   MOTIONS, JENIS_MOSI, VOCAB, MATTER,
   STYLES, ROLES, ROLES_AP, ROLES_BP, PRACTICE_MODES, CIRCUIT, ASSISTANT_PROMPTS, META_NODES, EDITOR_NODES,
-  COMPETITORS, ACTIVE_MEMBERS, EVENTS, paletteColor,
+  COMPETITORS, ACTIVE_MEMBERS, ACHIEVEMENTS, EVENTS, paletteColor,
 } from "@/data";
 import type { StarNode, StarEdge, ClusterKey } from "@/data/types";
 type MotionHybrid = { typeAll?: string[] };
@@ -784,12 +784,12 @@ export function buildGraph(): Graph {
       const schoolPos = schoolPositions[si];
       const isChaos = s.tag === "halaldebate-chaos";
       // Coach roster = bukan speaker debat — jangan kasih peran AP/BP.
-      const isCoach = /coach/i.test(s.id);
+      const isCoach = s.rosterKind === "coach" || s.rosterKind === "advisor" || /coach/i.test(s.id);
       const schoolColor = isChaos ? "#a855f7" : paletteColor(cluster, s.id);
       const schoolNodeId = `${cluster}:school:${s.id}`;
       const schoolImp = isChaos ? 0.85 : 0.6;
       nodes.push({ id: schoolNodeId, label: s.short, kind: "school", cluster, color: schoolColor, size: 0.28, pos: schoolPos, refId: s.id, tag: s.tag, importance: schoolImp });
-      edges.push({ a: `cluster:${cluster}`, b: schoolNodeId, strength: "strong", color: schoolColor });
+      edges.push({ a: cluster === "active_member" ? "smandash:structure" : `cluster:${cluster}`, b: schoolNodeId, strength: "strong", color: schoolColor });
       if (isChaos) edges.push({ a: schoolNodeId, b: "style:chaos", strength: "weak", color: "#a855f7", kind: "link" });
       const teamCount = s.teams.length;
       const teamPositions = teamCount === 1 ? [schoolPos] : placeBranch(schoolPos, center, teamCount, 5.5, 9.5);
@@ -819,12 +819,14 @@ export function buildGraph(): Graph {
           nodes.push({ id: spNodeId, label, kind: "speaker", cluster, color: spColor, size: 0.09, pos: speakerPositions[spi], refId: sp.id, tag: s.tag, crown: sp.crown, importance: spImp });
           edges.push({ a: parentId, b: spNodeId, strength: "weak", color: spColor });
           if (!isCoach) {
-            const pair = sp.role ? roleSideMap[sp.role] : undefined;
-            if (pair) {
+            const positions = new Set(sp.positions?.map((position) => position.toLowerCase()) ?? (sp.role ? [sp.role] : []));
+            for (const position of positions) {
+              const pair = roleSideMap[position];
+              if (!pair) continue;
               edges.push({ a: spNodeId, b: pair[0], strength: "weak", color: "#ff6b6b", kind: "link" });
               edges.push({ a: spNodeId, b: pair[1], strength: "weak", color: "#38bdf8", kind: "link" });
             }
-            if ((sp as any).replyOf) {
+            if (sp.replyOf || positions.has("reply")) {
               edges.push({ a: spNodeId, b: "role:ap:gr", strength: "weak", color: "#fde047", kind: "link" });
               edges.push({ a: spNodeId, b: "role:ap:or", strength: "weak", color: "#fde047", kind: "link" });
             }
@@ -839,6 +841,35 @@ export function buildGraph(): Graph {
   // Competitor: cluster→sekolah lebih DEKAT (12) sesuai request user.
   buildSchoolTree("competitor", COMPETITORS, clusterCenter.competitor, 12);
   buildSchoolTree("active_member", ACTIVE_MEMBERS, clusterCenter.active_member, 22);
+
+  // Club structure and achievements are independent of historical competition teams.
+  {
+    const center = clusterCenter.active_member;
+    const structurePos = add(center, [0, 8, 0]);
+    const historyPos = add(center, [0, -24, 12]);
+    for (const [id, label, pos] of [
+      ["smandash:structure", "Struktur Anggota", structurePos],
+      ["smandash:achievements", "Jejak Prestasi", historyPos],
+    ] as const) {
+      nodes.push({ id, label, kind: "section", cluster: "active_member", color: paletteColor("active_member", id), size: 0.35, pos, refId: id });
+      edges.push({ a: "cluster:active_member", b: id, strength: "strong" });
+    }
+    const historyPositions = placeBranch(historyPos, center, ACHIEVEMENTS.length, 9, 20);
+    ACHIEVEMENTS.forEach((achievement, index) => {
+      const id = `achievement:${achievement.id}`;
+      nodes.push({ id, label: `${achievement.nama} · ${achievement.hasil}`, kind: "section", cluster: "active_member", color: paletteColor("active_member", id), size: 0.16, pos: historyPositions[index], refId: id });
+      edges.push({ a: "smandash:achievements", b: id, strength: "strong" });
+      if (achievement.eventId) edges.push({ a: id, b: `event:${achievement.eventId}`, strength: "weak", kind: "link" });
+    });
+    const leadershipId = "smandash:leadership";
+    nodes.push({ id: leadershipId, label: "Kepengurusan", kind: "section", cluster: "active_member", color: paletteColor("active_member", leadershipId), size: 0.23, pos: add(structurePos, [8, 12, 8]), refId: leadershipId });
+    edges.push({ a: "smandash:structure", b: leadershipId, strength: "strong" });
+    for (const school of ACTIVE_MEMBERS) for (const group of school.teams) for (const member of group.speakers) {
+      if (member.office) edges.push({ a: leadershipId, b: `active_member:speaker:${member.id}`, strength: "weak", kind: "link" });
+    }
+    nodes.push({ id: "smandash:selection-archive", label: "Arsip Uji Coba 26/27", kind: "section", cluster: "active_member", color: paletteColor("active_member", "archive"), size: 0.15, pos: add(structurePos, [-10, 10, -8]), refId: "smandash:selection-archive" });
+    edges.push({ a: "smandash:structure", b: "smandash:selection-archive", strength: "weak" });
+  }
 
   // ─── WANGY (MAN IC Siak) — bintang merah headline, paling terang ───
   {
