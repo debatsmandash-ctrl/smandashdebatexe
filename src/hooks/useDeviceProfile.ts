@@ -30,10 +30,10 @@ export function useDeviceProfile(): DeviceProfile {
     const isMobile = window.matchMedia("(pointer: coarse)").matches || window.innerWidth < 900;
     if (isMobile) {
       return {
-        tier: "mobile", dpr: [1, 1.5], nebulaSteps: 22,
+        tier: "mobile", dpr: [1, 1], nebulaSteps: 12,
         bloomIntensity: 1.5, bloomRadius: 0.9, chromaticAberration: false,
-        starSegments: 14, haloLayers: 1, damping: 0.12, rotateSpeed: 0.75,
-        crustShells: 1, crustOctaves: 3,
+        starSegments: 8, haloLayers: 1, damping: 0.12, rotateSpeed: 0.75,
+        crustShells: 1, crustOctaves: 2,
       };
     }
     // Desktop / high-end (Ultra tier — up to RTX 5090)

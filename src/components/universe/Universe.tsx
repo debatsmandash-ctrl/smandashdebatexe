@@ -412,14 +412,15 @@ function CameraController({ targetId, profile, autoRotate, autoRotateSpeed, damp
 }
 
 // ─── Scene contents ───
-function Scene({ profile }: { profile: DeviceProfile }) {
+function Scene({ profile, fpsCap }: { profile: DeviceProfile; fpsCap: number }) {
   const graph = useMemo(() => buildGraph(), []);
   const selectedId = useUniverse((s) => s.selectedId);
   const hoveredId = useUniverse((s) => s.hoveredId);
   const select = useUniverse((s) => s.select);
   const setLoaded = useUniverse((s) => s.setLoaded);
   const settings = useSettings();
-  const quality = settings.quality;
+  // Mobile safety ceiling also applies to desktop settings restored on a phone.
+  const quality = profile.tier === "mobile" ? "low" : settings.quality;
   const qScale = quality === "low" ? 0.45 : quality === "medium" ? 0.7 : quality === "high" ? 0.9 : 1.0;
   const crustShells = quality === "low" ? 1 : quality === "medium" ? 1 : 2;
   const crustOctaves = quality === "low" ? 3 : quality === "medium" ? 4 : quality === "high" ? 5 : 6;
@@ -566,7 +567,7 @@ function Scene({ profile }: { profile: DeviceProfile }) {
           ) : <></>}
         </EffectComposer>
       )}
-      <FrameLimiter fpsCap={settings.fpsCap} />
+      <FrameLimiter fpsCap={fpsCap} />
     </>
   );
 }
@@ -631,7 +632,8 @@ export const TONE_PRESETS = {
 
 export function Universe() {
   const profile = useDeviceProfile();
-  const fpsCap = useSettings((s) => s.fpsCap);
+  const requestedFpsCap = useSettings((s) => s.fpsCap);
+  const fpsCap = profile.tier === "mobile" ? Math.min(requestedFpsCap || 30, 30) : requestedFpsCap;
   const showFps = useSettings((s) => s.showFps);
   return (
     <>
@@ -640,9 +642,9 @@ export function Universe() {
       dpr={profile.dpr}
       frameloop={fpsCap ? "demand" : "always"}
       gl={{
-        antialias: true,
+        antialias: profile.tier !== "mobile",
         alpha: true,
-        powerPreference: "high-performance",
+        powerPreference: profile.tier === "mobile" ? "low-power" : "high-performance",
         toneMapping: THREE.ACESFilmicToneMapping,
         toneMappingExposure: 0.95,
         outputColorSpace: THREE.SRGBColorSpace,
@@ -652,7 +654,7 @@ export function Universe() {
       <color attach="background" args={["#03060f"]} />
       <fog attach="fog" args={["#03060f", 700, 1900]} />
       <Suspense fallback={null}>
-        <Scene profile={profile} />
+        <Scene profile={profile} fpsCap={fpsCap} />
       </Suspense>
     </Canvas>
     {showFps && <FpsCounter />}

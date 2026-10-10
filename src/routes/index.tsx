@@ -1,7 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState, useEffect } from "react";
-import { Universe } from "@/components/universe/Universe";
-import { Graph2D } from "@/components/universe/Graph2D";
+import { lazy, Suspense, useState, useEffect } from "react";
 import { ReadingView } from "@/components/shell/ReadingView";
 import { Button } from "@/components/ui/button";
 import { Loader } from "@/components/shell/Loader";
@@ -18,6 +16,9 @@ import { OfflineStatus } from "@/components/shell/OfflineStatus";
 import { MissionControl } from "@/components/lobby/MissionControl";
 import { Intro } from "@/components/lobby/Intro";
 import { useSettings } from "@/lib/store";
+
+const Universe = lazy(() => import("@/components/universe/Universe").then((module) => ({ default: module.Universe })));
+const Graph2D = lazy(() => import("@/components/universe/Graph2D").then((module) => ({ default: module.Graph2D })));
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -56,7 +57,9 @@ function Index() {
     <main style={{ position: "fixed", inset: 0, overflow: "hidden", background: "#05080f" }}>
       <FontPresetApplier />
       <div className="aurora-bg" />
-      {!loading && !introOpen && !lobbyOpen && (graphMode === "read" ? <ReadingView /> : graphMode === "2d" ? <Graph2D /> : <Universe />)}
+      {!loading && !introOpen && !lobbyOpen && <Suspense fallback={<div role="status" className="dark fixed inset-0 flex items-center justify-center bg-background text-muted-foreground">Memuat tampilan…</div>}>
+        {graphMode === "read" ? <ReadingView /> : graphMode === "2d" ? <Graph2D /> : <Universe />}
+      </Suspense>}
       {!loading && !introOpen && !lobbyOpen && graphMode !== "read" && (isMobile ? (
         <MobileShell />
       ) : (

@@ -46,6 +46,12 @@
   .reading-branches::before { left: 12px; }
 }
 @media (prefers-reduced-motion: reduce) { .recommendation-card, .reading-item, .reading-sky { animation: none; transition: none; } }
+@media (pointer: coarse), (max-width: 900px) {
+  .reading-item { backdrop-filter: none; background: var(--card); }
+  .reading-sky { inset: 0; animation-name: reading-drift-mobile; }
+  .reading-view .reading-detail { overflow-wrap: anywhere; }
+}
+@keyframes reading-drift-mobile { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(0, -1%, 0); } }
 
 /*
  * Design system definition.
