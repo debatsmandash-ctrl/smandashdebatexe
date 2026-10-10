@@ -1,4 +1,5 @@
 import dprAsset from "@/assets/lobby/dpr-paripurna.jpg.asset.json";
+import { ClubPanel } from "./ClubPanel";
 import type { StarNode } from "@/data/types";
 import {
   MOTIONS, JENIS_MOSI, VOCAB, MATTER, STYLES, ROLES,
@@ -1051,13 +1052,13 @@ function SchoolPanel({ refId }: { refId: string }) {
     <div>
       {s.tag === "halaldebate-chaos" && <Chip color="#a855f7">HALALDEBATE · CHAOS</Chip>}
       {s.home && <Chip color="#00ffc8">HOME · SMANDASH</Chip>}
-      <h3 style={heading}>{s.teams.length} Tim</h3>
+      <h3 style={heading}>{s.rosterKind ? `${s.teams.reduce((count, group) => count + group.speakers.length, 0)} Orang${s.rosterKind === "members" ? ` · ${s.teams.length} Angkatan` : ""}` : `${s.teams.length} Tim`}</h3>
       {s.teams.map((t) => (
         <div key={t.id} style={{ borderLeft: "2px solid #fb7185", paddingLeft: 12, marginBottom: 12 }}>
           <div style={{ fontFamily: "DM Sans", fontSize: 13, color: "var(--au-text)", fontWeight: 600 }}>{t.label}</div>
           {t.speakers.map((sp) => (
             <div key={sp.id} style={{ ...muted, fontSize: 10, color: "var(--au-muted)", marginTop: 4 }}>
-              {(sp.positions?.join(" / ") ?? sp.role?.toUpperCase() ?? "PELATIH")} · {sp.fullname || sp.nama}{sp.crown ? "  👑" : ""}
+              {sp.office ? `${sp.office} · ` : ""}{(sp.positions?.join(" / ") ?? sp.role?.toUpperCase() ?? (s.rosterKind === "advisor" ? "PEMBINA" : "PELATIH"))} · {sp.fullname || sp.nama}{sp.crown ? "  👑" : ""}
             </div>
           ))}
         </div>
@@ -1072,10 +1073,10 @@ function TeamPanel({ refId }: { refId: string }) {
   return (
     <div>
       <Chip color="#fb7185">{school.short}</Chip>
-      <h3 style={heading}>Pembicara</h3>
+      <h3 style={heading}>{school.rosterKind === "members" ? "Anggota" : "Pembicara"}</h3>
       {team.speakers.map((sp) => (
         <div key={sp.id} style={{ marginBottom: 10, borderLeft: "2px solid #a78bfa", paddingLeft: 12 }}>
-          <div style={{ ...muted, color: "#a78bfa", fontSize: 9 }}>{sp.positions?.join(" / ") ?? sp.role?.toUpperCase() ?? "PELATIH"}</div>
+           <div style={{ ...muted, color: "#a78bfa", fontSize: 9 }}>{sp.office ? `${sp.office} · ` : ""}{sp.positions?.join(" / ") ?? sp.role?.toUpperCase() ?? (school.rosterKind === "advisor" ? "PEMBINA" : "PELATIH")}</div>
           <div style={{ fontFamily: "DM Sans", fontSize: 13, color: "var(--au-text)", fontWeight: 600 }}>{sp.fullname || sp.nama}{sp.crown ? "  👑" : ""}</div>
         </div>
       ))}
@@ -1092,7 +1093,8 @@ function SpeakerPanel({ refId }: { refId: string }) {
       <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
         <Chip color="#fb7185">{school.short}</Chip>
         <Chip color="#a78bfa">{team.label}</Chip>
-        <Chip color="#fde047">{speaker.positions?.join(" / ") ?? speaker.role?.toUpperCase() ?? "PELATIH"}</Chip>
+         <Chip color="#fde047">{speaker.positions?.join(" / ") ?? speaker.role?.toUpperCase() ?? (school.rosterKind === "advisor" ? "PEMBINA" : "PELATIH")}</Chip>
+         {speaker.office && <Chip color="#00ffc8">{speaker.office}</Chip>}
         {speaker.crown === "best-speaker" && <Chip color="#fde047">👑 BEST SPEAKER</Chip>}
       </div>
       <h3 style={heading}>{speaker.fullname || speaker.nama}</h3>
@@ -1105,6 +1107,8 @@ function SpeakerPanel({ refId }: { refId: string }) {
         {speaker.role === "p1" ? "First Speaker — definisi, framing, dan case opening." :
          speaker.role === "p2" ? "Second Speaker — rebut + extension." :
          speaker.role === "p3" ? "Third Speaker — closing speech, weighing, crystallize." :
+         school.rosterKind === "members" ? `Anggota debat · posisi latihan: ${speaker.positions?.join(", ") ?? "belum ditetapkan"}. Posisi dapat berkembang dan bukan jabatan kepengurusan.` :
+         school.rosterKind === "advisor" ? "Pembina SMANDASH, tanpa peran pembicara khusus." :
          "Pelatih — mendampingi latihan, evaluasi, dan perkembangan tim tanpa peran pembicara khusus."}
       </p>
       {speaker.replyOf && (
@@ -1199,7 +1203,8 @@ function LetterPanel({ refId }: { refId: string }) {
 
 export function PanelContent({ node }: { node: StarNode }) {
   let body: React.ReactNode = null;
-  if (node.kind === "cluster") body = <ClusterPanel node={node} />;
+   if (node.kind === "section" && node.cluster === "active_member" && node.refId) body = <ClubPanel refId={node.refId} />;
+   else if (node.kind === "cluster") body = <ClusterPanel node={node} />;
   else if (node.kind === "subhub" && node.cluster === "motion") body = <JenisPanel refId={node.refId!} />;
   else if (node.kind === "subhub" && node.cluster === "event") {
     body = <EventPanel refId={node.refId!} />;

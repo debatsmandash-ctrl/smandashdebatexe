@@ -7,6 +7,7 @@ import activeMemberRaw from "./raw/active-member.json";
 import eventRaw from "./raw/event.json";
 import rolesRaw from "./raw/roles.json";
 import selectionRaw from "./raw/selection-2627.json";
+import achievementsRaw from "./raw/achievements.json";
 import type { Motion, JenisMosi, Vocab, MatterData } from "./types";
 
 export const MOTIONS = motionsRaw as unknown as Motion[];
@@ -106,9 +107,9 @@ const FILOSOFIS_CINTA: MatterData = {
 };
 export const MATTER: MatterData = { ...(matterRaw as unknown as MatterData), ...FILOSOFIS_CINTA };
 
-export interface Speaker { id: string; nama: string; fullname?: string; role?: "p1"|"p2"|"p3"; positions?: string[]; replyOf?: "p1"|"p2"|"p3"; crown?: "best-speaker" }
+export interface Speaker { id: string; nama: string; fullname?: string; office?: string; role?: "p1"|"p2"|"p3"; positions?: string[]; replyOf?: "p1"|"p2"|"p3"; crown?: "best-speaker" }
 export interface Team { id: string; label: string; speakers: Speaker[] }
-export interface School { id: string; nama: string; short: string; tag?: string; home?: boolean; teams: Team[] }
+export interface School { id: string; nama: string; short: string; tag?: string; home?: boolean; rosterKind?: "members" | "coach" | "advisor"; teams: Team[] }
 export const COMPETITORS = (competitorsRaw as any).schools as School[];
 export const ACTIVE_MEMBERS = (activeMemberRaw as any).schools as School[];
 export interface SelectionMember { nama: string; posisi: string[] }
@@ -119,6 +120,8 @@ export interface SelectionRecord {
   penghargaan: Record<string, string>;
 }
 export const SELECTION_2627 = selectionRaw as SelectionRecord;
+export interface Achievement { id: string; nama: string; hasil: string; tahun: string | null; desc: string; tahapan?: string[]; url?: string; eventId?: string }
+export const ACHIEVEMENTS = achievementsRaw as Achievement[];
 
 export interface EventBracket { id: string; nama: string; teams: string[] }
 export interface EventRosterTeam { id: string; nama: string; anggota: string[] }

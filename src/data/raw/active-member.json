@@ -4,27 +4,263 @@
       "id": "smandash-active",
       "nama": "SMANDASH · Active Member",
       "short": "ACTIVE MEMBER",
-      "home": true,
       "teams": [
         {
-          "id": "sman2sh-t1",
-          "label": "Tim 1",
+          "id": "seleksi-2627-k12",
+          "label": "Angkatan 3 · Kelas 12",
           "speakers": [
-            { "id": "sman2sh-t1-p1", "nama": "Nabila",    "fullname": "Nabila Meysun Nur Fitriana",     "role": "p1" },
-            { "id": "sman2sh-t1-p2", "nama": "Valentino", "fullname": "Valentino Alexandros Saragih",   "role": "p2", "replyOf": "p2" },
-            { "id": "sman2sh-t1-p3", "nama": "Hatta",     "fullname": "Hatta Pandya Bumi Ath",          "role": "p3" }
+            {
+              "id": "sel-valentino",
+              "nama": "Valentino",
+              "fullname": "Valentino Alexandros Saragih",
+              "positions": [
+                "P1",
+                "P2",
+                "P3",
+                "Reply"
+              ],
+              "office": "Ketua"
+            },
+            {
+              "id": "sel-syifa",
+              "nama": "Syifa",
+              "fullname": "Syifa Aurelia Qalbina",
+              "positions": [
+                "P1",
+                "P3"
+              ]
+            },
+            {
+              "id": "sel-pramudya",
+              "nama": "Pramudya",
+              "fullname": "Pramudya Fathur Roza",
+              "positions": [
+                "P1",
+                "P2",
+                "Reply"
+              ],
+              "office": "Wakil Ketua"
+            },
+            {
+              "id": "sel-eny",
+              "nama": "Enp Iryani",
+              "fullname": "Enp Iryani Sangjia Putri",
+              "positions": [
+                "P1",
+                "P2",
+                "P3"
+              ],
+              "office": "Sekretaris & Bendahara"
+            },
+            {
+              "id": "sel-hatta",
+              "nama": "Hatta",
+              "fullname": "Hatta Pandya Bumi Agung Ath",
+              "positions": [
+                "P2",
+                "P3"
+              ],
+              "office": "Wakil Ketua"
+            },
+            {
+              "id": "sel-kevan",
+              "nama": "Kevan",
+              "fullname": "Kevan Joni Aldi",
+              "positions": [
+                "P3"
+              ]
+            },
+            {
+              "id": "sel-ismat",
+              "nama": "Ismat",
+              "fullname": "Ismat Habibi Akmal",
+              "positions": [
+                "P3"
+              ]
+            }
           ]
         },
         {
-          "id": "sman2sh-t2",
-          "label": "Tim 2",
+          "id": "seleksi-2627-k11",
+          "label": "Angkatan 4 · Kelas 11",
           "speakers": [
-            { "id": "sman2sh-t2-p1", "nama": "Pramudya",  "fullname": "Pramudya Fathur Roza",           "role": "p1" },
-            { "id": "sman2sh-t2-p2", "nama": "Nur Amirah","fullname": "Nur Amirah Syahnas Nasution",    "role": "p2", "crown": "best-speaker", "replyOf": "p2" },
-            { "id": "sman2sh-t2-p3", "nama": "Enp Iryany","fullname": "Enp Iryany Sangjia Putri",       "role": "p3" }
+            {
+              "id": "sel-nabila",
+              "nama": "Nabila",
+              "fullname": "Nabila Meysun Nur Fitriana",
+              "positions": [
+                "P1"
+              ]
+            },
+            {
+              "id": "sel-nakeisha",
+              "nama": "Nakeisha",
+              "fullname": "Nakeisha Putri Adinda",
+              "positions": [
+                "P1",
+                "P3"
+              ]
+            },
+            {
+              "id": "sel-thalita",
+              "nama": "Thalita",
+              "positions": [
+                "P1"
+              ]
+            },
+            {
+              "id": "sel-selfya",
+              "nama": "Selfya",
+              "fullname": "Selfya Ramadanis",
+              "positions": [
+                "P1"
+              ]
+            },
+            {
+              "id": "sel-eca",
+              "nama": "Eca",
+              "fullname": "Raudha Eca Azwita",
+              "positions": [
+                "P1"
+              ]
+            },
+            {
+              "id": "sel-amirah",
+              "nama": "Amirah",
+              "fullname": "Nur Amirah Syahnas Nasution",
+              "positions": [
+                "P2",
+                "P3"
+              ],
+              "crown": "best-speaker"
+            },
+            {
+              "id": "sel-aditya",
+              "nama": "Aditya",
+              "fullname": "Aditya Padlan",
+              "positions": [
+                "P2"
+              ]
+            },
+            {
+              "id": "sel-nikita",
+              "nama": "Nikita",
+              "fullname": "Nikita Salsabila",
+              "positions": [
+                "P2"
+              ]
+            },
+            {
+              "id": "sel-marsha",
+              "nama": "Marsha",
+              "fullname": "Marsha Millano",
+              "positions": [
+                "P2"
+              ]
+            },
+            {
+              "id": "sel-kezia",
+              "nama": "Kezia",
+              "positions": [
+                "P3"
+              ]
+            },
+            {
+              "id": "sel-raysa",
+              "nama": "Raysa",
+              "fullname": "Raysa Rahmania",
+              "positions": [
+                "P3"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "seleksi-2627-k10",
+          "label": "Angkatan 5 · Kelas 10",
+          "speakers": [
+            {
+              "id": "sel-bagas",
+              "nama": "Bagas",
+              "positions": [
+                "P2"
+              ]
+            },
+            {
+              "id": "sel-silvia",
+              "nama": "Silvia",
+              "positions": [
+                "P2"
+              ]
+            },
+            {
+              "id": "sel-zastari",
+              "nama": "Zastari",
+              "positions": [
+                "P2"
+              ]
+            },
+            {
+              "id": "sel-anindya",
+              "nama": "Anindya",
+              "positions": [
+                "P2"
+              ]
+            },
+            {
+              "id": "sel-aira",
+              "nama": "Aira",
+              "positions": [
+                "P3"
+              ]
+            },
+            {
+              "id": "sel-tria",
+              "nama": "Tria",
+              "positions": [
+                "P3"
+              ]
+            },
+            {
+              "id": "sel-amelia",
+              "nama": "Amelia",
+              "positions": [
+                "P3"
+              ]
+            },
+            {
+              "id": "sel-lutfya",
+              "nama": "Lutfya",
+              "positions": [
+                "P1"
+              ]
+            },
+            {
+              "id": "sel-khairunnisa",
+              "nama": "Khairunnissa",
+              "positions": [
+                "P1"
+              ]
+            },
+            {
+              "id": "sel-natasya",
+              "nama": "Natasya",
+              "positions": [
+                "P1"
+              ]
+            },
+            {
+              "id": "sel-joshua",
+              "nama": "Joshua",
+              "positions": [
+                "P1"
+              ]
+            }
           ]
         }
-      ]
+      ],
+      "home": true,
+      "rosterKind": "members"
     },
     {
       "id": "smandash-coach",
@@ -35,60 +271,44 @@
           "id": "smandash-coach-roster",
           "label": "Coaches",
           "speakers": [
-            { "id": "coach-sultan",  "nama": "Sultan Fadillah", "fullname": "Sultan Fadillah Efendi, S.H." },
-            { "id": "coach-ibnu",    "nama": "Bang Ibnu",       "fullname": "Bang Ibnu — Coach Misterius (Gacor)" },
-            { "id": "coach-nafizha", "nama": "Kak Nafizha",     "fullname": "Nafizha Shakira — Active Coach, G.O.A.T (LDI Nasional)" }
+            {
+              "id": "coach-sultan",
+              "nama": "Sultan Fadillah",
+              "fullname": "Sultan Fadillah Efendi, S.H."
+            },
+            {
+              "id": "coach-ibnu",
+              "nama": "Bang Ibnu",
+              "fullname": "Bang Ibnu — Coach Misterius (Gacor)"
+            },
+            {
+              "id": "coach-nafizha",
+              "nama": "Kak Nafizha",
+              "fullname": "Nafizha Shakira — Active Coach, G.O.A.T (LDI Nasional)"
+            }
+          ]
+        }
+      ],
+      "rosterKind": "coach"
+    },
+    {
+      "id": "smandash-advisor",
+      "nama": "SMANDASH · Pembina",
+      "short": "PEMBINA",
+      "rosterKind": "advisor",
+      "teams": [
+        {
+          "id": "smandash-advisor-roster",
+          "label": "Pembina",
+          "speakers": [
+            {
+              "id": "advisor-siti-aminah",
+              "nama": "Ibu Siti Aminah Daulay",
+              "fullname": "Ibu Siti Aminah Daulay, S.Pd."
+            }
           ]
         }
       ]
-    },
-    {
-      "id": "smandash-seleksi-2627",
-      "nama": "SMANDASH · Seleksi Uji Coba Angkatan 26/27",
-      "short": "SELEKSI 26/27",
-      "teams": [
-        { "id": "seleksi-2627-k12", "label": "Kelas 12", "speakers": [
-          { "id": "sel-valentino", "nama": "Valentino", "fullname": "Valentino Alexandros Saragih", "role": "p1", "positions": ["P1","P2","P3","Reply"] },
-          { "id": "sel-syifa", "nama": "Syifa", "fullname": "Syifa Aurelia Qalbina", "role": "p1", "positions": ["P1","P3"] },
-          { "id": "sel-pramudya", "nama": "Pramudya", "fullname": "Pramudya Fathur Roza", "role": "p1", "positions": ["P1","P2","Reply"] },
-          { "id": "sel-eny", "nama": "Eny", "fullname": "Eny Iryany Sangjia Putri", "role": "p1", "positions": ["P1","P2","P3"] },
-          { "id": "sel-hatta", "nama": "Hatta", "fullname": "Hatta Pandya Bumi Ath", "role": "p2", "positions": ["P2","P3"] },
-          { "id": "sel-kevan", "nama": "Kevan", "fullname": "Kevan Joni Aldi", "role": "p3", "positions": ["P3"] },
-          { "id": "sel-ismat", "nama": "Ismat", "fullname": "Ismat Habibi Akmal", "role": "p3", "positions": ["P3"] }
-        ]},
-        { "id": "seleksi-2627-k11", "label": "Kelas 11", "speakers": [
-          { "id": "sel-nabila", "nama": "Nabila", "fullname": "Nabila Meysun Nur F", "role": "p1", "positions": ["P1"] },
-          { "id": "sel-nakeisha", "nama": "Nakeisha", "fullname": "Nakeisha Putri Adinda", "role": "p1", "positions": ["P1","P3"] },
-          { "id": "sel-thalita", "nama": "Thalita", "role": "p1", "positions": ["P1"] },
-          { "id": "sel-selfya", "nama": "Selfya", "fullname": "Selfya Ramadanis", "role": "p1", "positions": ["P1"] },
-          { "id": "sel-eca", "nama": "Eca", "fullname": "Raudha Eca Azwita", "role": "p1", "positions": ["P1"] },
-          { "id": "sel-amirah", "nama": "Amirah", "fullname": "Nur Amirah Syahnas N", "role": "p2", "positions": ["P2","P3"] },
-          { "id": "sel-aditya", "nama": "Aditya", "fullname": "Aditya Padlan", "role": "p2", "positions": ["P2"] },
-          { "id": "sel-nikita", "nama": "Nikita", "fullname": "Nikita Salsabila", "role": "p2", "positions": ["P2"] },
-          { "id": "sel-marsha", "nama": "Marsha", "fullname": "Marsha Millano", "role": "p2", "positions": ["P2"] },
-          { "id": "sel-kezia", "nama": "Kezia", "role": "p3", "positions": ["P3"] },
-          { "id": "sel-raysa", "nama": "Raysa", "fullname": "Raysa Rahmania", "role": "p3", "positions": ["P3"] }
-        ]},
-        { "id": "seleksi-2627-k10", "label": "Kelas 10", "speakers": [
-          { "id": "sel-bagas", "nama": "Bagas", "role": "p2", "positions": ["P2"] },
-          { "id": "sel-silvia", "nama": "Silvia", "role": "p2", "positions": ["P2"] },
-          { "id": "sel-zastari", "nama": "Zastari", "role": "p2", "positions": ["P2"] },
-          { "id": "sel-anindya", "nama": "Anindya", "role": "p2", "positions": ["P2"] },
-          { "id": "sel-aira", "nama": "Aira", "role": "p3", "positions": ["P3"] },
-          { "id": "sel-tria", "nama": "Tria", "role": "p3", "positions": ["P3"] },
-          { "id": "sel-amelia", "nama": "Amelia", "role": "p3", "positions": ["P3"] },
-          { "id": "sel-lutfya", "nama": "Lutfya", "role": "p1", "positions": ["P1"] },
-          { "id": "sel-khairunnisa", "nama": "Khairunnissa", "role": "p1", "positions": ["P1"] },
-          { "id": "sel-natasya", "nama": "Natasya", "role": "p1", "positions": ["P1"] },
-          { "id": "sel-joshua", "nama": "Joshua", "role": "p1", "positions": ["P1"] }
-        ]}
-      ]
-    },
-    {
-      "id": "smandash-rotasi",
-      "nama": "SMANDASH · Rotasi Team",
-      "short": "ROTASI TEAM",
-      "teams": []
     }
   ]
 }

@@ -1,4 +1,8 @@
 
+## Struktur SMANDASH dan Bacaan
+- [ ] Sembilan jejak prestasi, kepengurusan, pembina, anggota per angkatan tanpa tim, dan tautan peran pembicara
+- [ ] Lengkapi pilihan geser Bacaan untuk seluruh cabang publik; uji anggota dan prestasi
+
 ## Logo aplikasi dan performa Android
 - [x] Ganti ikon aplikasi dengan lambang SMANDASH, termasuk ikon instalasi dan favicon
 - [x] Kurangi unduhan awal dan beban gambar/efek Android; verifikasi perpindahan tampilan
