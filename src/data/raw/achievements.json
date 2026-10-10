@@ -1,0 +1,11 @@
+[
+  { "id": "ldbi-2025", "nama": "LDBI Nasional 2025", "hasil": "Octofinalist", "tahun": "2025", "desc": "Delegasi Siak Hulu (menang), Kabupaten Kampar (menang), dan Provinsi Riau pada LDBI Nasional 2025. Mencapai babak 16 besar (octofinalist).", "tahapan": ["Siak Hulu · menang", "Kampar · menang", "Riau · delegasi nasional", "Nasional · 16 besar"], "url": "https://nsdc-ldbi.au-tab.app/indonesia2025/" },
+  { "id": "ldbi-2026", "nama": "LDBI Nasional 2026", "hasil": "Delegasi Riau · B2B", "tahun": "2026", "desc": "Delegasi Siak Hulu, Kabupaten Kampar, dan Provinsi Riau pada LDBI Nasional 2026. Delegasi nasional dua tahun berturut-turut (back-to-back/B2B).", "tahapan": ["Siak Hulu · delegasi", "Kampar · delegasi", "Riau · delegasi nasional", "B2B · 2025–2026"], "url": "https://nsdc-ldbi.au-tab.app/id2026/", "eventId": "ldi" },
+  { "id": "bulan-bahasa-2025", "nama": "Bulan Bahasa · Universitas Riau", "hasil": "Runner-up · Juara 2", "tahun": "2025", "desc": "Runner-up (peringkat kedua) Bulan Bahasa Universitas Riau 2025." },
+  { "id": "instinct-ix-2025", "nama": "INSTINCT IX · Universitas Riau", "hasil": "Juara 1 & 3 · Podium ganda", "tahun": "2025", "desc": "Dua podium dalam satu kompetisi: juara pertama dan juara ketiga INSTINCT IX Universitas Riau 2025." },
+  { "id": "sos-expo-2025", "nama": "SOS EXPO · Universitas Riau", "hasil": "Juara 1", "tahun": "2025", "desc": "Juara pertama SOS EXPO Universitas Riau 2025." },
+  { "id": "op14-2025", "nama": "OP14 · Olimpiade PPKn", "hasil": "Juara 1", "tahun": "2025", "desc": "Juara pertama Olimpiade PPKn 14 Universitas Riau 2025." },
+  { "id": "instinct-x-2026", "nama": "INSTINCT X · Universitas Riau", "hasil": "Juara 1", "tahun": "2026", "desc": "Juara pertama INSTINCT X Universitas Riau 2026.", "eventId": "unri-ilmiah" },
+  { "id": "himip-nsc", "nama": "HIMIP NSC · Universitas Riau", "hasil": "Runner-up · Juara 2", "tahun": null, "desc": "Runner-up (peringkat kedua) HIMIP National Science Competition Universitas Riau. Tahun penyelenggaraan belum dicantumkan." },
+  { "id": "op15-2026", "nama": "OP15 · Olimpiade PPKn", "hasil": "Runner-up · Juara 2", "tahun": "2026", "desc": "Runner-up (peringkat kedua) Olimpiade PPKn 15 Universitas Riau 2026.", "eventId": "op15" }
+]
