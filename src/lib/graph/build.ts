@@ -573,7 +573,7 @@ export function buildGraph(spreadMult?: number): Graph {
   {
     const center = clusterCenter.matter;
     const keys = Object.keys(MATTER);
-    const positions = varyRadial(center, placeCloud(center, 44, keys.length, 19), 5501, 44 * SPREAD * 0.5, 0.62, 2.2);
+    const positions = varyRadial(center, placeCloud(center, 44, keys.length, 19), 5501, 44 * SPREAD * 0.5, 0.62, 1.6);
     // Palette berbeda per domain matter (sub-hub)
     const matterDomainColors: Record<string, string> = {
       ekonomi: "#34d399", politik: "#f472b6", hukum: "#fbbf24", filsafat: "#c084fc",
