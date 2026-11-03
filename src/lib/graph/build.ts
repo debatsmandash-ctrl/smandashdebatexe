@@ -1099,6 +1099,7 @@ export function buildGraph(spreadMult?: number): Graph {
   }
 
   cached = { nodes: finalNodes, edges: finalEdges, byId, byCluster, neighbors };
+  cachedSpread = mult;
   return cached;
 }
 
