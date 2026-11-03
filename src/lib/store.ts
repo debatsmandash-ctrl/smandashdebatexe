@@ -2,19 +2,23 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { FontPreset } from "@/lib/fonts";
 
-export type QualityPreset = "low" | "medium" | "high" | "ultra";
+export type QualityPreset = "low" | "medium" | "high" | "ultra" | "cinematic";
 export type FpsCap = 0 | 30 | 60 | 120;
 
 export type MobileLayout = "sheet" | "pills";
 export type PlayMode = "shuffle" | "sequential";
 
+
 /**
  * Link visibility modes:
  * - normal : hover/klik = tampilkan tautan node itu; lain redup (default)
  * - tree   : klik domain/hub = highlight seluruh rantai turunan sampai leaf
+ * - focus  : hanya bintang terpilih + tautan langsungnya yang tampak;
+ *            garis lain hilang total (bukan sekadar redup)
  * - all    : semua garis dan label ditampilkan (perf-heavy)
  */
-export type LinkMode = "stars" | "normal" | "tree" | "all";
+export type LinkMode = "stars" | "normal" | "tree" | "focus" | "all";
+
 
 /** Preset tone warna & pencahayaan universe */
 export type ColorPreset = "deepspace" | "neon";
