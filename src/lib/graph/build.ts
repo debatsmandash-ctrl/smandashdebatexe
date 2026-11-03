@@ -121,8 +121,11 @@ function fbm3(x: number, y: number, z: number) {
  *  • VOID: knot dijaga berjarak sehingga ada rongga nyata di antaranya.
  * Titik pertama selalu paling dekat inti knot utama (dipakai untuk node penting).
  */
-/** Pengali sebaran global: gugus → subgugus → daun dibuat lebih lega. */
-const SPREAD = 3.05;
+/** Pengali sebaran global: gugus → subgugus → daun dibuat lebih lega.
+ *  2.35 = baseline seimbang (v1.8: ditarik balik dari 3.05 agar bintang
+ *  jauh tidak melenceng dari cluster-nya). Dikalikan settings.formationSpread. */
+let SPREAD = 2.35;
+
 
 /**
  * Variasikan jarak subgugus dari pusatnya: sebagian dekat, sebagian jauh,
@@ -336,10 +339,14 @@ export interface Graph {
 }
 
 let cached: Graph | null = null;
-export function invalidateGraphCache() { cached = null; }
+let cachedSpread = -1;
+export function invalidateGraphCache() { cached = null; cachedSpread = -1; }
 
-export function buildGraph(): Graph {
-  if (cached) return cached;
+export function buildGraph(spreadMult?: number): Graph {
+  const mult = spreadMult ?? 1.0;
+  if (cached && cachedSpread === mult) return cached;
+  SPREAD = 2.35 * mult;
+
   const overrides = loadOverrides();
 
   const nodes: StarNode[] = [];
@@ -566,7 +573,7 @@ export function buildGraph(): Graph {
   {
     const center = clusterCenter.matter;
     const keys = Object.keys(MATTER);
-    const positions = varyRadial(center, placeCloud(center, 44, keys.length, 19), 5501, 44 * SPREAD * 0.5, 0.62, 2.2);
+    const positions = varyRadial(center, placeCloud(center, 44, keys.length, 19), 5501, 44 * SPREAD * 0.5, 0.62, 1.6);
     // Palette berbeda per domain matter (sub-hub)
     const matterDomainColors: Record<string, string> = {
       ekonomi: "#34d399", politik: "#f472b6", hukum: "#fbbf24", filsafat: "#c084fc",
@@ -1092,6 +1099,7 @@ export function buildGraph(): Graph {
   }
 
   cached = { nodes: finalNodes, edges: finalEdges, byId, byCluster, neighbors };
+  cachedSpread = mult;
   return cached;
 }
 

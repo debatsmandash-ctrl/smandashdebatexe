@@ -2,19 +2,23 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { FontPreset } from "@/lib/fonts";
 
-export type QualityPreset = "low" | "medium" | "high" | "ultra";
+export type QualityPreset = "low" | "medium" | "high" | "ultra" | "cinematic";
 export type FpsCap = 0 | 30 | 60 | 120;
 
 export type MobileLayout = "sheet" | "pills";
 export type PlayMode = "shuffle" | "sequential";
 
+
 /**
  * Link visibility modes:
  * - normal : hover/klik = tampilkan tautan node itu; lain redup (default)
  * - tree   : klik domain/hub = highlight seluruh rantai turunan sampai leaf
+ * - focus  : hanya bintang terpilih + tautan langsungnya yang tampak;
+ *            garis lain hilang total (bukan sekadar redup)
  * - all    : semua garis dan label ditampilkan (perf-heavy)
  */
-export type LinkMode = "stars" | "normal" | "tree" | "all";
+export type LinkMode = "stars" | "normal" | "tree" | "focus" | "all";
+
 
 /** Preset tone warna & pencahayaan universe */
 export type ColorPreset = "deepspace" | "neon";
@@ -59,6 +63,16 @@ export interface Settings {
   rotateSens: number;  // 0.2 .. 3
   panSens: number;     // 0.2 .. 3
 
+  // v1.8 — formasi bintang (multiplier atas SPREAD; 1.0 = seimbang default)
+  formationSpread: number; // 0.7 .. 1.3
+
+  // v1.8 — pengaturan mode Bacaan
+  readTextScale: number;   // 0.85 .. 1.35 — skala ukuran teks bacaan
+  readColumn: "normal" | "wide";
+  readAutoScroll: boolean; // geser halaman otomatis ke bawah
+  readScrollSpeed: number; // px per detik
+  readFocus: boolean;      // mode fokus: sembunyikan cuplikan isi kartu
+
   // v1.0.2 — mode graf & opsi 2D ala Obsidian
   graphMode: "3d" | "2d" | "read";
   graphModeChosen: boolean;
@@ -68,6 +82,7 @@ export interface Settings {
   g2dLinkForce: number;      // 0.02 .. 0.4
   g2dRepel: number;          // 200 .. 4000
   g2dPinned: Record<string, { x: number; y: number }>;
+
 
   // Offset draggable panel (desktop). { x, y } pixel relatif posisi default.
   sidebarOffset: { x: number; y: number };
@@ -109,7 +124,14 @@ export const DEFAULT_SETTINGS: Settings = {
   panSens: 1.0,
   graphMode: "3d",
   graphModeChosen: false,
+  formationSpread: 1.0,
+  readTextScale: 1.0,
+  readColumn: "normal",
+  readAutoScroll: false,
+  readScrollSpeed: 45,
+  readFocus: false,
   g2dHover: true,
+
   g2dChainDrag: true,
   g2dLabels: true,
   g2dLinkForce: 0.08,
