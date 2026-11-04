@@ -493,14 +493,18 @@ function Scene({ profile, fpsCap }: { profile: DeviceProfile; fpsCap: number }) 
       }
       return s;
     }
-    // NORMAL
+    // NORMAL & FOCUS: bintang terpilih + tautan langsungnya.
+    // (FOCUS membedakan diri di dim mendalam + garis lain hilang total.)
     s.add(activeId);
     const ns = graph.neighbors.get(activeId);
     if (ns) for (const n of ns) s.add(n);
     return s;
   }, [selectedId, hoveredId, graph, linkMode, treeHoverEnabled, settings.hideAktorInTree, actorNodes]);
 
-  const anyActive = linkMode === "stars" ? false : linkMode === "all" ? true : !!(selectedId ?? (linkMode !== "tree" || treeHoverEnabled ? hoveredId : null));
+  const activeForFocus = selectedId ?? (linkMode !== "tree" || treeHoverEnabled ? hoveredId : null);
+  const anyActive = linkMode === "stars" ? false : linkMode === "all" ? true : !!activeForFocus;
+  // FOCUS: bintang tak tertaut nyaris hilang — bukan sekadar redup.
+  const dimK = linkMode === "focus" ? Math.min(0.05, settings.dimStrength) : settings.dimStrength;
 
   return (
     <>
@@ -516,7 +520,17 @@ function Scene({ profile, fpsCap }: { profile: DeviceProfile; fpsCap: number }) 
        {quality !== "low" && <StarField />}
       {/* v1.2.2 — objek galaksi jauh di luar peta dihapus agar tidak mengganggu orientasi */}
        {quality !== "low" && <StarClusters />}
-       {quality !== "low" && <MilkyWaySky opacity={settings.nebulaOpacity * 0.5 * tone.nebula} />}
+      {/* v1.8 — latar prosedural (nebula shader + galaksi + blackhole) pada
+          kualitas medium ke atas; mobile/low tetap memakai skybox foto ringan. */}
+       {quality === "low" ? (
+         <MilkyWaySky opacity={settings.nebulaOpacity * 0.5 * tone.nebula} />
+       ) : (
+         <DeepSpaceBackground
+           opacity={settings.nebulaOpacity * 0.55 * tone.nebula}
+           steps={quality === "medium" ? 3 : quality === "high" ? 4 : quality === "ultra" ? 5 : 6}
+           dust={quality === "high" || maxTier}
+         />
+       )}
 
       {linkMode !== "stars" && (
         <FlowEdges
@@ -524,6 +538,7 @@ function Scene({ profile, fpsCap }: { profile: DeviceProfile; fpsCap: number }) 
           litSet={litSet}
           anyActive={anyActive}
           showAll={linkMode === "all"}
+          focusId={linkMode === "focus" ? activeForFocus : null}
         />
       )}
 
@@ -563,11 +578,17 @@ function Scene({ profile, fpsCap }: { profile: DeviceProfile; fpsCap: number }) 
       </mesh>
 
       {bloomEnabled && (
-        <EffectComposer multisampling={quality === "ultra" ? 4 : 0}>
+        <EffectComposer multisampling={quality === "cinematic" ? 8 : maxTier ? 4 : 0}>
           <Bloom intensity={profile.bloomIntensity * settings.bloomIntensity * qScale * tone.bloom} luminanceThreshold={0.28} luminanceSmoothing={0.85} mipmapBlur radius={profile.bloomRadius} />
-          {profile.chromaticAberration && quality === "ultra" ? (
+          {profile.chromaticAberration && maxTier ? (
             <ChromaticAberration offset={[0.0008, 0.0008]} radialModulation={false} modulationOffset={0} blendFunction={BlendFunction.NORMAL} />
           ) : <></>}
+          {quality === "cinematic" && (
+            <>
+              <Vignette eskil={false} offset={0.24} darkness={0.52} />
+              <Noise premultiply blendFunction={BlendFunction.SOFT_LIGHT} opacity={0.35} />
+            </>
+          )}
         </EffectComposer>
       )}
       <FrameLimiter fpsCap={fpsCap} />
