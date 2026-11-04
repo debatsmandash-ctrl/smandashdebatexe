@@ -1,14 +1,15 @@
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls, Html } from "@react-three/drei";
-import { EffectComposer, Bloom, ChromaticAberration } from "@react-three/postprocessing";
+import { EffectComposer, Bloom, ChromaticAberration, Vignette, Noise } from "@react-three/postprocessing";
 import { BlendFunction } from "postprocessing";
 import { useMemo, useRef, useEffect, useState, Suspense } from "react";
 import * as THREE from "three";
-import { buildGraph } from "@/lib/graph/build";
+import { buildGraph, setSpreadMult } from "@/lib/graph/build";
 import { MOTIONS } from "@/data";
 import { useUniverse, useSettings, type QualityPreset } from "@/lib/store";
 import type { StarNode, StarEdge, NodeKind } from "@/data/types";
 import { MilkyWaySky } from "./MilkyWaySky";
+import { DeepSpaceBackground } from "./DeepSpaceBackground";
 import { HoverEdges } from "./HoverEdges";
 import { FlowEdges } from "./FlowEdges";
 import { useDeviceProfile, type DeviceProfile } from "@/hooks/useDeviceProfile";
@@ -328,10 +329,9 @@ function StarNodeMesh({ node, isSelected, isHovered, isLit, isDim, dimK, haloTex
 }
 
 // ─── Camera flyer ───
-function CameraController({ targetId, profile, autoRotate, autoRotateSpeed, damping }: { targetId: string | null; profile: DeviceProfile; autoRotate: boolean; autoRotateSpeed: number; damping: number }) {
+function CameraController({ targetId, graph, profile, autoRotate, autoRotateSpeed, damping }: { targetId: string | null; graph: ReturnType<typeof buildGraph>; profile: DeviceProfile; autoRotate: boolean; autoRotateSpeed: number; damping: number }) {
   const controls = useRef<any>(null);
   const { camera } = useThree();
-  const graph = useMemo(() => buildGraph(), []);
   const [interacting, setInteracting] = useState(false);
   const idleTimerRef = useRef<number | null>(null);
   const zoomSens = useSettings((s) => s.zoomSens);
@@ -413,17 +413,20 @@ function CameraController({ targetId, profile, autoRotate, autoRotateSpeed, damp
 
 // ─── Scene contents ───
 function Scene({ profile, fpsCap }: { profile: DeviceProfile; fpsCap: number }) {
-  const graph = useMemo(() => buildGraph(), []);
+  const formationSpread = useSettings((s) => s.formationSpread);
+  const graph = useMemo(() => { setSpreadMult(formationSpread); return buildGraph(); }, [formationSpread]);
   const selectedId = useUniverse((s) => s.selectedId);
   const hoveredId = useUniverse((s) => s.hoveredId);
   const select = useUniverse((s) => s.select);
   const setLoaded = useUniverse((s) => s.setLoaded);
   const settings = useSettings();
   // Mobile safety ceiling also applies to desktop settings restored on a phone.
-  const quality = profile.tier === "mobile" ? "low" : settings.quality;
+  const quality: QualityPreset = profile.tier === "mobile" ? "low" : settings.quality;
+  const maxTier = quality === "ultra" || quality === "cinematic";
   const qScale = quality === "low" ? 0.45 : quality === "medium" ? 0.7 : quality === "high" ? 0.9 : 1.0;
-  const crustShells = quality === "low" ? 1 : quality === "medium" ? 1 : 2;
-  const crustOctaves = quality === "low" ? 3 : quality === "medium" ? 4 : quality === "high" ? 5 : 6;
+  const crustShells = quality === "low" ? 1 : quality === "medium" ? 1 : maxTier ? 3 : 2;
+  const crustOctaves = quality === "low" ? 3 : quality === "medium" ? 4 : quality === "high" ? 6 : profile.crustOctaves;
+  void crustShells; void crustOctaves;
   const bloomEnabled = quality !== "low";
 
   const haloTex = useMemo(() => makeHaloTexture(), []);
@@ -490,14 +493,18 @@ function Scene({ profile, fpsCap }: { profile: DeviceProfile; fpsCap: number }) 
       }
       return s;
     }
-    // NORMAL
+    // NORMAL & FOCUS: bintang terpilih + tautan langsungnya.
+    // (FOCUS membedakan diri di dim mendalam + garis lain hilang total.)
     s.add(activeId);
     const ns = graph.neighbors.get(activeId);
     if (ns) for (const n of ns) s.add(n);
     return s;
   }, [selectedId, hoveredId, graph, linkMode, treeHoverEnabled, settings.hideAktorInTree, actorNodes]);
 
-  const anyActive = linkMode === "stars" ? false : linkMode === "all" ? true : !!(selectedId ?? (linkMode !== "tree" || treeHoverEnabled ? hoveredId : null));
+  const activeForFocus = selectedId ?? (linkMode !== "tree" || treeHoverEnabled ? hoveredId : null);
+  const anyActive = linkMode === "stars" ? false : linkMode === "all" ? true : !!activeForFocus;
+  // FOCUS: bintang tak tertaut nyaris hilang — bukan sekadar redup.
+  const dimK = linkMode === "focus" ? Math.min(0.05, settings.dimStrength) : settings.dimStrength;
 
   return (
     <>
@@ -513,7 +520,17 @@ function Scene({ profile, fpsCap }: { profile: DeviceProfile; fpsCap: number }) 
        {quality !== "low" && <StarField />}
       {/* v1.2.2 — objek galaksi jauh di luar peta dihapus agar tidak mengganggu orientasi */}
        {quality !== "low" && <StarClusters />}
-       {quality !== "low" && <MilkyWaySky opacity={settings.nebulaOpacity * 0.5 * tone.nebula} />}
+      {/* v1.8 — latar prosedural (nebula shader + galaksi + blackhole) pada
+          kualitas medium ke atas; mobile/low tetap memakai skybox foto ringan. */}
+       {quality === "low" ? (
+         <MilkyWaySky opacity={settings.nebulaOpacity * 0.5 * tone.nebula} />
+       ) : (
+         <DeepSpaceBackground
+           opacity={settings.nebulaOpacity * 0.55 * tone.nebula}
+           steps={quality === "medium" ? 3 : quality === "high" ? 4 : quality === "ultra" ? 5 : 6}
+           dust={quality === "high" || maxTier}
+         />
+       )}
 
       {linkMode !== "stars" && (
         <FlowEdges
@@ -521,6 +538,7 @@ function Scene({ profile, fpsCap }: { profile: DeviceProfile; fpsCap: number }) 
           litSet={litSet}
           anyActive={anyActive}
           showAll={linkMode === "all"}
+          focusId={linkMode === "focus" ? activeForFocus : null}
         />
       )}
 
@@ -560,11 +578,17 @@ function Scene({ profile, fpsCap }: { profile: DeviceProfile; fpsCap: number }) 
       </mesh>
 
       {bloomEnabled && (
-        <EffectComposer multisampling={quality === "ultra" ? 4 : 0}>
+        <EffectComposer multisampling={quality === "cinematic" ? 8 : maxTier ? 4 : 0}>
           <Bloom intensity={profile.bloomIntensity * settings.bloomIntensity * qScale * tone.bloom} luminanceThreshold={0.28} luminanceSmoothing={0.85} mipmapBlur radius={profile.bloomRadius} />
-          {profile.chromaticAberration && quality === "ultra" ? (
+          {profile.chromaticAberration && maxTier ? (
             <ChromaticAberration offset={[0.0008, 0.0008]} radialModulation={false} modulationOffset={0} blendFunction={BlendFunction.NORMAL} />
           ) : <></>}
+          {quality === "cinematic" && (
+            <>
+              <Vignette eskil={false} offset={0.24} darkness={0.52} />
+              <Noise premultiply blendFunction={BlendFunction.SOFT_LIGHT} opacity={0.35} />
+            </>
+          )}
         </EffectComposer>
       )}
       <FrameLimiter fpsCap={fpsCap} />

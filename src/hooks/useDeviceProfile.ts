@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import type { QualityPreset } from "@/lib/store";
 
 export type DeviceTier = "desktop" | "mobile";
 
@@ -17,7 +18,13 @@ export interface DeviceProfile {
   crustOctaves: number;
 }
 
-export function useDeviceProfile(): DeviceProfile {
+/**
+ * useDeviceProfile — profil kemampuan render.
+ * `quality` (preset yang dipilih user) menaikkan/menurunkan angka di atas
+ * ceiling perangkat: preset "cinematic" hanya berlaku di desktop; mobile
+ * selalu terkunci low (mobile safety ceiling).
+ */
+export function useDeviceProfile(quality?: QualityPreset): DeviceProfile {
   return useMemo(() => {
     if (typeof window === "undefined") {
       return {
@@ -36,10 +43,10 @@ export function useDeviceProfile(): DeviceProfile {
         crustShells: 1, crustOctaves: 2,
       };
     }
-    // Desktop / high-end (Ultra tier — up to RTX 5090)
+    // Desktop / high-end
     const mem = (navigator as any).deviceMemory ?? 8;
     const hiEnd = mem >= 8 && (navigator.hardwareConcurrency ?? 4) >= 8;
-    return {
+    const base: DeviceProfile = {
       tier: "desktop",
       dpr: hiEnd ? [2, 3.5] : [1.5, 2.5],
       nebulaSteps: hiEnd ? 128 : 64,
@@ -53,5 +60,36 @@ export function useDeviceProfile(): DeviceProfile {
       crustShells: hiEnd ? 3 : 2,
       crustOctaves: hiEnd ? 7 : 5,
     };
-  }, []);
+    // Preset CINEMATIC — kelas laptop gaming: DPR tinggi, segmen bintang 64,
+    // oktaf crust 8, bloom ekstra. Hanya di desktop.
+    if (quality === "cinematic") {
+      return {
+        ...base,
+        dpr: [Math.max(1.75, base.dpr[0]), 3],
+        nebulaSteps: 96,
+        bloomIntensity: Math.max(2.8, base.bloomIntensity),
+        bloomRadius: 1.35,
+        starSegments: 64,
+        crustShells: Math.max(3, base.crustShells),
+        crustOctaves: 8,
+      };
+    }
+    // Preset rendah menurunkan angka meski di desktop kuat
+    if (quality === "medium" || quality === "low") {
+      return {
+        ...base,
+        dpr: [1, 1.5],
+        nebulaSteps: quality === "low" ? 12 : 24,
+        bloomIntensity: 1.2,
+        chromaticAberration: false,
+        starSegments: 16,
+        crustShells: 1,
+        crustOctaves: quality === "low" ? 3 : 4,
+      };
+    }
+    if (quality === "high") {
+      return { ...base, starSegments: Math.min(base.starSegments, 32), crustOctaves: Math.min(base.crustOctaves, 6) };
+    }
+    return base;
+  }, [quality]);
 }
