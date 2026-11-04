@@ -342,8 +342,20 @@ let cached: Graph | null = null;
 let cachedSpread = -1;
 export function invalidateGraphCache() { cached = null; cachedSpread = -1; }
 
+/** Pengali sebaran aktif (settings.formationSpread). Komponen yang membaca
+ *  settings memanggil setSpreadMult; pemanggil buildGraph() tanpa argumen
+ *  memakai nilai terakhir — jadi seluruh panel memakai cache yang sama. */
+let currentMult = 1.0;
+export function setSpreadMult(m: number) {
+  const clamped = Math.max(0.7, Math.min(1.3, m));
+  if (clamped === currentMult) return;
+  currentMult = clamped;
+  cached = null;
+  cachedSpread = -1;
+}
+
 export function buildGraph(spreadMult?: number): Graph {
-  const mult = spreadMult ?? 1.0;
+  const mult = spreadMult ?? currentMult;
   if (cached && cachedSpread === mult) return cached;
   SPREAD = 2.35 * mult;
 
