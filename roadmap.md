@@ -15,6 +15,14 @@
 - [ ] Kartu rekomendasi: 7 mosi aktor/tokoh baru
 - [ ] Data & visual LDI/NSDC 2025 & 2026 (bagan gugur ala bagan sepak bola + statistik SMAN 2 Siak Hulu)
 
+## Pengaturan, semesta, dan panel info (lanjutan)
+- [ ] Pengaturan per tampilan 3D/2D/Bacaan dengan animasi dan penjelasan interaktif
+- [ ] Preset grafis desktop bertingkat dan batas aman tetap untuk Android
+- [ ] Fokus tautan langsung pada tampilan 3D dan 2D; formasi bintang seimbang
+- [ ] Bacaan memakai pengaturan teks, lebar, fokus, dan gulir otomatis
+- [ ] Panel informasi memiliki bagian yang membuka penjelasan saat ditekan
+- [ ] Verifikasi build dan tampilan desktop/Android
+
 ## v1.2.2 (lanjutan)
 - [x] Tiga tampilan: 3D, 2D, dan bacaan berselancar; navigasi Android
 - [x] Peredupan 3D, tautan penuh dan aktor hybrid, pastel untuk mosi lengkap, neon untuk mosi lama

@@ -1,7 +1,8 @@
 import { useMemo, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { useUniverse, useSettings, type QualityPreset, type FpsCap, type LinkMode } from "@/lib/store";
 import { TRACKS, DEFAULT_ENABLED_TRACKS } from "@/lib/playlist";
-import { buildGraph } from "@/lib/graph/build";
+import { buildGraph, setSpreadMult } from "@/lib/graph/build";
 import { FONT_PRESETS, applyFontPreset, type FontPreset } from "@/lib/fonts";
 
 
@@ -23,6 +24,15 @@ function Row({ label, hint, children }: { label: string; hint?: string; children
       </div>
       {hint && <div style={{ fontFamily: "DM Sans", fontSize: 10, color: "#5a6f8a", marginTop: 3 }}>{hint}</div>}
     </div>
+  );
+}
+
+function MoreInfo({ children }: { children: string }) {
+  return (
+    <details style={{ marginTop: 5, color: "#8ba3c0", fontFamily: "DM Sans", fontSize: 10, lineHeight: 1.55 }}>
+      <summary style={{ width: "fit-content", cursor: "pointer", color: "#38bdf8" }}>ⓘ Keterangan</summary>
+      <p style={{ margin: "5px 0 0", paddingLeft: 3 }}>{children}</p>
+    </details>
   );
 }
 
@@ -69,6 +79,7 @@ export function SettingsPanel() {
   const update = useSettings((st) => st.update);
   const reset = useSettings((st) => st.reset);
   const [tab, setTab] = useState<"display" | "links" | "performance" | "audio" | "font" | "explore" | "access">("display");
+  const [dimension, setDimension] = useState<"3d" | "2d" | "read">("3d");
   const graph = useMemo(() => buildGraph(), []);
   const select = useUniverse((st) => st.select);
   const rovers = useMemo(() => {
@@ -128,7 +139,19 @@ export function SettingsPanel() {
         </div>
 
         <div className="panel-scroll" style={{ flex: 1, overflowY: "auto", padding: "16px 18px" }}>
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.div key={tab} initial={{ opacity: 0, y: 7 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -4 }} transition={{ duration: 0.16 }}>
           {tab === "display" && (<>
+          <Section title="Dimensi pengaturan">
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 6 }}>
+              {([["3d", "3D"], ["2d", "2D"], ["read", "BACAAN"]] as const).map(([key, label]) => (
+                <Pill key={key} active={dimension === key} onClick={() => setDimension(key)}>{label}</Pill>
+              ))}
+            </div>
+            <div style={{ color: "#8ba3c0", fontFamily: "DM Sans", fontSize: 10, lineHeight: 1.5 }}>
+              Pengaturan di bawah hanya mengubah tampilan yang dipilih.
+            </div>
+          </Section>
           <Section title="Mode Graf">
             <Row label="Tampilan" hint="3D Universe (semesta bintang) atau 2D Obsidian (graf bisa ditarik & dipaku)">
               <div style={{ display: "flex", gap: 4 }}>
@@ -138,7 +161,7 @@ export function SettingsPanel() {
               </div>
             </Row>
           </Section>
-          {s.graphMode === "2d" && (
+          {dimension === "2d" && (
             <Section title="Obsidian 2D">
               <Row label="Sorot tetangga saat hover"><Toggle value={s.g2dHover} onChange={(v) => update({ g2dHover: v })} /></Row>
               <Row label="Tetangga ikut tertarik" hint="Saat node digeser, tetangganya ikut bergerak"><Toggle value={s.g2dChainDrag} onChange={(v) => update({ g2dChainDrag: v })} /></Row>
@@ -152,8 +175,12 @@ export function SettingsPanel() {
               <Row label="Lepas semua paku" hint="Kembalikan posisi node ke simulasi bebas">
                 <Pill active={false} onClick={() => update({ g2dPinned: {} })}>RESET</Pill>
               </Row>
+              <Row label="Sebaran gugus" hint={`Jarak bintang: ${s.formationSpread.toFixed(2)}×`}>
+                <Slider value={s.formationSpread} min={0.7} max={1.3} step={0.05} onChange={(v) => { setSpreadMult(v); update({ formationSpread: v }); }} />
+              </Row>
             </Section>
           )}
+          {dimension === "3d" && <>
           <Section title="Sensitivitas Kontrol">
             <Row label={`Zoom ×${s.zoomSens.toFixed(2)}`} hint="Naikkan bila zoom terasa mendek">
               <Slider value={s.zoomSens} min={0.2} max={3} step={0.05} onChange={(v) => update({ zoomSens: v })} />
@@ -188,6 +215,9 @@ export function SettingsPanel() {
             <Row label={`Damping ${s.damping.toFixed(2)}`}>
               <Slider value={s.damping} min={0.04} max={0.2} step={0.01} onChange={(v) => update({ damping: v })} />
             </Row>
+            <Row label={`Sebaran gugus ${s.formationSpread.toFixed(2)}×`} hint="Jarak cabang dan bintang di semua tampilan graf">
+              <Slider value={s.formationSpread} min={0.7} max={1.3} step={0.05} onChange={(v) => { setSpreadMult(v); update({ formationSpread: v }); }} />
+            </Row>
           </Section>
           <Section title="Mobile Layout">
             <Row label="Style" hint="Berlaku di tampilan HP/tablet sentuh">
@@ -197,6 +227,29 @@ export function SettingsPanel() {
               </div>
             </Row>
           </Section>
+          </>}
+          {dimension === "read" && <>
+          <Section title="Bacaan">
+            <Row label={`Ukuran teks ${Math.round(s.readTextScale * 100)}%`} hint="Perbesar atau perkecil semua materi">
+              <Slider value={s.readTextScale} min={0.85} max={1.35} step={0.05} onChange={(v) => update({ readTextScale: v })} />
+            </Row>
+            <Row label="Lebar bacaan" hint="Pilih kolom ringkas atau lebar">
+              <div style={{ display: "flex", gap: 4 }}>
+                <Pill active={s.readColumn === "normal"} onClick={() => update({ readColumn: "normal" })}>RINGKAS</Pill>
+                <Pill active={s.readColumn === "wide"} onClick={() => update({ readColumn: "wide" })}>LEBAR</Pill>
+              </div>
+            </Row>
+            <Row label="Mode fokus" hint="Sembunyikan cuplikan pada kartu materi">
+              <Toggle value={s.readFocus} onChange={(v) => update({ readFocus: v })} />
+            </Row>
+            <Row label="Gulir otomatis" hint="Berhenti saat dimatikan atau mencapai akhir halaman">
+              <Toggle value={s.readAutoScroll} onChange={(v) => update({ readAutoScroll: v })} />
+            </Row>
+            <Row label={`Kecepatan ${Math.round(s.readScrollSpeed)} piksel/detik`}>
+              <Slider value={s.readScrollSpeed} min={10} max={120} step={5} onChange={(v) => update({ readScrollSpeed: v })} />
+            </Row>
+          </Section>
+          </>}
           </>)}
 
           {tab === "links" && (<>
@@ -208,6 +261,7 @@ export function SettingsPanel() {
               ["stars",  "BINTANG SAJA", "Semua garis disembunyikan — murni sebaran bintang."],
               ["normal", "HOVER SAJA", "Hover/klik satu bintang → tampil tautan-nya saja. Lain redup."],
               ["tree",   "FULL TREE", "Klik domain/hub → highlight seluruh rantai root ↔ leaf dua arah."],
+              ["focus",  "FOKUS TAUTAN", "Hanya bintang terpilih, tetangga langsung, dan garis penghubungnya yang terlihat."],
               ["all",    "SEMUA GARIS", "Semua garis tampil permanen (redup). Berat — cocok untuk audit."],
             ] as const).map(([k, label, hint]) => (
               <Row key={k} label={label} hint={hint}>
@@ -272,14 +326,25 @@ export function SettingsPanel() {
           </>)}
 
           {tab === "performance" && (<>
-          <Section title="Performance">
-            <Row label="Quality preset" hint="LOW = ramah mobile; ULTRA = maksimal desktop">
-              <div style={{ display: "flex", gap: 4 }}>
-                {(["low","medium","high","ultra"] as QualityPreset[]).map(q => (
-                  <Pill key={q} active={s.quality === q} onClick={() => update({ quality: q })}>{q.toUpperCase()}</Pill>
-                ))}
-              </div>
-            </Row>
+          <Section title="Kualitas Grafis">
+            <div style={{ display: "grid", gap: 6 }}>
+              {(["low", "medium", "high", "ultra", "cinematic"] as QualityPreset[]).map((q) => {
+                const descriptions: Record<QualityPreset, string> = {
+                  low: "Paling ringan; pilihan aman untuk ponsel dan hemat baterai.",
+                  medium: "Efek dasar nebula dan cahaya, beban sedang.",
+                  high: "Bintang dan nebula lebih rinci untuk komputer harian.",
+                  ultra: "Efek penuh untuk komputer dengan kemampuan grafis baik.",
+                  cinematic: "Detail, resolusi, dan pascapemrosesan tertinggi; berat, hanya untuk komputer kuat. Bukan ray tracing perangkat keras.",
+                };
+                return <div key={q} style={{ border: `1px solid ${s.quality === q ? "#a855f7" : "rgba(168,85,247,0.2)"}`, padding: "8px 10px", borderRadius: 4, background: s.quality === q ? "rgba(168,85,247,0.12)" : "transparent" }}>
+                  <Pill active={s.quality === q} onClick={() => update({ quality: q })}>{q === "cinematic" ? "CINEMATIC" : q.toUpperCase()}</Pill>
+                  <div style={{ marginTop: 6, color: "#8ba3c0", fontFamily: "DM Sans", fontSize: 10, lineHeight: 1.45 }}>{descriptions[q]}</div>
+                </div>;
+              })}
+            </div>
+            <MoreInfo>Di Android, kualitas otomatis dibatasi ke mode ringan walau pilihan ini tersimpan. Kualitas Cinematic menambah resolusi dan efek WebGL, tetapi tidak mengaktifkan ray tracing perangkat keras.</MoreInfo>
+          </Section>
+          <Section title="Laju gambar">
             <Row label="FPS cap" hint="0 = unlimited (gunakan refresh rate layar)">
               <div style={{ display: "flex", gap: 4 }}>
                 {([0,30,60,120] as FpsCap[]).map(f => (
@@ -393,6 +458,8 @@ export function SettingsPanel() {
               fontFamily: "Space Mono", fontSize: 10, letterSpacing: "0.2em" }}>
             RESET TO DEFAULTS
           </button>
+            </motion.div>
+          </AnimatePresence>
         </div>
       </aside>
     </>
