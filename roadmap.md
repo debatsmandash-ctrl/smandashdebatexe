@@ -23,6 +23,11 @@
 - [ ] Panel informasi memiliki bagian yang membuka penjelasan saat ditekan
 - [ ] Verifikasi build dan tampilan desktop/Android
 
+## Perbaikan preview dan galeri prestasi lobby
+- [ ] Pulihkan kompilasi semesta dan selesaikan pengaturan/tautan/panel info yang tertunda
+- [ ] Tampilkan empat foto lobby yang dapat dibuka penuh, dengan keterangan prestasi dari pengguna
+- [ ] Verifikasi alur lobby, foto, dan perpindahan tampilan di desktop serta Android
+
 ## v1.2.2 (lanjutan)
 - [x] Tiga tampilan: 3D, 2D, dan bacaan berselancar; navigasi Android
 - [x] Peredupan 3D, tautan penuh dan aktor hybrid, pastel untuk mosi lengkap, neon untuk mosi lama
